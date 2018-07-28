@@ -2,7 +2,6 @@
 
 # expo
 .expo/
-android/.gradle/
 
 # dependencies
 /node_modules
@@ -14,6 +13,6 @@ android/.gradle/
 .env.production.local
 
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+android/.gradle/
 android/app/build/
+android/build/intermediates/
