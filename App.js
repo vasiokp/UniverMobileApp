@@ -1,23 +1,20 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
-    );
+import AuthScreen from './src/screens/Auth/Auth';
+import FirstTabScreen from './src/screens/FirstTab/FirstTab';
+import SecondTabScreen from './src/screens/SecondTab/SecondTab';
+import SettingsTabScreen from './src/screens/SettingsTab/SettingsTab';
+
+// Register screens
+Navigation.registerComponent("UniverMobileApp.AuthScreen", () => AuthScreen);
+Navigation.registerComponent("UniverMobileApp.FirstTabScreen", () => FirstTabScreen);
+Navigation.registerComponent("UniverMobileApp.SecondTabScreen", () => SecondTabScreen);
+Navigation.registerComponent("UniverMobileApp.SettingsTabScreen", () => SettingsTabScreen);
+
+// Start a app
+Navigation.startSingleScreenApp({
+  screen: {
+    screen: "UniverMobileApp.AuthScreen",
+    title: "Login"
   }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 });
