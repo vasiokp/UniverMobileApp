@@ -11,7 +11,7 @@ Below you'll find information about performing common tasks. The most recent ver
   * [npm run ios](#npm-run-ios)
   * [npm run android](#npm-run-android)
   * [npm run eject](#npm-run-eject)
-  * [./gradlew clean](#clean-the-build)
+  * [./gradlew clean](#./gradlew-clean)
 * [Writing and Running Tests](#writing-and-running-tests)
 * [Environment Variables](#environment-variables)
   * [Configuring Packager IP Address](#configuring-packager-ip-address)
@@ -80,11 +80,11 @@ Like `npm start`, but also attempts to open your app on a connected Android devi
 
 This will start the process of "ejecting" from Create React Native App's build scripts. You'll be asked a couple of questions about how you'd like to build your project.
 
-#### './gradlew clean'
+**Warning:** Running eject is a permanent action (aside from whatever version control system you use). An ejected app will require you to have an [Xcode and/or Android Studio environment](https://facebook.github.io/react-native/docs/getting-started.html) set up.
+
+#### `./gradlew clean`
 
 This will clean build from artifacts (sometimes this command help to build the project). You need to run from Android folder.
-
-**Warning:** Running eject is a permanent action (aside from whatever version control system you use). An ejected app will require you to have an [Xcode and/or Android Studio environment](https://facebook.github.io/react-native/docs/getting-started.html) set up.
 
 ## Customizing App Display Name and Icon
 

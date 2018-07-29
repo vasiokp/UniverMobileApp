@@ -15,6 +15,8 @@ Navigation.registerComponent("UniverMobileApp.SettingsTabScreen", () => Settings
 Navigation.startSingleScreenApp({
   screen: {
     screen: "UniverMobileApp.AuthScreen",
-    title: "Login"
+    navigatorStyle: {
+      navBarHidden: true
+    }
   }
 });
