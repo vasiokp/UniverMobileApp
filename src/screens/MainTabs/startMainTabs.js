@@ -10,16 +10,16 @@ const startTabs = () => {
     Navigation.startTabBasedApp({
       tabs: [
         {
+          screen: "UniverMobileApp.ScheduleTabScreen",
+          title: "Розклад",
+          label: 'Розклад',
+          icon: sources[1]
+        },
+        {
           screen: "UniverMobileApp.FirstTabScreen",
           title: "first tab",
           label: 'First Tab',
           icon: sources[0]
-        },
-        {
-          screen: "UniverMobileApp.SecondTabScreen",
-          title: "second tab",
-          label: 'Second Tab 2',
-          icon: sources[1]
         },
         {
           screen: "UniverMobileApp.SettingsTabScreen",
