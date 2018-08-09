@@ -1,4 +1,4 @@
-import { View, ScrollView } from 'react-native'
+import { View, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import LessonItem from './Lesson'
 const scheduleItem = (props) => (
@@ -14,12 +14,13 @@ const scheduleItem = (props) => (
         <ScrollView>
             {props.Items ? props.Items.map(function (item, i) {
                 return (
-                    <LessonItem
-                        key={i}
-                        LessonNumber={item.LessonNumber}
-                        Teacher={item.Teacher.Name + ' ' + item.Teacher.LastName}
-                        Auditory={item.Auditory.Number + ', ' + item.Auditory.Description}
-                        TextColor={props.TextColor} />
+                    <TouchableOpacity key={item.Id} onPress={props.onItemPressed.bind(this,item.Id)}>
+                        <LessonItem
+                            LessonNumber={item.LessonNumber}
+                            Teacher={item.Teacher.Name + ' ' + item.Teacher.LastName}
+                            Auditory={item.Auditory.Number + ', ' + item.Auditory.Description}
+                            TextColor={props.TextColor} />
+                    </TouchableOpacity>
                 )
             }) : ''}
         </ScrollView>

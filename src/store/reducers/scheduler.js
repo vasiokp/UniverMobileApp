@@ -5,6 +5,7 @@ const initialState = [
 
 const les = [
   {
+    Id:1,
     LessonNumber: 1,
     Teacher: {
       Id: 2,
@@ -18,6 +19,7 @@ const les = [
     }
   },
   {
+    Id:2,
     LessonNumber: 2,
     Teacher: {
       Id: 1,
@@ -31,6 +33,7 @@ const les = [
     }
   },
   {
+    Id:3,
     LessonNumber: 3,
     Teacher: {
       Id: 2,
@@ -44,6 +47,7 @@ const les = [
     }
   },
   {
+    Id:4,
     LessonNumber: 4,
     Teacher: {
       Id: 2,
@@ -57,6 +61,7 @@ const les = [
     }
   },
   {
+    Id:5,
     LessonNumber: 5,
     Teacher: {
       Id: 2,
@@ -70,6 +75,7 @@ const les = [
     }
   },
   {
+    Id:6,
     LessonNumber: 6,
     Teacher: {
       Id: 2,
@@ -83,6 +89,7 @@ const les = [
     }
   },
   {
+    Id:7,
     LessonNumber: 7,
     Teacher: {
       Id: 2,
@@ -99,6 +106,7 @@ const les = [
 ]
 const les2 = [
   {
+    Id:8,
     LessonNumber: 1,
     Teacher: {
       Id: 5,
@@ -114,6 +122,7 @@ const les2 = [
 ]
 const les3 = [
   {
+    Id:9,
     LessonNumber: 1,
     Teacher: {
       Id: 5,
@@ -127,6 +136,7 @@ const les3 = [
     }
   },
   {
+    Id:10,
     LessonNumber: 2,
     Teacher: {
       Id: 5,
@@ -141,7 +151,6 @@ const les3 = [
   }
 ]
 const reducer = (state = initialState, action) => {
-  console.log('reducer',action.payload)
   switch (action.type) {
     case GET_SCHEDULER:
       return [

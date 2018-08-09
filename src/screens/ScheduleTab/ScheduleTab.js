@@ -28,6 +28,17 @@ class ScheduleTabScreen extends Component {
       markedDay: markedDay
     });
   }
+  ShowDetails = id => {
+    this.props.navigator.push({
+      screen: 'UniverMobileApp.LessonDetailsScreen',
+      title: 'Заняття',
+      passProps: {
+        lesson: this.GetCurrentSchedule().find(les => {
+          return les.Id === id  
+        })
+      }
+    })
+  }
   GetCurrentSchedule() {
     if (this.props.schedule.length > 0) {
       const res = _.find(this.props.schedule, (item) => {
@@ -46,7 +57,7 @@ class ScheduleTabScreen extends Component {
             // Handler which gets executed on day press. Default = undefined
             onDayPress={(date) => { this.onSelectDay(date) }}
             // Handler which gets executed on day long press. Default = undefined
-            onDayLongPress={(day) => { console.log('selected day2', day) }}
+            // onDayLongPress={(day) => { console.log('selected day2', day) }}
             // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
             monthFormat={'MMMM'}
             markedDates={this.state.markedDay}
@@ -96,7 +107,7 @@ class ScheduleTabScreen extends Component {
             }}
           />
           <View style={{ flex: 2 }}>
-            <Schedule Items={this.GetCurrentSchedule()} TextColor='#ffffff' BackgroundColor='rgba(135, 135, 135, 0.6)' />
+            <Schedule Items={this.GetCurrentSchedule()} onItemPressed={this.ShowDetails} TextColor='#ffffff' BackgroundColor='rgba(135, 135, 135, 0.6)' />
           </View>
         </View>
       </ImageBackground>
