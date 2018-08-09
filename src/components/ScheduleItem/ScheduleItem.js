@@ -10,7 +10,7 @@ const scheduleItem = (props) => (
         borderWidth: 1,
         borderColor: '#ffffff'
     }}>
-        <LessonItem LessonNumber="№" TextColor={props.TextColor} Teacher="Викладач" Auditory="Аудиторія" />
+        <LessonItem LessonNumber="№" Teacher="Викладач" Auditory="Аудиторія" />
         <ScrollView>
             {props.Items ? props.Items.map(function (item, i) {
                 return (
@@ -18,8 +18,7 @@ const scheduleItem = (props) => (
                         <LessonItem
                             LessonNumber={item.LessonNumber}
                             Teacher={item.Teacher.Name + ' ' + item.Teacher.LastName}
-                            Auditory={item.Auditory.Number + ', ' + item.Auditory.Description}
-                            TextColor={props.TextColor} />
+                            Auditory={item.Auditory.Number + ', ' + item.Auditory.Description} />
                     </TouchableOpacity>
                 )
             }) : ''}

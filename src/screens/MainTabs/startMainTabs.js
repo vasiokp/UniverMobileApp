@@ -1,5 +1,6 @@
 import { Navigation } from "react-native-navigation";
 import Icon from 'react-native-vector-icons/Foundation';
+import { PRIMARY_COLOR, TEXT_COLOR, DARK_PRIMARY_COLOR, SELECTED_TAB_COLOR } from "../../plugins/AppColors";
 const startTabs = () => {
   Promise.all([
     Icon.getImageSource("torsos-all"),
@@ -34,13 +35,18 @@ const startTabs = () => {
         }
       ],
       appStyle: {
-        tabBarBackgroundColor: '#de793e',
-        tabBarButtonColor: '#ffffff',
+        tabBarBackgroundColor: PRIMARY_COLOR,// '#de793e',
+        tabBarButtonColor: TEXT_COLOR,
+        tabBarSelectedButtonColor: SELECTED_TAB_COLOR,
+        statusBarColor: DARK_PRIMARY_COLOR,
+        navBarBackgroundColor: PRIMARY_COLOR,
         tabBarHideShadow: true,
-        tabBarSelectedButtonColor: '#000000',
+        navBarTitleTextCentered: true,
         tabBarTranslucent: false,
         tabFontSize: 12,
         selectedTabFontSize: 14,
+        orientation: 'portrait',
+        tabFontFamily: 'Roboto'
       }
     })
   });

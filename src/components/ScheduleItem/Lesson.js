@@ -1,31 +1,23 @@
 import React from 'react'
 import { View } from 'react-native'
 import Cell from './Cell'
+import { PRIMARY_COLOR } from '../../plugins/AppColors'
 const lessonItem = (props) => (
   <View style={{ flexDirection: 'row', height: 33 }}>
-    <Cell CellStyle={{
-      borderWidth: 1,
-      borderColor: '#de793e',
-      padding: 3,
-      width: '7%',
+    <Cell style={{
+      borderColor: PRIMARY_COLOR,
+      width: 27,
     }}
-      TextStyle={{ fontSize: 18, color: props.TextColor }}
       Text={props.LessonNumber} />
-    <Cell CellStyle={{
-      borderWidth: 1,
-      borderColor: '#de793e',
-      padding: 3,
+    <Cell style={{
+      borderColor: PRIMARY_COLOR,
       width: '60%'
     }}
-      TextStyle={{ fontSize: 18, color: props.TextColor }}
       Text={props.Teacher} />
-    <Cell CellStyle={{
-      borderWidth: 1,
-      borderColor: '#de793e',
-      padding: 3,
+    <Cell style={{
+      borderColor: PRIMARY_COLOR,
       width: '33%'
     }}
-      TextStyle={{ fontSize: 18, color: props.TextColor }}
       Text={props.Auditory} />
   </View>
 );

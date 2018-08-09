@@ -1,10 +1,21 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
+import MainText from '../UI/MainText/MainText'
 
 const cellItem = (props) => (
-  <View style={props.CellStyle}>
-    <Text style={props.TextStyle}>{props.Text}</Text>
+  <View style={[styles.cellContainer, props.style]}>
+    <MainText><Text style={[styles.text, props.TextStyle]}>{props.Text}</Text></MainText>
   </View>
 );
-
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 18
+  },
+  cellContainer: {
+    borderWidth: 1,
+    borderColor: '#eee',
+    padding: 3,
+    width: '100%'
+  }
+})
 export default cellItem;

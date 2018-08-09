@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, ImageBackground } from 'react-native';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { View, ImageBackground } from 'react-native';
+import { Calendar } from 'react-native-calendars';
 import { connect } from 'react-redux';
 import { getScheduler } from '../../store/actions/index'
 import backgroundImage from '../../assets/backgroundImage.png'
 import Schedule from '../../components/ScheduleItem/ScheduleItem'
 import _ from 'underscore'
+import { TEXT_COLOR, TODAY_TEXT_COLOR, PRIMARY_COLOR, BACK_COLOR } from '../../plugins/AppColors';
 
 class ScheduleTabScreen extends Component {
   constructor() {
@@ -34,7 +35,7 @@ class ScheduleTabScreen extends Component {
       title: 'Заняття',
       passProps: {
         lesson: this.GetCurrentSchedule().find(les => {
-          return les.Id === id  
+          return les.Id === id
         })
       }
     })
@@ -87,16 +88,13 @@ class ScheduleTabScreen extends Component {
               borderColor: '#ffffff',
             }}
             theme={{
-              //backgroundColor: '#ffffff',
-              calendarBackground: 'rgba(135, 135, 135, 0.6)',
-              textSectionTitleColor: '#ffffff',
-              selectedDayBackgroundColor: '#de793e',
-              selectedDayTextColor: '#ffffff',
-              todayTextColor: 'yellow',//'#de793e',
-              dayTextColor: '#ffffff',
-              textDisabledColor: '#d9e1e8',
-              //arrowColor: 'orange',
-              monthTextColor: '#de793e',
+              calendarBackground: BACK_COLOR,
+              textSectionTitleColor: TEXT_COLOR,
+              selectedDayBackgroundColor: PRIMARY_COLOR,
+              selectedDayTextColor: TEXT_COLOR,
+              todayTextColor: TODAY_TEXT_COLOR,//'#de793e',
+              dayTextColor: TEXT_COLOR,
+              monthTextColor: PRIMARY_COLOR,
               textDayFontFamily: 'monospace',
               textMonthFontFamily: 'monospace',
               textDayHeaderFontFamily: 'monospace',
@@ -107,7 +105,7 @@ class ScheduleTabScreen extends Component {
             }}
           />
           <View style={{ flex: 2 }}>
-            <Schedule Items={this.GetCurrentSchedule()} onItemPressed={this.ShowDetails} TextColor='#ffffff' BackgroundColor='rgba(135, 135, 135, 0.6)' />
+            <Schedule Items={this.GetCurrentSchedule()} onItemPressed={this.ShowDetails} TextColor={TEXT_COLOR} BackgroundColor={BACK_COLOR} />
           </View>
         </View>
       </ImageBackground>

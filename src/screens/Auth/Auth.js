@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, Button, ImageBackground, Image } fro
 import startMainTabs from '../MainTabs/startMainTabs';
 import backgroundImage from '../../assets/backgroundImage.png'
 import logoImage from '../../assets/logo.png'
+import { PRIMARY_COLOR, TEXT_COLOR } from '../../plugins/AppColors'
 class AuthScreen extends Component {
   loginHandler = () => {
     startMainTabs();
@@ -15,16 +16,16 @@ class AuthScreen extends Component {
           <Image source={logoImage} style={styles.logoImageStyle} resizeMode="stretch" />
           <View style={styles.body}>
             <TextInput placeholder="Email або телефон"
-              placeholderTextColor='#ffffff'
-              underlineColorAndroid='#ffffff'
+              placeholderTextColor={TEXT_COLOR}
+              underlineColorAndroid={TEXT_COLOR}
               style={styles.input} />
             <TextInput placeholder="Пароль"
               textContentType="password"
               secureTextEntry={true}
-              placeholderTextColor='#ffffff'
-              underlineColorAndroid='#ffffff'
+              placeholderTextColor={TEXT_COLOR}
+              underlineColorAndroid={TEXT_COLOR}
               style={styles.input} />
-            <Button title="Увійти" onPress={this.loginHandler} color='#de793e' />
+            <Button title="Увійти" onPress={this.loginHandler} color={PRIMARY_COLOR} />
           </View>
         </View>
       </ImageBackground>
@@ -47,14 +48,10 @@ const styles = StyleSheet.create({
     height: '75%'
   },
   input: {
-    color: '#ffffff',
+    color: TEXT_COLOR,
     height: 50,
     fontSize: 24
-  },
-  button: {
-    color: '#de793e'
   }
-
 });
 
 export default AuthScreen;
