@@ -1,21 +1,21 @@
 import React from 'react'
 import { View, Text, StyleSheet, ImageBackground } from 'react-native'
 import backgroundImage from '../../assets/t1.png'
-
+import { BACK_COLOR } from '../../plugins/AppColors';
+import MainText from '../UI/MainText/MainText'
 const listItem = (props) => (
   <View style={styles.listItem}>
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.title}>
         <View style={styles.titleBlock}>
-          <Text style={styles.titleText}>{props.title}</Text>
+          <MainText><Text style={styles.titleText}>{props.title}</Text></MainText>
         </View>
         <View style={styles.dateBlock}>
-          <Text style={styles.dateText}>{props.date}</Text>
+          <MainText>{props.date}</MainText>
         </View>
       </View>
     </ImageBackground>
   </View>
-
 );
 
 const styles = StyleSheet.create({
@@ -29,17 +29,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   title: {
-    backgroundColor: 'rgba(135, 135, 135, 0.6)',
+    backgroundColor: BACK_COLOR,
     height: '40%',
     padding: 7
   },
   titleText: {
     fontSize: 20,
-    color: '#fff',
     fontWeight: 'bold'
-  },
-  dateText: {
-    color: '#fff'
   },
   dateBlock: {
     height: 30,

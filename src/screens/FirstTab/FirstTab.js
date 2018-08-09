@@ -15,33 +15,20 @@ class FirstTabScreen extends Component {
   }
 
   componentDidMount(){
-    this.props.getTable(new Date());
+    console.log('first Tab')
+    //this.props.getTable(new Date());
   }
 
   render() {
-    const list = this.props.schedule.map(function(item){
-      return (<View><Text>{item.LessonNumber}</Text><Text>{item.Teacher.Name}</Text></View>)
-    })
+
     return (
       <View>
         <Text>First Tab Content</Text>
-        {list}
         <TextInput value={this.state.placeName} onChangeText={this.placeNameChangedHandler} />
       </View>
     );
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getTable: (date) => dispatch(getScheduler(date))
-  };
-};
 
-const mapStateToProps = state => {
-  return {
-    schedule: state.scheduleState.Lessons,
-    foo: state
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(FirstTabScreen);
+export default FirstTabScreen;
