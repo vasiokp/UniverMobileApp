@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import NewsItem from '../../components/NewsItem/NewsItem'
+import PageLayout from '../../components/UI/PageLayout/PageLayout'
 
 class NewsTabScreen extends Component {
   ShowDetails = id => {
@@ -16,7 +17,7 @@ class NewsTabScreen extends Component {
   }
   render() {
     return (
-      <View>
+      <PageLayout>
         <FlatList data={[
           {
             title: 'У ЧНУ першокурсників посвятили у студенти.',
@@ -54,7 +55,7 @@ class NewsTabScreen extends Component {
             </TouchableOpacity>
           )}
         />
-      </View>
+      </PageLayout>
     );
   }
 }

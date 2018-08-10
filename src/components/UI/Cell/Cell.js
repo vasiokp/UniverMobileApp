@@ -1,15 +1,15 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import MainText from '../UI/MainText/MainText'
+import MainText from '../MainText/MainText'
 
 const cellItem = (props) => (
   <View style={[styles.cellContainer, props.style]}>
-    <MainText><Text style={[styles.text, props.TextStyle]}>{props.Text}</Text></MainText>
+    <MainText><Text style={styles.text}>{props.Text}</Text></MainText>
   </View>
 );
 const styles = StyleSheet.create({
   text: {
-    fontSize: 18
+    fontSize: 18,
   },
   cellContainer: {
     borderWidth: 1,

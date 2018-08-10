@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text} from 'react-native';
+import { Text } from 'react-native';
+import PageLayout from '../../components/UI/PageLayout/PageLayout'
 
 class SettingsTabScreen extends Component {
-  render(){
+  render() {
     return (
-        <View>
-          <Text>User Settings</Text>
-        </View>
+      <PageLayout>
+        <Text>User Settings</Text>
+      </PageLayout>
     );
   }
 }

@@ -7,7 +7,7 @@ const LessonDetails = (props) => {
     return (
         <ImageBackground source={backgroundImage} resizeMode="stretch" style={{ width: '100%', height: '100%' }}>
             <View>
-                <Text>{props.lesson.LessonNumber}</Text>
+                <Text>{props.lesson.name}</Text>
                 <MainText><Text>LessonDetails</Text></MainText>
                 <Text>LessonDetails</Text>
             </View>

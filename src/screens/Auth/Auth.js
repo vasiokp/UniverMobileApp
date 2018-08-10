@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, ImageBackground, Image } from 'react-native';
+import { StyleSheet, View, TextInput, Button, Image } from 'react-native';
 import startMainTabs from '../MainTabs/startMainTabs';
-import backgroundImage from '../../assets/backgroundImage.png'
 import logoImage from '../../assets/logo.png'
 import { PRIMARY_COLOR, TEXT_COLOR } from '../../plugins/AppColors'
+import PageLayout from '../../components/UI/PageLayout/PageLayout'
+
 class AuthScreen extends Component {
   loginHandler = () => {
     startMainTabs();
@@ -11,7 +12,7 @@ class AuthScreen extends Component {
 
   render() {
     return (
-      <ImageBackground source={backgroundImage} resizeMode="stretch" style={{ width: '100%', height: '100%' }}>
+      <PageLayout>
         <View style={styles.page}>
           <Image source={logoImage} style={styles.logoImageStyle} resizeMode="stretch" />
           <View style={styles.body}>
@@ -28,7 +29,7 @@ class AuthScreen extends Component {
             <Button title="Увійти" onPress={this.loginHandler} color={PRIMARY_COLOR} />
           </View>
         </View>
-      </ImageBackground>
+      </PageLayout>
     );
   }
 }
