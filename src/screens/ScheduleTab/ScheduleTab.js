@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { connect } from 'react-redux';
 import { getScheduler } from '../../store/actions/index'
-import PageLayout from '../../components/UI/PageLayout/PageLayout'
 import { TEXT_COLOR, TODAY_TEXT_COLOR, PRIMARY_COLOR, BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors';
 import Table from '../../components/Table/Table'
+import PageLayout from '../../components/UI/PageLayout/PageLayout'
 
 function GetDateString(date) {
   return date ? date.substring(0, 10) : new Date().toISOString().substring(0, 10)
@@ -73,6 +73,7 @@ class ScheduleTabScreen extends Component {
             style={{
               borderWidth: 1,
               borderColor: BLOCK_BORDER_COLOR,
+              margin:10
             }}
             theme={{
               calendarBackground: BACK_COLOR,
@@ -100,7 +101,6 @@ class ScheduleTabScreen extends Component {
               RowHeight={33}
               onItemPressed={this.ShowDetails}
             />
-            {/* <Schedule Items={this.GetCurrentSchedule()} onItemPressed={this.ShowDetails}/> */}
           </View>
         </View>
       </PageLayout>

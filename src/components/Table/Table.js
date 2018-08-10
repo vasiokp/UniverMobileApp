@@ -1,8 +1,8 @@
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 import React, { Component } from 'react'
 import Cell from '../UI/Cell/Cell'
 import Row from '../UI/Row/Row'
-import { BLOCK_BORDER_COLOR, BACK_COLOR } from '../../plugins/AppColors'
+import CustomBlock from '../UI/CustomBlock/CustomBlock';
 
 const columnsWidth = []
 
@@ -56,22 +56,11 @@ const TableBody = props => {
 
 const Table = props => {
   return (
-    <View style={styles.table}>
+    <CustomBlock>
       <TableHeader HeaderColumns={props.HeaderColumns} HeaderHeight={props.HeaderHeight} />
       <TableBody Items={props.Items} onItemPressed={props.onItemPressed} RowHeight={props.RowHeight} DisplayFields={props.DisplayFields} />
-    </View>
+    </CustomBlock>
   )
 }
-
-const styles = StyleSheet.create({
-  table: {
-    backgroundColor: BACK_COLOR,
-    padding: 10,
-    marginTop: 10,
-    flex: 1,
-    borderWidth: 1,
-    borderColor: BLOCK_BORDER_COLOR
-  }
-})
 
 export default Table;
