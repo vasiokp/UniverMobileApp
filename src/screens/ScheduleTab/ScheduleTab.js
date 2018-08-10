@@ -6,15 +6,19 @@ import { getScheduler } from '../../store/actions/index'
 import backgroundImage from '../../assets/backgroundImage.png'
 import Schedule from '../../components/ScheduleItem/ScheduleItem'
 import _ from 'underscore'
-import { TEXT_COLOR, TODAY_TEXT_COLOR, PRIMARY_COLOR, BACK_COLOR } from '../../plugins/AppColors';
+import { TEXT_COLOR, TODAY_TEXT_COLOR, PRIMARY_COLOR, BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors';
+
+function GetDateString(date) {
+  return date ? date.substring(0, 10) : new Date().toISOString().substring(0, 10)
+}
 
 class ScheduleTabScreen extends Component {
   constructor() {
     super();
     this.state = {
-      Date: new Date().toISOString().substring(0, 10),
+      Date: GetDateString(),
       markedDay: {
-        [new Date().toISOString().substring(0, 10)]: { selected: true }
+        [GetDateString()]: { selected: true }
       }
     }
   }
@@ -22,7 +26,6 @@ class ScheduleTabScreen extends Component {
     this.props.getSchedule(new Date().toDateString());
   }
   onSelectDay(date) {
-    console.log('selected day', date.dateString);
     const markedDay = { [date.dateString]: { selected: true } }
     this.setState({
       Date: date.dateString,
@@ -41,13 +44,14 @@ class ScheduleTabScreen extends Component {
     })
   }
   GetCurrentSchedule() {
+    let res = [];
     if (this.props.schedule.length > 0) {
-      const res = _.find(this.props.schedule, (item) => {
-        return item.Date === this.state.Date
+      const lesson = _.find(this.props.schedule, (item) => {
+        return GetDateString(item.date) === this.state.Date
       })
-      return res ? res.Lessons : []
+      if (lesson) res.push(lesson);
     }
-    return []
+    return res;
   }
   render() {
     return (
@@ -85,7 +89,7 @@ class ScheduleTabScreen extends Component {
             //onPressArrowRight={addMonth => addMonth()}
             style={{
               borderWidth: 1,
-              borderColor: '#ffffff',
+              borderColor: BLOCK_BORDER_COLOR,
             }}
             theme={{
               calendarBackground: BACK_COLOR,

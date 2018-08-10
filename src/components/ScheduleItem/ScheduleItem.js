@@ -1,6 +1,7 @@
 import { View, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import LessonItem from './Lesson'
+import {BLOCK_BORDER_COLOR} from '../../plugins/AppColors'
 const scheduleItem = (props) => (
     <View style={{
         backgroundColor: props.BackgroundColor,
@@ -8,17 +9,17 @@ const scheduleItem = (props) => (
         marginTop: 10,
         flex: 1,
         borderWidth: 1,
-        borderColor: '#ffffff'
+        borderColor: BLOCK_BORDER_COLOR
     }}>
-        <LessonItem LessonNumber="№" Teacher="Викладач" Auditory="Аудиторія" />
+        <LessonItem FirstColumn="№" SecondColumn="Предмет" ThirdColumn="Аудиторія" />
         <ScrollView>
-            {props.Items ? props.Items.map(function (item, i) {
+            {props.Items ? props.Items.map((item) => {
                 return (
-                    <TouchableOpacity key={item.Id} onPress={props.onItemPressed.bind(this,item.Id)}>
+                    <TouchableOpacity key={item.id} onPress={props.onItemPressed.bind(this, item.Id)} activeOpacity={0.7}>
                         <LessonItem
-                            LessonNumber={item.LessonNumber}
-                            Teacher={item.Teacher.Name + ' ' + item.Teacher.LastName}
-                            Auditory={item.Auditory.Number + ', ' + item.Auditory.Description} />
+                            FirstColumn={item.lessonNumber}
+                            SecondColumn={item.name}
+                            ThirdColumn={item.auditory.name} />
                     </TouchableOpacity>
                 )
             }) : ''}

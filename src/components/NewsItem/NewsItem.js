@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ImageBackground } from 'react-native'
 import backgroundImage from '../../assets/t1.png'
 import { BACK_COLOR } from '../../plugins/AppColors';
 import MainText from '../UI/MainText/MainText'
-const listItem = (props) => (
+const newsItem = (props) => (
   <View style={styles.listItem}>
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.title}>
@@ -46,4 +46,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default listItem;
+export default newsItem;

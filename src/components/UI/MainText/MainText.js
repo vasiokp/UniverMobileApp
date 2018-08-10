@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
     mainText: {
         color: TEXT_COLOR,
         fontFamily: 'Roboto',
-        fontSize:14
+        fontSize:14,
+        backgroundColor:'transparent'
     }
 })
 

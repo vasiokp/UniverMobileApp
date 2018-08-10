@@ -1,11 +1,11 @@
 import { GET_SCHEDULER } from "../actions/actionTypes";
-
+import schedule from '../fakeData/schedule';
 const initialState = [
 ]
 
 const les = [
   {
-    Id:1,
+    Id: 1,
     LessonNumber: 1,
     Teacher: {
       Id: 2,
@@ -19,7 +19,7 @@ const les = [
     }
   },
   {
-    Id:2,
+    Id: 2,
     LessonNumber: 2,
     Teacher: {
       Id: 1,
@@ -33,7 +33,7 @@ const les = [
     }
   },
   {
-    Id:3,
+    Id: 3,
     LessonNumber: 3,
     Teacher: {
       Id: 2,
@@ -47,7 +47,7 @@ const les = [
     }
   },
   {
-    Id:4,
+    Id: 4,
     LessonNumber: 4,
     Teacher: {
       Id: 2,
@@ -61,7 +61,7 @@ const les = [
     }
   },
   {
-    Id:5,
+    Id: 5,
     LessonNumber: 5,
     Teacher: {
       Id: 2,
@@ -75,7 +75,7 @@ const les = [
     }
   },
   {
-    Id:6,
+    Id: 6,
     LessonNumber: 6,
     Teacher: {
       Id: 2,
@@ -89,7 +89,7 @@ const les = [
     }
   },
   {
-    Id:7,
+    Id: 7,
     LessonNumber: 7,
     Teacher: {
       Id: 2,
@@ -106,7 +106,7 @@ const les = [
 ]
 const les2 = [
   {
-    Id:8,
+    Id: 8,
     LessonNumber: 1,
     Teacher: {
       Id: 5,
@@ -122,7 +122,7 @@ const les2 = [
 ]
 const les3 = [
   {
-    Id:9,
+    Id: 9,
     LessonNumber: 1,
     Teacher: {
       Id: 5,
@@ -136,7 +136,7 @@ const les3 = [
     }
   },
   {
-    Id:10,
+    Id: 10,
     LessonNumber: 2,
     Teacher: {
       Id: 5,
@@ -153,21 +153,22 @@ const les3 = [
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_SCHEDULER:
-      return [
-        ...state,
-        {
-          Date: '2018-08-08',
-          Lessons: les
-        },
-        {
-          Date: '2018-08-09',
-          Lessons: les2
-        },
-        {
-          Date: '2018-08-10',
-          Lessons: les3
-        }
-      ]
+      return schedule;
+    // return [
+    //   ...state,
+    //   {
+    //     Date: '2018-08-08',
+    //     Lessons: les
+    //   },
+    //   {
+    //     Date: '2018-08-09',
+    //     Lessons: les2
+    //   },
+    //   {
+    //     Date: '2018-08-10',
+    //     Lessons: les3
+    //   }
+    // ]
     default:
       return state;
   }

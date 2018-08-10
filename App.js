@@ -6,18 +6,20 @@ import ScheduleTabScreen from './src/screens/ScheduleTab/ScheduleTab';
 import LessonDetailsScreen from './src/screens/ScheduleTab/LessonDetails';
 import SettingsTabScreen from './src/screens/SettingsTab/SettingsTab';
 import NewsTabScreen from './src/screens/NewsTab/NewsTab';
+import NewsDetailsScreen from './src/screens/NewsTab/NewsDetails';
 
 import configureStore from './src/store/configureStore';
 
 const store = configureStore();
 
 // Register screens
-Navigation.registerComponent("UniverMobileApp.AuthScreen", () => AuthScreen, store, Provider);
+Navigation.registerComponent("UniverMobileApp.AuthScreen", () => AuthScreen); //, store, Provider);
 Navigation.registerComponent("UniverMobileApp.FirstTabScreen", () => FirstTabScreen, store, Provider);
 Navigation.registerComponent("UniverMobileApp.ScheduleTabScreen", () => ScheduleTabScreen, store, Provider);
-Navigation.registerComponent("UniverMobileApp.LessonDetailsScreen", () => LessonDetailsScreen);//, store, Provider);
+Navigation.registerComponent("UniverMobileApp.LessonDetailsScreen", () => LessonDetailsScreen); //, store, Provider);
 Navigation.registerComponent("UniverMobileApp.SettingsTabScreen", () => SettingsTabScreen, store, Provider);
 Navigation.registerComponent("UniverMobileApp.NewsTabScreen", () => NewsTabScreen, store, Provider);
+Navigation.registerComponent("UniverMobileApp.NewsDetailsScreen", () => NewsDetailsScreen); //, store, Provider);
 
 // Start a app
 Navigation.startSingleScreenApp({
