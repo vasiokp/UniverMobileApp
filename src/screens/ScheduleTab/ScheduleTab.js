@@ -39,7 +39,7 @@ class ScheduleTabScreen extends Component {
       screen: 'UniverMobileApp.LessonDetailsScreen',
       title: 'Заняття',
       passProps: {
-        lesson: this.GetCurrentSchedule().find(les => {
+        item: this.GetCurrentSchedule().find(les => {
           return les.id === id
         })
       }
@@ -94,7 +94,7 @@ class ScheduleTabScreen extends Component {
           />
           <View style={{ flex: 2 }}>
             <Table
-              HeaderColumns={[{ Text: '№', Width: 27 }, { Text: 'Предмет', Width: '60%' }, { Text: 'Аудиторія', Width: '33%' }]}
+              HeaderColumns={[{ Text: '№', Width: 27 }, { Text: 'Предмет', Width: '57%' }, { Text: 'Аудиторія',Width:'35%' }]}
               HeaderHeight={33}
               DisplayFields={['lessonNumber', 'name', 'auditoryName']}
               Items={this.GetCurrentSchedule()}
