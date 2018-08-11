@@ -1,11 +1,10 @@
 import React from 'react'
 import { View, Text, StyleSheet, ImageBackground } from 'react-native'
-import backgroundImage from '../../assets/t1.png'
 import { BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors';
 import MainText from '../UI/MainText/MainText'
 const newsItem = (props) => (
   <View style={styles.listItem}>
-    <ImageBackground source={backgroundImage} style={styles.background}>
+    <ImageBackground source={props.imgSource} style={styles.background}>
       <View style={styles.title}>
         <View style={styles.titleBlock}>
           <MainText><Text style={styles.titleText}>{props.title}</Text></MainText>
