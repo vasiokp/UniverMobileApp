@@ -1,5 +1,6 @@
 import { Navigation } from 'react-native-navigation';
 import { Provider } from 'react-redux';
+import { DARK_PRIMARY_COLOR } from "./src/plugins/AppColors";
 import AuthScreen from './src/screens/Auth/Auth';
 import FirstTabScreen from './src/screens/FirstTab/FirstTab';
 import ScheduleTabScreen from './src/screens/ScheduleTab/ScheduleTab';
@@ -26,7 +27,8 @@ Navigation.startSingleScreenApp({
   screen: {
     screen: "UniverMobileApp.AuthScreen",
     navigatorStyle: {
-      navBarHidden: true
+      navBarHidden: true,
+      statusBarColor:DARK_PRIMARY_COLOR
     }
   }
 });

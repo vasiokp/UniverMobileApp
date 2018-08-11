@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import NewsItem from '../../components/NewsItem/NewsItem'
 import PageLayout from '../../components/UI/PageLayout/PageLayout'
+import image from '../../assets/t1.png'
 
 class NewsTabScreen extends Component {
   ShowDetails = id => {
@@ -63,7 +64,7 @@ class NewsTabScreen extends Component {
           }]}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={this.ShowDetails.bind(this, item.Id)} activeOpacity={0.7}>
-              <NewsItem title={item.title} date={item.date} />
+              <NewsItem title={item.title} date={item.date} imgSource={image} />
             </TouchableOpacity>
           )}
           ItemSeparatorComponent = {this.FlatListItemSeparator}
