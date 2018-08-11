@@ -1,5 +1,5 @@
 import { ScrollView, TouchableOpacity } from 'react-native'
-import React, { Component } from 'react'
+import React from 'react'
 import Cell from '../UI/Cell/Cell'
 import Row from '../UI/Row/Row'
 import CustomBlock from '../UI/CustomBlock/CustomBlock';

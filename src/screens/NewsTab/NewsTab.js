@@ -15,6 +15,18 @@ class NewsTabScreen extends Component {
     }
     )
   }
+
+  FlatListItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 10,
+          width: "100%",
+          backgroundColor: "transparent",
+        }}
+      />
+    );
+  }
   render() {
     return (
       <PageLayout>
@@ -54,6 +66,7 @@ class NewsTabScreen extends Component {
               <NewsItem title={item.title} date={item.date} />
             </TouchableOpacity>
           )}
+          ItemSeparatorComponent = {this.FlatListItemSeparator}
         />
       </PageLayout>
     );
