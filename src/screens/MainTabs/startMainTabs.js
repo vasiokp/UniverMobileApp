@@ -45,8 +45,8 @@ const startTabs = () => {
         tabBarTranslucent: false,
         tabFontSize: 12,
         selectedTabFontSize: 14,
-        orientation: 'portrait',
-        tabFontFamily: 'Roboto'
+        orientation: 'portrait'
+        // tabFontFamily: 'Roboto'
       }
     })
   });

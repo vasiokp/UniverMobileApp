@@ -8,12 +8,14 @@ import LessonDetailsScreen from './src/screens/ScheduleTab/LessonDetails';
 import SettingsTabScreen from './src/screens/SettingsTab/SettingsTab';
 import NewsTabScreen from './src/screens/NewsTab/NewsTab';
 import NewsDetailsScreen from './src/screens/NewsTab/NewsDetails';
+import startMainTabs from './src/screens/MainTabs/startMainTabs'
 
 import configureStore from './src/store/configureStore';
 
 const store = configureStore();
 
 // Register screens
+Navigation.registerComponent("Today", () => AuthScreen); //, store, Provider);
 Navigation.registerComponent("UniverMobileApp.AuthScreen", () => AuthScreen); //, store, Provider);
 Navigation.registerComponent("UniverMobileApp.FirstTabScreen", () => FirstTabScreen, store, Provider);
 Navigation.registerComponent("UniverMobileApp.ScheduleTabScreen", () => ScheduleTabScreen, store, Provider);
@@ -22,13 +24,14 @@ Navigation.registerComponent("UniverMobileApp.SettingsTabScreen", () => Settings
 Navigation.registerComponent("UniverMobileApp.NewsTabScreen", () => NewsTabScreen, store, Provider);
 Navigation.registerComponent("UniverMobileApp.NewsDetailsScreen", () => NewsDetailsScreen); //, store, Provider);
 
+startMainTabs()
 // Start a app
-Navigation.startSingleScreenApp({
-  screen: {
-    screen: "UniverMobileApp.AuthScreen",
-    navigatorStyle: {
-      navBarHidden: true,
-      statusBarColor:DARK_PRIMARY_COLOR
-    }
-  }
-});
+// Navigation.startSingleScreenApp({
+//   screen: {
+//     screen: "UniverMobileApp.AuthScreen",
+//     navigatorStyle: {
+//       navBarHidden: true,
+//       statusBarColor:DARK_PRIMARY_COLOR
+//     }
+//   }
+// });

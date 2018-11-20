@@ -27,14 +27,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: TEXT_COLOR,
-    fontFamily: 'Roboto'
+    // fontFamily: 'Roboto'
   },
   titleBlock: {
     width: '35%'
   },
   value: {
     fontSize: 14,
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     color: TEXT_COLOR
   },
   valueBlock: {
