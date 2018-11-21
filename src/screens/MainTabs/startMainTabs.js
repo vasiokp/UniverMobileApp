@@ -1,52 +1,62 @@
-import { Navigation } from "react-native-navigation";
-import Icon from 'react-native-vector-icons/Foundation';
-import { PRIMARY_COLOR, TEXT_COLOR, DARK_PRIMARY_COLOR, SELECTED_TAB_COLOR } from "../../plugins/AppColors";
+import { Platform } from 'react-native'
+import { Navigation } from 'react-native-navigation'
+import Icon from 'react-native-vector-icons/Ionicons'
+import { PRIMARY_COLOR, TEXT_COLOR, DARK_PRIMARY_COLOR, SELECTED_TAB_COLOR } from "../../plugins/AppColors"
+
+const iconPrefix = Platform.OS === 'ios' ? 'ios' : 'md'
+const iconSize = 28
+
 const startTabs = () => {
   Promise.all([
-    Icon.getImageSource("torsos-all"),
-    Icon.getImageSource("clipboard"),
-    Icon.getImageSource("widget"),
-    Icon.getImageSource("clipboard-notes")
+    Icon.getImageSource(iconPrefix + '-today', iconSize),
+    Icon.getImageSource(iconPrefix + '-calendar', iconSize),
+    Icon.getImageSource(iconPrefix + '-school', iconSize),
+    Icon.getImageSource(iconPrefix + '-cog', iconSize)
   ]).then(sources => {
     Navigation.startTabBasedApp({
       tabs: [
         {
-          screen: "UniverMobileApp.ScheduleTabScreen",
+          screen: "ScheduleTab",
           title: "Розклад",
           label: 'Розклад',
-          icon: sources[1]
-        },
-        {
-          screen: "UniverMobileApp.FirstTabScreen",
-          title: "first tab",
-          label: 'First Tab',
           icon: sources[0]
         },
         {
+          screen: "CalendarTab",
+          title: "Календар",
+          label: 'Календар',
+          icon: sources[1]
+        },
+        {
           screen: "UniverMobileApp.SettingsTabScreen",
-          title: "Settings",
-          label: 'Settings',
+          title: "Новини",
+          label: 'Новини',
           icon: sources[2]
         }, {
           screen: "UniverMobileApp.NewsTabScreen",
-          title: "Новини",
-          label: 'Новини',
+          title: "Налаштування",
+          label: 'Налаштування',
           icon: sources[3]
         }
       ],
       appStyle: {
-        tabBarBackgroundColor: PRIMARY_COLOR,// '#de793e',
+        // common
+        orientation: 'portrait',
+        navBarBackgroundColor: PRIMARY_COLOR,
+        tabBarHideShadow: false,
+        tabBarTranslucent: false,
+
+        // Android
+        tabBarBackgroundColor: PRIMARY_COLOR,
         tabBarButtonColor: TEXT_COLOR,
         tabBarSelectedButtonColor: SELECTED_TAB_COLOR,
         statusBarColor: DARK_PRIMARY_COLOR,
-        navBarBackgroundColor: PRIMARY_COLOR,
-        tabBarHideShadow: true,
         navBarTitleTextCentered: true,
-        tabBarTranslucent: false,
-        tabFontSize: 12,
-        selectedTabFontSize: 14,
-        orientation: 'portrait'
-        // tabFontFamily: 'Roboto'
+      },
+      tabsStyle: {
+        // iOS
+        tabBarSelectedButtonColor: PRIMARY_COLOR,
+        tabBarSelectedLabelColor: PRIMARY_COLOR
       }
     })
   });

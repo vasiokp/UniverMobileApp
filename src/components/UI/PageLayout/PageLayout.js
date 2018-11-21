@@ -1,6 +1,6 @@
 import React from 'react'
 import { ImageBackground } from 'react-native'
-import backgroundImage from '../../../assets/backgroundImage.png'
+import backgroundImage from '../../../assets/backgroundImage.png' // 'assets/backgroundImage.png'
 
 const pageLayout = (props) => (
     <ImageBackground source={backgroundImage} resizeMode="stretch" style={{ width: '100%', height: '100%' }}>
