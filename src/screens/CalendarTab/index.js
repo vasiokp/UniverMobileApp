@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { connect } from 'react-redux';
-import { getScheduler } from '../../store/actions/index'
+import { getSchedule } from '../../store/actions/index'
 import { TEXT_COLOR, TODAY_TEXT_COLOR, PRIMARY_COLOR, BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors';
 import Table from '../../components/Table/Table'
 import PageLayout from '../../components/UI/PageLayout/PageLayout'
@@ -23,7 +23,7 @@ class ScheduleTabScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.getSchedule(new Date().toDateString());
+    // this.props.getSchedule(new Date().toDateString());
   }
 
   onSelectDay(date) {
@@ -93,14 +93,14 @@ class ScheduleTabScreen extends Component {
             }}
           />
           <View style={{ flex: 2 }}>
-            <Table
+            {/* <Table
               HeaderColumns={[{ Text: '№', Width: 27 }, { Text: 'Предмет', Width: '57%' }, { Text: 'Аудиторія',Width:'35%' }]}
               HeaderHeight={33}
               DisplayFields={['lessonNumber', 'name', 'auditoryName']}
               Items={this.GetCurrentSchedule()}
               RowHeight={33}
               onItemPressed={this.ShowDetails}
-            />
+            /> */}
           </View>
         </View>
       </PageLayout>
@@ -110,7 +110,7 @@ class ScheduleTabScreen extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getSchedule: (date) => dispatch(getScheduler(date))
+    getSchedule: (date) => dispatch(getSchedule(date))
   };
 };
 

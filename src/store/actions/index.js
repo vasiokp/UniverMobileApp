@@ -1,1 +1,1 @@
-export { getScheduler } from './scheduler';
+export { getSchedule } from './schedule'

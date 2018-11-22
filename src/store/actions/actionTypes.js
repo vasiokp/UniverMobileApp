@@ -1,1 +1,1 @@
-export const GET_SCHEDULER = 'GET_SCHEDULER'
+export const GET_SCHEDULE = 'GET_SCHEDULE'
