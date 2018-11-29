@@ -1,53 +1,97 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { BLOCK_BORDER_COLOR } from '../../../plugins/AppColors'
+import classTypes from '../../../plugins/classTypes'
 
-const scheduleListItem = (props) => (
-  <View style={styles.listItem}>
-    <Text>{props.LessonNumber}</Text>
-    {/* <ImageBackground source={props.imgSource} style={styles.background}>
-      <View style={styles.title}>
-        <View style={styles.titleBlock}>
-          <MainText><Text style={styles.titleText}>{props.title}</Text></MainText>
-        </View>
-        <View style={styles.dateBlock}>
-          <MainText>{props.date}</MainText>
+const scheduleListItem = (props) => {
+  const isCurrent = false
+  const isNext = props.LessonNumber === 1
+  return (
+    <View style={[styles.listItem, isCurrent ? styles.currentListItem : {} ]}>
+      <View style={[ styles.timeBlock, { borderColor: classTypes.getColor('CLASS') }]}>
+        { (isCurrent || isNext) ? (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <View style={isCurrent ? styles.currentLabel : styles.nextLabel}>
+              <Text style={styles.labelText}>{isCurrent ? 'зараз' : 'наст. '}</Text>
+            </View>
+          </View>
+         ) : null }
+        <View style={{ justifyContent: 'center', flex: 1 }}>
+          <Text style={[ styles.timeText, styles.startTimeText ]}>11:11</Text>
+          { (!isCurrent && !isNext) ? (
+            <View style={{ height: 3 }}></View>
+          ) : null }
+          <Text style={[ styles.timeText, styles.endTimeText ]}>55:55</Text>
         </View>
       </View>
-    </ImageBackground> */}
-  </View>
-);
+      <View style={styles.mainBlock}>
+        <Text style={styles.title} numberOfLines={1}>{props.SubjectName}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <Text style={styles.teacher}>Сопронюк Т. М.</Text>
+          <Text style={styles.building}>корп. 1 ауд. 39</Text>
+        </View>
+      </View>
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   listItem: {
     width: '100%',
-    height: 50,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: BLOCK_BORDER_COLOR,
+    height: 60,
+    flexDirection: 'row',
+    paddingHorizontal: 7,
+    paddingVertical: 7,
     backgroundColor: 'rgba(255, 255, 255, 0.8)'
+  },
+  currentListItem: {
+    backgroundColor: '#fff'
+  },
+  timeBlock: {
+    width: 52,
+    paddingRight: 7,
+    borderRightWidth: 2
+  },
+  timeText: {
+    textAlign: 'right',
+    fontSize: 12
+  },
+  startTimeText: {
+    color: '#222'
+  },
+  endTimeText: {
+    color: '#777'
+  },
+  labelText: {
+    textAlign: 'center',
+    fontSize: 11,
+    color: '#fff',
+    paddingHorizontal: 4
+  },
+  currentLabel: {
+    backgroundColor: 'rgb(83, 215, 105)',
+    borderRadius: 5
+  },
+  nextLabel: {
+    backgroundColor: '#afafaf',
+    borderRadius: 5
+  },
+  mainBlock: {
+    paddingHorizontal: 8,
+    flex: 1,
+    justifyContent: 'space-between'
+  },
+  title: {
+    fontSize: 17,
+    paddingTop: 2
+  },
+  teacher: {
+    fontSize: 13,
+    color: '#777'
+  },
+  building: {
+    fontSize: 13,
+    color: '#777'
   }
-  // background: {
-  //   width: '100%',
-  //   height: '100%',
-  //   justifyContent: 'flex-end'
-  // },
-  // title: {
-  //   backgroundColor: BACK_COLOR,
-  //   height: '40%',
-  //   padding: 7
-  // },
-  // titleText: {
-  //   fontSize: 20,
-  //   fontWeight: 'bold'
-  // },
-  // dateBlock: {
-  //   height: 30,
-  //   alignItems: 'flex-end'
-  // },
-  // titleBlock: {
-  //   height: '80%'
-  // }
 })
 
 export default scheduleListItem

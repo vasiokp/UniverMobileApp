@@ -1,55 +1,72 @@
 import React from 'react'
-import { View, FlatList, SectionList, TouchableOpacity, Text } from 'react-native'
+import { 
+  View,
+  SectionList,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator
+} from 'react-native'
+import { groupBy, capitalize } from '../../../utils'
+import TextButton from '../../../components/UI/TextButton'
 import ScheduleListItem from './ScheduleListItem'
-
-const FlatListItemSeparator = () => {
-  return (
-    <View
-      style={{
-        height: 10,
-        width: "100%",
-        backgroundColor: "transparent",
-      }}
-    />
-  )
-}
+import moment from 'moment'
 
 export default props => {
-  const data = props.data.map((item, index) => {
+  const schedules = props.schedule.items.map(item => {
     return {
-      ...item,
-      key: index.toString()
+      item: item,
+      date: moment(item.Date).date()
     }
   })
-  console.log(data)
+  const groups = groupBy(schedules, 'date')
+  const sections = Object.keys(groups).map(key => {
+    let title = capitalize(moment(groups[key][0].item.Date).format('dddd, D MMM'))
+    let isToday = moment().date().toString() === key
+    let data = groups[key].map((group, index) => {
+      return {
+        ...group.item,
+        key: index.toString()
+      }
+    })
+    data.sort((a, b) => a.LessonNumber - b.LessonNumber)
+    return { title, data, isToday }
+  })
   return (
-    // <FlatList data={data}
-    //   renderItem={({ item }) => (
-    //     <TouchableOpacity>
-    //       <ScheduleListItem {...item}></ScheduleListItem>
-    //     </TouchableOpacity>
-    //   )}
-    //   ItemSeparatorComponent = {FlatListItemSeparator}>
-    // </FlatList>
-      <SectionList style={{backgroundColor: 'rgba(255, 255, 255, 0.7)'}} stickySectionHeadersEnabled={false} sections={[
-        {title: 'SECTION 1', data: data},
-        {title: 'SECTION 2', data: data},
-        {title: 'SECTION 3', data: data},
-      ]}
-        renderItem={({item, index, section}) => (
-          <TouchableOpacity>
-            <ScheduleListItem {...item}></ScheduleListItem>
-          </TouchableOpacity>
-        )}
-        renderSectionHeader={({section}) => (
-          <View style={{
-            paddingTop: 40,
-            paddingHorizontal: 20,
-            paddingBottom: 5
-          }}>
-            <Text>{section.title}</Text>
-          </View>
-        )}>
-      </SectionList>
+    <SectionList stickySectionHeadersEnabled={false}
+      sections={sections}
+      renderItem={({ item }) => (
+        <TouchableOpacity activeOpacity={0.6} onPress={() => props.openDetails(item.Id)}>
+          <ScheduleListItem {...item}></ScheduleListItem>
+        </TouchableOpacity>
+      )}
+      renderSectionHeader={({ section }) => (
+        <View style={{
+          paddingTop: 20,
+          paddingHorizontal: 20,
+          paddingBottom: 3
+        }}>
+          <Text style={{ color: section.isToday ? '#222' : '#666' }}>
+            {section.title}
+          </Text>
+        </View>
+      )}
+      onRefresh={props.refresh}
+      refreshing={props.schedule.loading}
+      ItemSeparatorComponent={() => (
+        <View style={{
+          height: 1
+        }}/>
+      )}
+      ListFooterComponent={() => (
+        <View style={{
+          paddingTop: 15,
+          paddingBottom: 20,
+          alignItems: 'center'
+        }}>{props.schedule.extraLoading ?
+          <ActivityIndicator style={{ marginTop: 10 }} size="small" color="#555" /> :
+          !props.schedule.extraError ? <TextButton title="Більше" onPress={props.getMore}/> : null }
+        </View>
+      )}>
+    </SectionList>
   )
 }
