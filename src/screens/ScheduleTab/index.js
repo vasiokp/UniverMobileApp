@@ -2,15 +2,10 @@ import React, { Component } from 'react'
 import { View } from 'react-native'
 import { connect } from 'react-redux'
 import { getSchedule, getExtraSchedule } from '../../store/actions/index'
-// import { TEXT_COLOR, TODAY_TEXT_COLOR, PRIMARY_COLOR, BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors';
 import moment from 'moment'
 import LoadingView from '../../components/UI/LoadingView'
 import PageLayout from '../../components/UI/PageLayout/PageLayout'
 import ScheduleList from './components/ScheduleList'
-
-// function GetDateString(date) {
-//   return date ? date.substring(0, 10) : new Date().toISOString().substring(0, 10)
-// }
 
 class ScheduleTabScreen extends Component {
   constructor() {
@@ -50,17 +45,6 @@ class ScheduleTabScreen extends Component {
   componentDidMount() {
     this.getSchedule()
   }
-
-  // GetCurrentSchedule() {
-  //   let result = [];
-  //   if (this.props.schedule.length > 0) {
-  //     this.props.schedule.map((item) => {
-  //       if (GetDateString(item.date) === this.state.Date)
-  //         result.push(item)
-  //     })
-  //   }
-  //   return result;
-  // }
 
   render() {
     return (
