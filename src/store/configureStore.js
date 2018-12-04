@@ -3,11 +3,13 @@ import thunkMiddleware from 'redux-thunk'
 import scheduleReducer from './reducers/schedule'
 import scheduleTypeReducer from './reducers/scheduleType'
 import scheduleDetailsReducer from './reducers/scheduleDetails'
+import newsReducer from './reducers/news'
 
 const rootReducer = combineReducers({
 	schedule: scheduleReducer,
 	scheduleTypes: scheduleTypeReducer,
-	scheduleDetails: scheduleDetailsReducer
+	scheduleDetails: scheduleDetailsReducer,
+	news: newsReducer
 })
 
 let composeEnhancers = compose
