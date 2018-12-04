@@ -21,19 +21,19 @@ const startTabs = () => {
           label: 'Розклад',
           icon: sources[0]
         },
+        // {
+        //   screen: "CalendarTab",
+        //   title: "Календар",
+        //   label: 'Календар',
+        //   icon: sources[1]
+        // },
         {
-          screen: "CalendarTab",
-          title: "Календар",
-          label: 'Календар',
-          icon: sources[1]
-        },
-        {
-          screen: "UniverMobileApp.SettingsTabScreen",
+          screen: "UniverMobileApp.NewsTabScreen",
           title: "Новини",
           label: 'Новини',
           icon: sources[2]
         }, {
-          screen: "UniverMobileApp.NewsTabScreen",
+          screen: "UniverMobileApp.SettingsTabScreen",
           title: "Налаштування",
           label: 'Налаштування',
           icon: sources[3]
@@ -43,6 +43,7 @@ const startTabs = () => {
         // common
         orientation: 'portrait',
         navBarBackgroundColor: PRIMARY_COLOR,
+        // navBarButtonColor: '#555',
         tabBarHideShadow: false,
         tabBarTranslucent: false,
 

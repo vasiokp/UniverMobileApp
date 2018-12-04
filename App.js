@@ -4,8 +4,6 @@ import { Provider } from 'react-redux'
 import AuthScreen from './src/screens/Auth/Auth'
 import ScheduleTab from './src/screens/ScheduleTab'
 import ScheduleDetails from './src/screens/ScheduleTab/components/ScheduleDetails'
-import CalendarTab from './src/screens/CalendarTab'
-import LessonDetailsScreen from './src/screens/CalendarTab/LessonDetails'
 import SettingsTabScreen from './src/screens/SettingsTab/SettingsTab'
 import NewsTabScreen from './src/screens/NewsTab/NewsTab'
 import NewsDetailsScreen from './src/screens/NewsTab/NewsDetails'
@@ -23,8 +21,6 @@ const store = configureStore();
 Navigation.registerComponent("UniverMobileApp.AuthScreen", () => AuthScreen) //, store, Provider);
 Navigation.registerComponent("ScheduleTab", () => ScheduleTab, store, Provider)
 Navigation.registerComponent("ScheduleDetails", () => ScheduleDetails, store, Provider)
-Navigation.registerComponent("CalendarTab", () => CalendarTab, store, Provider)
-Navigation.registerComponent("UniverMobileApp.LessonDetailsScreen", () => LessonDetailsScreen) //, store, Provider);
 Navigation.registerComponent("UniverMobileApp.SettingsTabScreen", () => SettingsTabScreen, store, Provider)
 Navigation.registerComponent("UniverMobileApp.NewsTabScreen", () => NewsTabScreen, store, Provider)
 Navigation.registerComponent("UniverMobileApp.NewsDetailsScreen", () => NewsDetailsScreen) //, store, Provider);
