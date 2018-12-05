@@ -121,7 +121,8 @@ class ScheduleDetails extends Component {
             template: () => (
               <TextInput placeholder="Ваш текст..."
                 height={120}
-                color="#333"
+                underlineColorAndroid="#fff"
+                style={{color:'#333'}}
                 fontWeight="300"
                 fontSize={16}
                 multiline={true} />

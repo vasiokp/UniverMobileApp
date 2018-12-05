@@ -15,8 +15,8 @@ const NewsDetails = (props) => {
   return (
     <PageLayout>
       <CustomBlock>
-        <RowView Title="Новина" Value="Огого" />
-        <RowView Title="Опис" Value="Ваще" />
+        <RowView Title="Новина" Value={props.news.Text} />
+        <RowView Title="Опис" Value={props.news.Text} />
       </CustomBlock>
     </PageLayout>
   );
