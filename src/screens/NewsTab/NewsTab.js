@@ -34,10 +34,14 @@ class NewsTabScreen extends Component {
   componentDidMount () {
     this.props.getNews()
   }
+
+  keyExtractor = (item) => item.Id.toString();
+
   render() {
     return (
       <PageLayout>
         <FlatList data={this.props.news.items}
+          keyExtractor={this.keyExtractor}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={this.ShowDetails.bind(this, item.Id)} activeOpacity={0.7}>
               <NewsItem title={item.Text} date={'2018-12-04'} imgSource={image} />
