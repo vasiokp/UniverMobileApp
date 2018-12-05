@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, SectionList, Text, TextInput } from 'react-native'
 import { connect } from 'react-redux'
-// import { getSchedule, getExtraSchedule } from '../../store/actions/index'
+import { fetchScheduleDetails } from  '../../../store/actions/index'
 import moment from 'moment'
 // import LoadingView from '../../components/UI/LoadingView'
 import classTypes from '../../../plugins/classTypes'
@@ -21,12 +21,12 @@ class ScheduleDetails extends Component {
   }
 
   componentDidMount() {
-    // this.getSchedule()
+    this.props.fetchScheduleDetails(this.props.Id)
   }
 
   render() {
     const scheduleType = this.props.scheduleTypes.items.find(st => st.Name === this.props.ScheduleTypeName)
-    console.log(scheduleType)
+    console.log(this.props.scheduleDetails.items)
     const sections = [
       {
         title: `${this.props.LessonNumber} пара`,
@@ -172,14 +172,14 @@ class ScheduleDetails extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // getSchedule: (start, end, refresh) => dispatch(getSchedule(start, end, refresh)),
-    // getExtraSchedule: () => dispatch(getExtraSchedule())
+    fetchScheduleDetails: (id, refresh = false) => dispatch(fetchScheduleDetails(id, refresh))
   }
 }
 
 const mapStateToProps = state => {
   return {
-    scheduleTypes: state.scheduleTypes
+    scheduleTypes: state.scheduleTypes,
+    scheduleDetails: state.scheduleDetails
   }
 }
 

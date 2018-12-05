@@ -27,11 +27,9 @@ const getWeekEdges = date => {
 
 const emptyDate = () => (
   <View style={{
-    height: 100,
+    height: 60,
     paddingLeft: 20,
-    padding: 20
-    // alignItems: 'center',
-    // justifyContent: 'center'
+    paddingTop: 10
   }}>
     <Text style={{
       color: '#bbb',

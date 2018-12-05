@@ -4,7 +4,7 @@ import { groupBy } from '../../utils'
 import moment from 'moment'
 import { FETCH_SCHEDULE } from "./actionTypes"
 
-const groupId = 1
+const groupId = 49
 
 const dateFormat = 'YYYY-MM-DD'
 
@@ -19,6 +19,9 @@ const projectSchedule = (start, end, items) => {
 	for (let date = moment(start, dateFormat); date.isSameOrBefore(moment(end, dateFormat), 'date'); date.add(1, 'd')) {
 		const strDate = date.format(dateFormat)
 		schedule[strDate] = groups[strDate] || []
+		if (schedule[strDate]) {
+			schedule[strDate].sort((a, b) => a.LessonNumber - b.LessonNumber)
+		}
 	}
 	return schedule
 }

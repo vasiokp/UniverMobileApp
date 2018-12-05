@@ -11,7 +11,7 @@ export const fetchScheduleTypes = (refresh) => {
 				if (cachedData) {
 					dispatch({
 						type: FETCH_SCHEDULE_TYPES.SUCCESS,
-						payload: cachedData
+						payload: JSON.parse(cachedData)
 					})
 				}
 			} catch (err) {
