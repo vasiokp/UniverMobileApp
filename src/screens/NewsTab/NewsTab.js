@@ -35,7 +35,7 @@ class NewsTabScreen extends Component {
     this.props.getNews()
   }
 
-  keyExtractor = (item) => item.Id.toString();
+  keyExtractor = (item) => item.Id ? item.Id.toString() : new Date().getTime().toString();
 
   render() {
     return (
