@@ -1,10 +1,11 @@
 const buildType = type => {
   return {
     PENDING: `${type}_PENDING`,
+    REFRESHING: `${type}_REFRESHING`,
     SUCCESS: `${type}_SUCCESS`,
     ERROR: `${type}_ERROR`
   }
 }
 
-export const GET_SCHEDULE = buildType('GET_SCHEDULE')
-export const GET_EXTRA_SCHEDULE = buildType('GET_EXTRA_SCHEDULE')
+export const FETCH_SCHEDULE = buildType('FETCH_SCHEDULE')
+export const FETCH_SCHEDULE_TYPES = buildType('FETCH_SCHEDULE_TYPES')

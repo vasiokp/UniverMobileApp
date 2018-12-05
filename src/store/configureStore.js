@@ -1,9 +1,11 @@
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import scheduleReducer from './reducers/schedule'
+import scheduleTypeReducer from './reducers/scheduleType'
 
 const rootReducer = combineReducers({
-	schedule: scheduleReducer
+	schedule: scheduleReducer,
+	scheduleTypes: scheduleTypeReducer
 })
 
 let composeEnhancers = compose

@@ -4,13 +4,20 @@ import { connect } from 'react-redux'
 // import { getSchedule, getExtraSchedule } from '../../store/actions/index'
 import moment from 'moment'
 // import LoadingView from '../../components/UI/LoadingView'
-import PageLayout from '../../../components/UI/PageLayout/PageLayout'
 import classTypes from '../../../plugins/classTypes'
 import { capitalize } from '../../../utils'
 
 class ScheduleDetails extends Component {
-  constructor() {
-    super();
+  static navigatorButtons = {
+    rightButtons: [{
+      title: 'Зберегти',
+      id: 'save',
+      disabled: true
+    }]
+  }
+
+  constructor(props) {
+    super(props)
   }
 
   componentDidMount() {
@@ -18,46 +25,90 @@ class ScheduleDetails extends Component {
   }
 
   render() {
+    const scheduleType = this.props.scheduleTypes.items.find(st => st.Name === this.props.ScheduleTypeName)
+    console.log(scheduleType)
     const sections = [
       {
+        title: `${this.props.LessonNumber} пара`,
         data: [
           {
             key: 'title',
             template: () => (
-              <Text style={{ fontSize: 20 }} numberOfLines={3}>Диференціальні рівняння</Text>
+              <Text style={{
+                fontSize: 20,
+                fontWeight: '300',
+                paddingTop: 7
+              }} numberOfLines={3}>
+                {this.props.SubjectName}
+              </Text>
             )
           },
           {
             key: 'type',
             template: () => (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: classTypes.getColor('CLASS') }}></View>
-                <Text style={{ marginLeft: 10 }}>Лекція</Text>
+                <View style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  backgroundColor: classTypes.getColor(this.props.ScheduleTypeName)
+                }}/>
+                <Text style={{
+                  marginLeft: 10,
+                  fontWeight: '300',
+                  fontSize: 13,
+                  color: '#555'
+                }}>
+                  {scheduleType ? scheduleType.Description : ''}
+                </Text>
               </View>
             )
           },
           {
             key: 'time',
             template: () => (
-              <Text>08:20 – 09:40</Text>
+              <Text style={{
+                paddingTop: 10,
+                fontWeight: '300'
+              }}>
+                {this.props.Start.substr(0, 5)} - {this.props.End.substr(0, 5)}
+              </Text>
             )
           },
           {
             key: 'date',
             template: () => (
-              <Text>{capitalize(moment().format('dddd, D MMMM YYYY'))}</Text>
+              <Text style={{
+                fontWeight: '300',
+                fontSize: 13,
+                color: '#666',
+                marginTop: -5
+              }}>
+                {capitalize(moment(this.props.Date, 'YYYY-MM-DD').format('dddd, D MMMM YYYY'))}
+              </Text>
             )
           },
           {
             key: 'teacher',
             template: () => (
-              <Text>Сопронюк Тетяна Миколаївна</Text>
+              <Text style={{
+                paddingTop: 10,
+                fontWeight: '300'
+              }}>
+                {this.props.Teacher}
+              </Text>
             )
           },
           {
             key: 'building',
             template: () => (
-              <Text>1 корпус, 39 аудиторія</Text>
+              <Text style={{
+                fontWeight: '300',
+                color: '#666',
+                paddingBottom: 10
+              }}>
+                {this.props.BuildingName ? `${this.props.BuildingName} корпус` : ''}, {this.props.AuditoryName ? `${this.props.AuditoryName} аудиторія` : ''}
+              </Text>
             )
           }
         ]
@@ -68,9 +119,10 @@ class ScheduleDetails extends Component {
           {
             key: 'note',
             template: () => (
-              <TextInput placeholder="Нотатки"
+              <TextInput placeholder="Ваш текст..."
                 height={120}
                 color="#333"
+                fontWeight="300"
                 fontSize={16}
                 multiline={true} />
             )
@@ -79,39 +131,41 @@ class ScheduleDetails extends Component {
       }
     ]
     return (
-      <PageLayout>
-        <View style={{backgroundColor: 'rgba(255, 255, 255, 0.7)', height: '100%'}}>
-          <SectionList stickySectionHeadersEnabled={false}
-            sections={sections}
-            renderItem={({ item }) => (
-              <View style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', padding: 10 }}>
-                {item.template()}
-              </View>
-            )}
-            renderSectionHeader={({ section }) => (
-              <View style={{
-                paddingTop: 20,
-                paddingHorizontal: 20,
-                paddingBottom: 3
-              }}>
-                <Text style={{ color: '#666' }}>
-                  {section.title}
-                </Text>
-              </View>
-            )}
-            onRefresh={() => {}}
-            refreshing={false}
-            ItemSeparatorComponent={() => (
-              <View style={{
-                height: 1
-              }}/>
-            )}
-            ListFooterComponent={() => (
-              <View style={{}}></View>
-            )}>
-          </SectionList>
-        </View>
-      </PageLayout>
+      <View style={{backgroundColor: '#f4f4f4', height: '100%'}}>
+        <SectionList stickySectionHeadersEnabled={false}
+          sections={sections}
+          renderItem={({ item }) => (
+            <View style={{
+              backgroundColor: '#fff',
+              paddingHorizontal: 20,
+              paddingVertical: 5
+            }}>
+              {item.template()}
+            </View>
+          )}
+          renderSectionHeader={({ section }) => (
+            <View style={{
+              paddingTop: 20,
+              paddingHorizontal: 20,
+              paddingBottom: 3
+            }}>
+              <Text style={{ color: '#7a92a5', fontWeight: '300' }}>
+                {section.title}
+              </Text>
+            </View>
+          )}
+          onRefresh={() => {}}
+          refreshing={false}
+          ItemSeparatorComponent={() => (
+            <View style={{
+              height: 0
+            }}/>
+          )}
+          ListFooterComponent={() => (
+            <View style={{}}></View>
+          )}>
+        </SectionList>
+      </View>
     )
   }
 }
@@ -125,7 +179,7 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
   return {
-    // schedule: state.schedule
+    scheduleTypes: state.scheduleTypes
   }
 }
 

@@ -3,31 +3,20 @@ import { View, Text, StyleSheet } from 'react-native'
 import classTypes from '../../../plugins/classTypes'
 
 const scheduleItem = (props) => {
-  const isCurrent = false
-  const isNext = props.lessonNumber === -1
   return (
-    <View style={[styles.listItem, isCurrent ? styles.currentListItem : {} ]}>
-      <View style={[ styles.timeBlock, { borderColor: classTypes.getColor('CLASS') }]}>
-        { (isCurrent || isNext) ? (
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-            <View style={isCurrent ? styles.currentLabel : styles.nextLabel}>
-              <Text style={styles.labelText}>{isCurrent ? 'зараз' : 'наст. '}</Text>
-            </View>
-          </View>
-         ) : null }
+    <View style={styles.listItem}>
+      <View style={[ styles.timeBlock, { borderColor: classTypes.getColor(props.ScheduleTypeName) }]}>
         <View style={{ justifyContent: 'center', flex: 1 }}>
-          <Text style={[ styles.timeText, styles.startTimeText ]}>11:11</Text>
-          { (!isCurrent && !isNext) ? (
-            <View style={{ height: 3 }}></View>
-          ) : null }
-          <Text style={[ styles.timeText, styles.endTimeText ]}>55:55</Text>
+          <Text style={[ styles.timeText, styles.startTimeText ]}>{props.Start.substr(0, 5)}</Text>
+          <View style={{ height: 3 }}></View>
+          <Text style={[ styles.timeText, styles.endTimeText ]}>{props.End.substr(0, 5)}</Text>
         </View>
       </View>
       <View style={styles.mainBlock}>
-        <Text style={styles.title} numberOfLines={1}>{props.subjectName}</Text>
+        <Text style={styles.title} numberOfLines={1}>{props.SubjectName}</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <Text style={styles.teacher}>Сопронюк Т. М.</Text>
-          <Text style={styles.building}>корп. 1 ауд. 39</Text>
+          <Text style={styles.teacher}>{props.Teacher}</Text>
+          <Text style={styles.building}>{props.BuildingName ? `корп. ${props.BuildingName}` : ''} {props.AuditoryName ? `ауд. ${props.AuditoryName}` : ''}</Text>
         </View>
       </View>
     </View>
@@ -44,9 +33,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 0.5,
     borderColor: '#ddd'
-  },
-  currentListItem: {
-    backgroundColor: '#fff'
   },
   timeBlock: {
     width: 52,
@@ -72,7 +58,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4
   },
   currentLabel: {
-    backgroundColor: 'rgb(83, 215, 105)',
+    backgroundColor: '#F89554',
     borderRadius: 5
   },
   nextLabel: {
