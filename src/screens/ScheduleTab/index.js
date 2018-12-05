@@ -1,82 +1,187 @@
 import React, { Component } from 'react'
-import { View, FlatList, TouchableOpacity } from 'react-native'
-// import { Calendar } from 'react-native-calendars'
+import { View, Text, TouchableOpacity } from 'react-native'
+import { Agenda, LocaleConfig } from 'react-native-calendars'
 import { connect } from 'react-redux'
-import { getSchedule } from '../../store/actions/index'
-// import { TEXT_COLOR, TODAY_TEXT_COLOR, PRIMARY_COLOR, BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors';
-import Table from '../../components/Table/Table'
-import PageLayout from '../../components/UI/PageLayout/PageLayout'
-import ScheduleList from './components/ScheduleList'
+import { fetchSchedule, fetchScheduleTypes } from '../../store/actions/index'
+import moment from 'moment'
+import ScheduleDay from './components/ScheduleDay'
+import ScheduleItem from './components/ScheduleItem'
 
-function GetDateString(date) {
-  return date ? date.substring(0, 10) : new Date().toISOString().substring(0, 10)
+LocaleConfig.locales['uk'] = {
+  monthNames: ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'],
+  monthNamesShort: ['Січ.','Лют.','Берез.','Квіт.','Трав.','Черв.','Лип.','Серп.','Верес.','Жовт.','Листоп.','Груд.'],
+  dayNames: ['Неділя','Понеділок','Вівторок','Середа','Четвер','П‘ятниця','Субота'],
+  dayNamesShort: ['Нд.','Пн.','Вт.','Ср.','Чт.','Пт.','Сб.']
 }
 
-class ScheduleTabScreen extends Component {
-  constructor() {
-    super();
+LocaleConfig.defaultLocale = 'uk'
+
+const dateFormat = 'YYYY-MM-DD'
+
+const getWeekEdges = date => {
+  return {
+    monday: moment(date).add(-moment().day() + 1, 'd'),
+    sunday: moment(date).add(7 - moment().day(), 'd')
+  }
+}
+
+const emptyDate = () => (
+  <View style={{
+    height: 100,
+    paddingLeft: 20,
+    padding: 20
+    // alignItems: 'center',
+    // justifyContent: 'center'
+  }}>
+    <Text style={{
+      color: '#bbb',
+      fontWeight: '300'
+    }}>
+      Немає занять
+    </Text>
+  </View>
+)
+
+class CalendarTab extends Component {
+  static navigatorButtons = {
+    rightButtons: [{
+      title: 'Сьогодні',
+      id: 'today'
+    }]
+  }
+
+  constructor(props) {
+    super(props)
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
     this.state = {
-      Date: GetDateString(),
-      markedDay: {
-        [GetDateString()]: { selected: true }
+      selectedDate: moment().format(dateFormat),
+    }
+  }
+
+  onNavigatorEvent(event) {
+    if (event.type == 'NavBarButtonPress') {
+      if (event.id == 'today') {
+        this.agenda.chooseDay(moment().format(dateFormat))
       }
     }
   }
 
   componentDidMount() {
-    this.props.getSchedule(new Date().toDateString());
+    this.agenda.chooseDay(moment().format(dateFormat))
+    this.props.fetchScheduleTypes()
   }
 
-  onSelectDay(date) {
-    const markedDay = { [date.dateString]: { selected: true } }
-    this.setState({
-      Date: date.dateString,
-      markedDay: markedDay
-    });
-  }
-
-  ShowDetails = id => {
+  openDetails(item) {
     this.props.navigator.push({
-      screen: 'UniverMobileApp.LessonDetailsScreen',
-      title: 'Заняття',
-      passProps: {
-        item: this.GetCurrentSchedule().find(les => {
-          return les.id === id
-        })
-      }
+      screen: 'ScheduleDetails',
+      title: 'Подробиці',
+      passProps: { ...item }
     })
   }
 
-  GetCurrentSchedule() {
-    let result = [];
-    if (this.props.schedule.length > 0) {
-      this.props.schedule.map((item) => {
-        if (GetDateString(item.date) === this.state.Date)
-          result.push(item)
-      })
+  loadItems(date) {
+    if (!this.props.schedule.items[date.dateString]) {
+      const weekEdges = getWeekEdges(date.timestamp)
+      this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
     }
-    return result;
+  }
+
+  dayChanged(date) {
+    this.setState({
+      selectedDate: date.dateString
+    })
+    const futureDate = moment(date.timestamp).add(3, 'd')
+    if (!this.props.schedule.items[futureDate.format(dateFormat)]) {
+      const weekEdges = getWeekEdges(futureDate)
+      this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
+    }
+  }
+
+  refreshItems() {
+    const weekEdges = getWeekEdges(this.state.selectedDate)
+    this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat), true)
   }
 
   render() {
     return (
-      <PageLayout>
-        <ScheduleList data={this.props.schedule}></ScheduleList>
-      </PageLayout>
+      <View style={{ flex: 1 }}>
+        <Agenda
+          ref={agenda => this.agenda = agenda}
+          items={this.props.schedule.items}
+          displayLoadingIndicator={false}
+          firstDay={1}
+          // callback that gets called when items for a certain month should be loaded (month became visible)
+          loadItemsForMonth={month => this.loadItems(month)}
+          // callback that fires when the calendar is opened or closed
+          // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
+          // callback that gets called on day press
+          onDayPress={day => this.dayChanged(day)}
+          // callback that gets called when day changes while scrolling agenda list
+          onDayChange={day => this.dayChanged(day)}
+          // current={this.state.selectedDate.format(dateFormat)}
+          // selected={this.state.selectedDate.format(dateFormat)}
+          // specify how each item should be rendered in agenda
+          renderItem={(item, firstItemInDay) => (
+            <TouchableOpacity activeOpacity={0.4} onPress={() => this.openDetails(item)}>
+              <ScheduleItem {...item} />
+            </TouchableOpacity>
+          )}
+          // specify how each date should be rendered. day can be undefined if the item is not first in that day.
+          renderDay={(day, item) => day ? <ScheduleDay day={day} /> : null}
+          // specify how empty date content with no items should be rendered
+          renderEmptyDate={emptyDate}
+          // specify what should be rendered instead of ActivityIndicator
+          //renderEmptyData = {() => {return (<View />);}}
+          // specify your item comparison function for increased performance
+          rowHasChanged={(r1, r2) => {return r1.text !== r2.text}}
+          // By default, agenda dates are marked if they have at least one item, but you can override this if needed
+          // markedDates={{
+          //   '2018-12-04': {dots: [dot]},
+          //   '2018-12-05': {marked: true},
+          //   '2012-05-18': {disabled: true}
+          // }}
+          // markingType={'multi-dot'}
+          // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly.
+          onRefresh={() => this.refreshItems()}
+          // Set this true while waiting for new data from a refresh
+          refreshing={this.props.schedule.refreshing}
+          // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView.
+          refreshControl={null}
+          // agenda theme
+          theme={{
+            selectedDayBackgroundColor: '#F89554',
+            todayTextColor: '#F89554',
+            textMonthFontWeight: 'bold',
+            dotColor: '#F89554',
+            agendaTodayColor: '#F89554',
+            'stylesheet.agenda.list': {
+              container: {
+                flexDirection: 'column'
+              }
+            }
+          }}
+          // agenda container style
+          style={{
+            // height: '100%'
+          }}
+        />
+      </View>
     )
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    getSchedule: date => dispatch(getSchedule(date))
+    fetchSchedule: (start, end, refresh = false) => dispatch(fetchSchedule(start, end, refresh)),
+    fetchScheduleTypes: (refresh = false) => dispatch(fetchScheduleTypes(refresh))
   }
 }
 
 const mapStateToProps = state => {
   return {
-    schedule: state.schedule
+    schedule: state.schedule,
+    scheduleTypes: state.scheduleTypes
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScheduleTabScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarTab)

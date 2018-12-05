@@ -1,1 +1,2 @@
-export { getSchedule } from './schedule'
+export { fetchSchedule } from './schedule'
+export { fetchScheduleTypes } from './scheduleType'
