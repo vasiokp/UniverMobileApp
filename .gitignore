@@ -17,3 +17,4 @@ android/.gradle/
 android/app/build/
 android/build/intermediates/
 ios/build/
+android/local.properties
