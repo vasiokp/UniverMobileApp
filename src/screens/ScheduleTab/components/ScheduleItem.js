@@ -1,8 +1,13 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet } from 'react-native'
 import classTypes from '../../../plugins/classTypes'
 
+const pendingIcon = require('../../../assets/pending.png')
+const completedIcon = require('../../../assets/completed.png')
+const currentIcon = require('../../../assets/current.png')
+
 const scheduleItem = (props) => {
+  const icon = props.moment === -1 ? completedIcon : props.moment === 0 ? currentIcon : props.moment === 1 ? pendingIcon : null
   return (
     <View style={styles.listItem}>
       <View style={[ styles.timeBlock, { borderColor: classTypes.getColor(props.ScheduleTypeName) }]}>
@@ -13,7 +18,10 @@ const scheduleItem = (props) => {
         </View>
       </View>
       <View style={styles.mainBlock}>
-        <Text style={styles.title} numberOfLines={1}>{props.SubjectName}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+          <Text style={[styles.title, { flex: 1 }]} numberOfLines={1}>{props.SubjectName}</Text>
+          {icon ? <Image style={{ width: 18, height: 18, marginLeft: 3 }} source={icon}/> : null}
+        </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
           <Text style={styles.teacher}>{props.Teacher}</Text>
           <Text style={styles.building}>{props.BuildingName ? `корп. ${props.BuildingName}` : ''} {props.AuditoryName ? `ауд. ${props.AuditoryName}` : ''}</Text>

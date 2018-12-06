@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { Agenda, LocaleConfig } from 'react-native-calendars'
 import { connect } from 'react-redux'
-import { fetchSchedule, fetchScheduleTypes } from '../../store/actions/index'
+import { fetchSchedule, updateSchedule, fetchScheduleTypes } from '../../store/actions/index'
 import moment from 'moment'
 import ScheduleDay from './components/ScheduleDay'
 import ScheduleItem from './components/ScheduleItem'
@@ -17,6 +17,8 @@ LocaleConfig.locales['uk'] = {
 LocaleConfig.defaultLocale = 'uk'
 
 const dateFormat = 'YYYY-MM-DD'
+
+const refreshInterval = 30000 // 30 seconds
 
 const getWeekEdges = date => {
   return {
@@ -40,7 +42,7 @@ const emptyDate = () => (
   </View>
 )
 
-class CalendarTab extends Component {
+class ScheduleTab extends Component {
   static navigatorButtons = {
     rightButtons: [{
       title: 'Сьогодні',
@@ -50,9 +52,9 @@ class CalendarTab extends Component {
 
   constructor(props) {
     super(props)
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
+    // this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
     this.state = {
-      selectedDate: moment().format(dateFormat),
+      selectedDate: moment().format(dateFormat)
     }
   }
 
@@ -67,13 +69,21 @@ class CalendarTab extends Component {
   componentDidMount() {
     this.agenda.chooseDay(moment().format(dateFormat))
     this.props.fetchScheduleTypes()
+    const intervalId = setInterval(() => {
+      this.props.updateSchedule()
+    }, refreshInterval)
+    this.setState({ intervalId })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalId)
   }
 
   openDetails(item) {
     this.props.navigator.push({
       screen: 'ScheduleDetails',
       title: 'Подробиці',
-      passProps: { ...item }
+      passProps: { passedItem: item }
     })
   }
 
@@ -98,6 +108,7 @@ class CalendarTab extends Component {
   refreshItems() {
     const weekEdges = getWeekEdges(this.state.selectedDate)
     this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat), true)
+    this.props.updateSchedule()
   }
 
   render() {
@@ -131,7 +142,7 @@ class CalendarTab extends Component {
           // specify what should be rendered instead of ActivityIndicator
           //renderEmptyData = {() => {return (<View />);}}
           // specify your item comparison function for increased performance
-          rowHasChanged={(r1, r2) => {return r1.text !== r2.text}}
+          rowHasChanged={(i1, i2) => true}
           // By default, agenda dates are marked if they have at least one item, but you can override this if needed
           // markedDates={{
           //   '2018-12-04': {dots: [dot]},
@@ -171,6 +182,7 @@ class CalendarTab extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     fetchSchedule: (start, end, refresh = false) => dispatch(fetchSchedule(start, end, refresh)),
+    updateSchedule: () => dispatch(updateSchedule()),
     fetchScheduleTypes: (refresh = false) => dispatch(fetchScheduleTypes(refresh))
   }
 }
@@ -182,4 +194,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CalendarTab)
+export default connect(mapStateToProps, mapDispatchToProps)(ScheduleTab)

@@ -1,4 +1,4 @@
-import { FETCH_SCHEDULE } from "../actions/actionTypes"
+import { FETCH_SCHEDULE, UPDATE_SCHEDULE } from "../actions/actionTypes"
 
 const initialState = {
   loading: false,
@@ -40,6 +40,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: true
+      }
+    case UPDATE_SCHEDULE:
+      return {
+        ...state,
+        items: action.payload
       }
     default:
       return state
