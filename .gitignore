@@ -16,5 +16,7 @@ npm-debug.log*
 android/.gradle/
 android/app/build/
 android/build/intermediates/
-ios/build/
 android/local.properties
+ios/build/
+ios/Index/
+*.xcuserstate
