@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, SectionList, Text, TextInput, Image } from 'react-native'
+import { View, ScrollView, SectionList, Text, TextInput, Image, ActivityIndicator, Keyboard } from 'react-native'
 import { connect } from 'react-redux'
 import { fetchScheduleDetails, updateScheduleDetails } from  '../../../store/actions/index'
 import moment from 'moment'
@@ -25,6 +25,11 @@ class ScheduleDetails extends Component {
     super(props)
   }
 
+  componentWillMount () {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
+  }
+
   componentDidMount() {
     this.props.fetchScheduleDetails(this.props.passedItem.Id)
     const intervalId = setInterval(() => {
@@ -35,6 +40,16 @@ class ScheduleDetails extends Component {
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId)
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
+  }
+
+  _keyboardDidShow () {
+    this.scroller.scrollToEnd({ animated: true })
+  }
+
+  _keyboardDidHide () {
+    this.scroller.scrollTo({ y: 0, animated: true })
   }
 
   refresh() {
@@ -46,11 +61,14 @@ class ScheduleDetails extends Component {
     const ScheduleType = this.props.scheduleTypes.items.find(st => st.Name === this.props.passedItem.ScheduleTypeName)
     const details = this.props.scheduleDetails.loading ? {
       ...this.props.passedItem,
-      ScheduleType,
+      ScheduleType
     } : {
       ...this.props.passedItem,
       ScheduleType,
-      moment: this.props.scheduleDetails.item.moment
+      moment: this.props.scheduleDetails.item.moment,
+      TeacherDescription: this.props.scheduleDetails.item.Teacher ? this.props.scheduleDetails.item.Teacher.Description : '',
+      BuildingAddress: this.props.scheduleDetails.item.Auditory && this.props.scheduleDetails.item.Auditory.Building ? this.props.scheduleDetails.item.Auditory.Building.Description : '',
+      GroupName: this.props.scheduleDetails.item.Group ? this.props.scheduleDetails.item.Group.Name : ''
     }
     const icon = details.moment === -1 ? completedIcon : details.moment === 0 ? currentIcon : details.moment === 1 ? pendingIcon : null
     const sections = [
@@ -67,9 +85,12 @@ class ScheduleDetails extends Component {
                   {icon ? <Image style={{ marginTop: 3, width: 18, height: 18}} source={icon}/> : null}
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 20, fontWeight: '300', paddingTop: 7}} numberOfLines={3}>
-                    {details.SubjectName}
-                  </Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingTop: 7 }}>
+                    <Text style={{ fontSize: 20, fontWeight: '300' }} numberOfLines={3}>
+                      {details.SubjectName}
+                    </Text>
+                    {this.props.scheduleDetails.loading ? <ActivityIndicator size='small' style={{ paddingTop: 3 }} /> : null}
+                  </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                     <View style={{
                       width: 8,
@@ -93,13 +114,16 @@ class ScheduleDetails extends Component {
                     {capitalize(moment(details.Date, 'YYYY-MM-DD').format('dddd, D MMMM YYYY'))}
                   </Text>
                   <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
-                    {details.Teacher ? details.Teacher.Description : ''}
+                    {`група ${details.GroupName}`}
                   </Text>
-                  <Text style={{ fontWeight: '300', color: '#666', marginBottom: 10, marginTop: 8 }}>
+                  <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
+                    {details.TeacherDescription}
+                  </Text>
+                  <Text style={{ fontWeight: '300', color: '#666', marginTop: 10 }}>
                     {details.BuildingName ? `${details.BuildingName} корпус` : ''}, {details.AuditoryName ? `${details.AuditoryName} аудиторія` : ''}
                   </Text>
-                  <Text style={{ fontWeight: '300', color: '#666', marginBottom: 10, marginTop: 8 }}>
-                    {details.BuildingName ? `${details.BuildingName} корпус` : ''}, {details.AuditoryName ? `${details.AuditoryName} аудиторія` : ''}
+                  <Text style={{ fontWeight: '300', fontSize: 13, color: '#666', marginBottom: 10, marginTop: 4 }}>
+                    {details.BuildingAddress}
                   </Text>
                 </View>
               </View>
@@ -126,7 +150,7 @@ class ScheduleDetails extends Component {
       }
     ]
     return (
-      <View style={{backgroundColor: '#f4f4f4', height: '100%'}}>
+      <ScrollView ref={scroller => this.scroller = scroller} style={{backgroundColor: '#f4f4f4', flex: 1 }}>
         <SectionList stickySectionHeadersEnabled={false}
           sections={sections}
           renderItem={({ item }) => (
@@ -149,10 +173,13 @@ class ScheduleDetails extends Component {
               </Text>
             </View>
           )}
+          ListFooterComponent={() => (
+            <View style={{ height: 270 }} />
+          )}
           onRefresh={() => this.refresh()}
           refreshing={this.props.scheduleDetails.refreshing}>
         </SectionList>
-      </View>
+      </ScrollView>
     )
   }
 }

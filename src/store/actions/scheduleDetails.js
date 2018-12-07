@@ -38,7 +38,7 @@ export const fetchScheduleDetails = (id, refresh) => {
 		try {
 			const result = await axios.get(`/api/schedule/getbyid?id=${id}`)
 			result.data.Date = result.data.Date.substr(0, 10)
-			const lessons = getState().schedule.items[result.data]
+			const lessons = getState().schedule.items[result.data.Date]
 			result.data.moment = getScheduleMoment(result.data, lessons, moment())
 			dispatch({
 				type: FETCH_SCHEDULE_DETAILS.SUCCESS,
