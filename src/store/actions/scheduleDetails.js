@@ -1,8 +1,10 @@
 import { AsyncStorage } from "react-native"
 import axios from '../../plugins/axios'
-import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS } from "./actionTypes"
+import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, POST_NOTE } from "./actionTypes"
 import moment from 'moment'
 import { getScheduleMoment } from './helpers'
+
+const applicationUserId = 1
 
 export const updateScheduleDetails = () => {
 	return (dispatch, getState) => {
@@ -52,6 +54,54 @@ export const fetchScheduleDetails = (id, refresh) => {
 		} catch (err) {
 			console.log(err)
 			dispatch({ type: FETCH_SCHEDULE_DETAILS.ERROR })
+		}
+	}
+}
+
+export const addNote = (note) => {
+	return async dispatch => {
+		dispatch({ type: POST_NOTE.PENDING })
+		try {
+			const result = await axios.post('/api/note/add', {
+				...note,
+				ApplicationUserId: applicationUserId
+			})
+			if (result.status === 200) {
+				dispatch({
+					type: POST_NOTE.SUCCESS,
+					payload: result.data
+				})
+			} else {
+				console.log(result)
+				dispatch({ type: POST_NOTE.ERROR })
+			}
+		} catch(err) {
+			console.log(err)
+			dispatch({ type: POST_NOTE.ERROR })
+		}
+	}
+}
+
+export const updateNote = (note) => {
+	return async dispatch => {
+		dispatch({ type: POST_NOTE.PENDING })
+		try {
+			const result = await axios.post('/api/note/update', {
+				...note,
+				ApplicationUserId: applicationUserId
+			})
+			if (result.status === 200) {
+				dispatch({
+					type: POST_NOTE.SUCCESS,
+					payload: result.data
+				})
+			} else {
+				console.log(result)
+				dispatch({ type: POST_NOTE.ERROR })
+			}
+		} catch(err) {
+			console.log(err)
+			dispatch({ type: POST_NOTE.ERROR })
 		}
 	}
 }

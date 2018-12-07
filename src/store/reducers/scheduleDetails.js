@@ -1,4 +1,6 @@
-import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS } from "../actions/actionTypes"
+import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, POST_NOTE } from "../actions/actionTypes"
+
+const applicationUserId = 1
 
 const initialState = {
   loading: false,
@@ -10,6 +12,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
     case FETCH_SCHEDULE_DETAILS.PENDING:
+    case POST_NOTE.PENDING:
       return {
         ...state,
         loading: true
@@ -28,10 +31,21 @@ const reducer = (state = initialState, action) => {
         item: action.payload
       }
     case FETCH_SCHEDULE_DETAILS.ERROR:
+    case POST_NOTE.ERROR:
       return {
         ...state,
         loading: false,
         error: true
+      }
+    case POST_NOTE.SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        item: {
+          ...state.item,
+          Note: action.payload
+        }
       }
     case UPDATE_SCHEDULE_DETAILS:
       return {

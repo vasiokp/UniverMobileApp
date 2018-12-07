@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { View, ScrollView, SectionList, Text, TextInput, Image, ActivityIndicator, Keyboard } from 'react-native'
+import { View, ScrollView, SectionList, Text, TextInput, Image, ActivityIndicator, Keyboard, RefreshControl } from 'react-native'
 import { connect } from 'react-redux'
-import { fetchScheduleDetails, updateScheduleDetails } from  '../../../store/actions/index'
+import { fetchScheduleDetails, updateScheduleDetails, addNote, updateNote } from  '../../../store/actions/index'
 import moment from 'moment'
 import classTypes from '../../../plugins/classTypes'
 import { capitalize } from '../../../utils'
@@ -23,6 +23,31 @@ class ScheduleDetails extends Component {
 
   constructor(props) {
     super(props)
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
+    this.state = {
+      noteText: ''
+    }
+  }
+
+  onNavigatorEvent(event) {
+    if (event.type == 'NavBarButtonPress') {
+      if (event.id == 'save') {
+        this.noteInput.blur()
+        this.enableSaveButton(false)
+        if (this.props.scheduleDetails.item.Note) {
+          this.props.updateNote({
+            ...this.props.scheduleDetails.item.Note,
+            ScheduleId: this.props.passedItem.Id,
+            Text: this.state.noteText
+          })
+        } else {
+          this.props.addNote({
+            ScheduleId: this.props.passedItem.Id,
+            Text: this.state.noteText
+          })
+        }
+      }
+    }
   }
 
   componentWillMount () {
@@ -57,18 +82,40 @@ class ScheduleDetails extends Component {
     this.props.updateScheduleDetails()
   }
 
+  onNoteTextChange(text) {
+    this.setState({ noteText: text })
+    if (this.props.scheduleDetails.item.Note) {
+      if (this.props.scheduleDetails.item.Note.Text !== text) {
+        this.enableSaveButton(true)
+      } else {
+        this.enableSaveButton(false)
+      }
+    } else if (text !== '') {
+      this.enableSaveButton(true)
+    } else {
+      this.enableSaveButton(false)
+    }
+  }
+
+  enableSaveButton(enabled) {
+    this.props.navigator.setButtons({
+      rightButtons: [{
+        ...ScheduleDetails.navigatorButtons.rightButtons[0],
+        disabled: !enabled
+      }]
+    })
+  }
+
   render() {
     const ScheduleType = this.props.scheduleTypes.items.find(st => st.Name === this.props.passedItem.ScheduleTypeName)
-    const details = this.props.scheduleDetails.loading ? {
-      ...this.props.passedItem,
-      ScheduleType
-    } : {
+    const details = {
       ...this.props.passedItem,
       ScheduleType,
       moment: this.props.scheduleDetails.item.moment,
       TeacherDescription: this.props.scheduleDetails.item.Teacher ? this.props.scheduleDetails.item.Teacher.Description : '',
       BuildingAddress: this.props.scheduleDetails.item.Auditory && this.props.scheduleDetails.item.Auditory.Building ? this.props.scheduleDetails.item.Auditory.Building.Description : '',
-      GroupName: this.props.scheduleDetails.item.Group ? this.props.scheduleDetails.item.Group.Name : ''
+      GroupName: this.props.scheduleDetails.item.Group ? this.props.scheduleDetails.item.Group.Name : '',
+      NoteText: this.props.scheduleDetails.item.Note ? this.props.scheduleDetails.item.Note.Text : ''
     }
     const icon = details.moment === -1 ? completedIcon : details.moment === 0 ? currentIcon : details.moment === 1 ? pendingIcon : null
     const sections = [
@@ -113,9 +160,9 @@ class ScheduleDetails extends Component {
                   <Text style={{ fontWeight: '300', fontSize: 13, color: '#666', marginTop: 4 }}>
                     {capitalize(moment(details.Date, 'YYYY-MM-DD').format('dddd, D MMMM YYYY'))}
                   </Text>
-                  <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
+                  {details.GroupName ? <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
                     {`група ${details.GroupName}`}
-                  </Text>
+                  </Text> : null}
                   <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
                     {details.TeacherDescription}
                   </Text>
@@ -138,19 +185,29 @@ class ScheduleDetails extends Component {
             key: 'note',
             template: () => (
               <TextInput placeholder="Ваш текст..."
+                ref={noteInput => this.noteInput = noteInput}
+                value={details.NoteText}
                 height={120}
                 underlineColorAndroid="#fff"
-                style={{color:'#333'}}
+                style={{ color:'#333' }}
                 fontWeight="300"
                 fontSize={16}
-                multiline={true} />
+                multiline={true}
+                onChangeText={text => this.onNoteTextChange(text)} />
             )
           }
         ]
       }
     ]
     return (
-      <ScrollView ref={scroller => this.scroller = scroller} style={{backgroundColor: '#f4f4f4', flex: 1 }}>
+      <ScrollView ref={scroller => this.scroller = scroller}
+        style={{backgroundColor: '#f4f4f4', flex: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.scheduleDetails.refreshing}
+            onRefresh={() => this.refresh()}
+          />
+        }>
         <SectionList stickySectionHeadersEnabled={false}
           sections={sections}
           renderItem={({ item }) => (
@@ -175,9 +232,7 @@ class ScheduleDetails extends Component {
           )}
           ListFooterComponent={() => (
             <View style={{ height: 270 }} />
-          )}
-          onRefresh={() => this.refresh()}
-          refreshing={this.props.scheduleDetails.refreshing}>
+          )}>
         </SectionList>
       </ScrollView>
     )
@@ -187,7 +242,9 @@ class ScheduleDetails extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     fetchScheduleDetails: (id, refresh = false) => dispatch(fetchScheduleDetails(id, refresh)),
-    updateScheduleDetails: () => dispatch(updateScheduleDetails())
+    updateScheduleDetails: () => dispatch(updateScheduleDetails()),
+    addNote: note => dispatch(addNote(note)),
+    updateNote: note => dispatch(updateNote(note))
   }
 }
 

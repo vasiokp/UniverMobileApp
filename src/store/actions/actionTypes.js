@@ -13,3 +13,4 @@ export const FETCH_SCHEDULE_TYPES = buildType('FETCH_SCHEDULE_TYPES')
 export const FETCH_SCHEDULE_DETAILS = buildType('FETCH_SCHEDULE_DETAILS')
 export const UPDATE_SCHEDULE_DETAILS = 'UPDATE_SCHEDULE_DETAILS'
 export const GET_NEWS = buildType('GET_NEWS')
+export const POST_NOTE = buildType('POST_NOTE')
