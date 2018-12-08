@@ -115,10 +115,11 @@ class ScheduleDetails extends Component {
       TeacherDescription: this.props.scheduleDetails.item.Teacher ? this.props.scheduleDetails.item.Teacher.Description : '',
       BuildingAddress: this.props.scheduleDetails.item.Auditory && this.props.scheduleDetails.item.Auditory.Building ? this.props.scheduleDetails.item.Auditory.Building.Description : '',
       GroupName: this.props.scheduleDetails.item.Group ? this.props.scheduleDetails.item.Group.Name : '',
-      NoteText: this.props.scheduleDetails.item.Note ? this.props.scheduleDetails.item.Note.Text : ''
+      NoteText: this.props.scheduleDetails.item.Note ? this.props.scheduleDetails.item.Note.Text : '',
+      Messages: this.props.scheduleDetails.item.Messages || []
     }
     const icon = details.moment === -1 ? completedIcon : details.moment === 0 ? currentIcon : details.moment === 1 ? pendingIcon : null
-    const sections = [
+    let sections = [
       {
         data: [
           {
@@ -177,28 +178,46 @@ class ScheduleDetails extends Component {
             )
           }
         ]
-      },
-      {
-        title: 'Нотатки',
-        data: [
-          {
-            key: 'note',
-            template: () => (
-              <TextInput placeholder="Ваш текст..."
-                ref={noteInput => this.noteInput = noteInput}
-                value={details.NoteText}
-                height={120}
-                underlineColorAndroid="#fff"
-                style={{ color:'#333' }}
-                fontWeight="300"
-                fontSize={16}
-                multiline={true}
-                onChangeText={text => this.onNoteTextChange(text)} />
-            )
-          }
-        ]
       }
     ]
+    if (details.Messages.length > 0) {
+      sections.push({
+        title: 'Повідомлення',
+        data: [
+          {
+            key: 'messages',
+            template: () => details.Messages.map(message => (
+              <View key={message.Id} style={{ marginVertical: 8 }}>
+                <Text style={{ fontSize: 16, fontWeight: '300' }}>{message.Text}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 3 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '300', fontStyle: 'italic', color: '#666' }}>Невідомий автор</Text>
+                </View>
+              </View>
+            ))
+          }
+        ]
+      })
+    }
+    sections.push({
+      title: 'Нотатки',
+      data: [
+        {
+          key: 'note',
+          template: () => (
+            <TextInput placeholder="Ваш текст..."
+              ref={noteInput => this.noteInput = noteInput}
+              value={details.NoteText}
+              height={120}
+              underlineColorAndroid="#fff"
+              style={{ color:'#333' }}
+              fontWeight="300"
+              fontSize={16}
+              multiline={true}
+              onChangeText={text => this.onNoteTextChange(text)} />
+          )
+        }
+      ]
+    })
     return (
       <ScrollView ref={scroller => this.scroller = scroller}
         style={{backgroundColor: '#f4f4f4', flex: 1 }}
