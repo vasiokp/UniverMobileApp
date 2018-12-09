@@ -1,21 +1,58 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, TextInput, TouchableOpacity, Image, Text, ActivityIndicator } from 'react-native'
+import {
+	StyleSheet,
+	View,
+	TextInput,
+	TouchableOpacity,
+	Image,
+	Text,
+	ActivityIndicator,
+	Keyboard,
+	Animated
+} from 'react-native'
 import logoImage from '../../assets/logo.png'
 import PageLayout from '../../components/UI/PageLayout/PageLayout'
 import { login } from '../../store/actions'
 import { connect } from 'react-redux'
 import { startTabs } from '../../../App'
 
+const KEYBOARD_HEIGHT = 200
+
 class Login extends Component {
 	constructor(props) {
 		super(props)
+		this.keyboardHeight = new Animated.Value(0)
 		this.state = {
 			login: '',
 			password: ''
 		}
 	}
 
-	loginDisabled() {
+	componentWillMount () {
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
+	}
+	
+	componentWillUnmount () {
+    this.keyboardWillShowListener.remove()
+    this.keyboardWillHideListener.remove()
+  }
+
+  _keyboardWillShow (event) {
+    Animated.timing(this.keyboardHeight, {
+			duration: event.duration,
+			toValue: KEYBOARD_HEIGHT,
+		}).start()
+  }
+
+  _keyboardWillHide (event) {
+    Animated.timing(this.keyboardHeight, {
+			duration: event.duration,
+			toValue: 0,
+		}).start()
+  }
+
+	loginDisabled () {
 		return this.state.login === '' || this.state.password === ''
 	}
 
@@ -38,11 +75,16 @@ class Login extends Component {
 								underlineColorAndroid='#333'
 								value={this.state.login}
 								onChangeText={text => this.setState({ login: text })}
+								onSubmitEditing={() => this.passwordInput.focus()}
+								enablesReturnKeyAutomatically={true}
 								style={styles.input} />
 							<TextInput placeholder="Пароль"
+								ref={passwordInput => this.passwordInput = passwordInput}
 								textContentType="password"
 								value={this.state.password}
 								onChangeText={text => this.setState({ password: text })}
+								onSubmitEditing={() => this.passwordInput.blur()}
+								enablesReturnKeyAutomatically={true}
 								secureTextEntry={true}
 								underlineColorAndroid='#333'
 								style={styles.input} />
@@ -57,6 +99,7 @@ class Login extends Component {
 								}
 							</TouchableOpacity>
 						</View>
+						<Animated.View style={{ height: this.keyboardHeight }} />
 					</View>
         </View>
       </PageLayout>
@@ -70,7 +113,7 @@ const styles = StyleSheet.create({
   },
   page: {
 		flex: 1,
-		paddingTop: '55%'
+		justifyContent: 'center'
 	},
 	wrapper: {
 		alignItems: 'center',
@@ -78,7 +121,7 @@ const styles = StyleSheet.create({
 	},
 	form: {
 		width: '100%',
-		marginTop: 15,
+		marginTop: 10,
 		backgroundColor: 'rgba(255, 255, 255, 0.7)',
 		padding: 20
 	},

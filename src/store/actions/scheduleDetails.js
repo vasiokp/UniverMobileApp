@@ -1,10 +1,16 @@
 import { AsyncStorage } from "react-native"
 import axios from '../../plugins/axios'
-import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, POST_NOTE } from "./actionTypes"
+import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, CLEAR_SCHEDULE_DETAILS, POST_NOTE } from "./actionTypes"
 import moment from 'moment'
 import { getScheduleMoment } from './helpers'
 
 const applicationUserId = 1
+
+export const clearScheduleDetails = () => {
+	return async dispatch => {
+		dispatch({ type: CLEAR_SCHEDULE_DETAILS })
+	}
+}
 
 export const updateScheduleDetails = () => {
 	return (dispatch, getState) => {

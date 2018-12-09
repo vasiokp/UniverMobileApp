@@ -115,7 +115,7 @@ class ProfileTab extends Component {
           </View>
         )}
         ListFooterComponent={() => (
-          <View style={{ height: 70, justifyContent: 'flex-end', paddingHorizontal: '15%' }}>
+          <View style={{ height: 200, paddingTop: 25, paddingHorizontal: '15%' }}>
             <Button title="Вийти" color='red' onPress={() => this.logout()} />
           </View>
         )}>>
