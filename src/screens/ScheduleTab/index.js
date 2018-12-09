@@ -21,9 +21,10 @@ const dateFormat = 'YYYY-MM-DD'
 const refreshInterval = 30000 // 30 seconds
 
 const getWeekEdges = date => {
+  const day = moment().day() || 7
   return {
-    monday: moment(date).add(-moment().day() + 1, 'd'),
-    sunday: moment(date).add(7 - moment().day(), 'd')
+    monday: moment(date).add(-day + 1, 'd'),
+    sunday: moment(date).add(7 - day, 'd')
   }
 }
 
