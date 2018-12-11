@@ -29,27 +29,35 @@ class Login extends Component {
 	}
 
 	componentWillMount () {
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
+		if (Platform.OS === 'ios') {
+    	this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
+			this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
+		}
 	}
 	
 	componentWillUnmount () {
-    this.keyboardWillShowListener.remove()
-    this.keyboardWillHideListener.remove()
+		if (Platform.OS === 'ios') {
+   		this.keyboardWillShowListener.remove()
+			this.keyboardWillHideListener.remove()
+		}
   }
 
   _keyboardWillShow (event) {
-    Animated.timing(this.keyboardHeight, {
-			duration: event.duration,
-			toValue: KEYBOARD_HEIGHT,
-		}).start()
+		if (Platform.OS === 'ios') {
+			Animated.timing(this.keyboardHeight, {
+				duration: event.duration,
+				toValue: KEYBOARD_HEIGHT,
+			}).start()
+		}
   }
 
   _keyboardWillHide (event) {
-    Animated.timing(this.keyboardHeight, {
-			duration: event.duration,
-			toValue: 0,
-		}).start()
+		if (Platform.OS === 'ios') {
+			Animated.timing(this.keyboardHeight, {
+				duration: event.duration,
+				toValue: 0,
+			}).start()
+		}
   }
 
 	loginDisabled () {
