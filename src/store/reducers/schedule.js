@@ -1,10 +1,18 @@
-import { FETCH_SCHEDULE, UPDATE_SCHEDULE } from "../actions/actionTypes"
+import { FETCH_SCHEDULE, UPDATE_SCHEDULE, SET_SCHEDULE_FILTERS } from "../actions/actionTypes"
 
 const initialState = {
   loading: false,
   refreshing: false,
   error: false,
-  items: {}
+  items: {},
+  filters: {
+    showOnlyMySchedule: true,
+    showOnlyFilteredSchedule: false,
+    groupId: null,
+    teacherId: null,
+    subjectId: null,
+    auditoryId: null
+  }
 }
 
 const merge = (oldItems, newItems) => {
@@ -45,6 +53,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         items: action.payload
+      }
+    case SET_SCHEDULE_FILTERS:
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          ...action.payload
+        }
       }
     default:
       return state

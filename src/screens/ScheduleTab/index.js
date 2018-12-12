@@ -1,11 +1,24 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Platform } from 'react-native'
 import { Agenda, LocaleConfig } from 'react-native-calendars'
 import { connect } from 'react-redux'
-import { fetchSchedule, updateSchedule, fetchScheduleTypes, clearScheduleDetails } from '../../store/actions'
+import Icon from 'react-native-vector-icons/Ionicons'
+import {
+  fetchSchedule,
+  updateSchedule,
+  fetchScheduleTypes,
+  clearScheduleDetails,
+  setScheduleFilters,
+  fetchGroups,
+  fetchSpecialties,
+  fetchTeachers,
+  fetchSubjects,
+  fetchAuditories
+} from '../../store/actions'
 import moment from 'moment'
 import ScheduleDay from './components/ScheduleDay'
 import ScheduleItem from './components/ScheduleItem'
+import ScheduleFilter from './components/ScheduleFilter'
 
 LocaleConfig.locales['uk'] = {
   monthNames: ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'],
@@ -55,14 +68,31 @@ class ScheduleTab extends Component {
     super(props)
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
     this.state = {
-      selectedDate: moment().format(dateFormat)
+      selectedDate: moment().format(dateFormat),
+      showFilter: false
     }
+    Icon.getImageSource((Platform.OS === 'ios' ? 'ios' : 'md') + '-options', 28).then(icon => {
+      this.props.navigator.setButtons({
+        ...ScheduleTab.navigatorButtons,
+        leftButtons: [{
+          id: 'filter',
+          icon: icon
+        }]
+      })
+    })
   }
 
   onNavigatorEvent(event) {
     if (event.type == 'NavBarButtonPress') {
-      if (event.id == 'today') {
-        this.agenda.chooseDay(moment().format(dateFormat))
+      switch (event.id) {
+        case 'today':
+          this.agenda.chooseDay(moment().format(dateFormat))
+          return
+        case 'filter':
+          this.toggleFilter()
+          return
+        default:
+          return
       }
     }
   }
@@ -74,6 +104,11 @@ class ScheduleTab extends Component {
       this.props.updateSchedule()
     }, refreshInterval)
     this.setState({ intervalId })
+    this.props.fetchGroups()
+    this.props.fetchSpecialties()
+    this.props.fetchTeachers()
+    this.props.fetchSubjects()
+    this.props.fetchAuditories()
   }
 
   componentWillUnmount() {
@@ -88,6 +123,16 @@ class ScheduleTab extends Component {
         passProps: { passedItem: item }
       })
     })
+  }
+
+  toggleFilter() {
+    if (this.state.showFilter) {
+      this.filter.hide()
+      this.setState({ showFilter: false })
+    } else {
+      this.filter.show()
+      this.setState({ showFilter: true })
+    }
   }
 
   loadItems(date) {
@@ -112,6 +157,11 @@ class ScheduleTab extends Component {
     const weekEdges = getWeekEdges(this.state.selectedDate)
     this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat), true)
     this.props.updateSchedule()
+    this.props.fetchGroups(true)
+    this.props.fetchSpecialties(true)
+    this.props.fetchTeachers(true)
+    this.props.fetchSubjects(true)
+    this.props.fetchAuditories(true)
   }
 
   render() {
@@ -177,6 +227,17 @@ class ScheduleTab extends Component {
             // height: '100%'
           }}
         />
+        <ScheduleFilter
+          ref={filter => this.filter = filter}
+          groups={this.props.groups.items}
+          specialties={this.props.specialties.items}
+          teachers={this.props.teachers.items}
+          subjects={this.props.subjects.items}
+          auditories={this.props.auditories.items}
+          filters={this.props.schedule.filters}
+          onClose={() => this.setState({ showFilter: false })}
+          onChange={filters => this.props.setScheduleFilters(filters)}
+        />
       </View>
     )
   }
@@ -187,14 +248,25 @@ const mapDispatchToProps = dispatch => {
     fetchSchedule: (start, end, refresh = false) => dispatch(fetchSchedule(start, end, refresh)),
     updateSchedule: () => dispatch(updateSchedule()),
     fetchScheduleTypes: (refresh = false) => dispatch(fetchScheduleTypes(refresh)),
-    clearScheduleDetails: () => dispatch(clearScheduleDetails())
+    clearScheduleDetails: () => dispatch(clearScheduleDetails()),
+    setScheduleFilters: filters => dispatch(setScheduleFilters(filters)),
+    fetchGroups: (refresh = false) => dispatch(fetchGroups(refresh)),
+    fetchSpecialties: (refresh = false) => dispatch(fetchSpecialties(refresh)),
+    fetchTeachers: (refresh = false) => dispatch(fetchTeachers(refresh)),
+    fetchSubjects: (refresh = false) => dispatch(fetchSubjects(refresh)),
+    fetchAuditories: (refresh = false) => dispatch(fetchAuditories(refresh))
   }
 }
 
 const mapStateToProps = state => {
   return {
     schedule: state.schedule,
-    scheduleTypes: state.scheduleTypes
+    scheduleTypes: state.scheduleTypes,
+    groups: state.groups,
+    specialties: state.specialties,
+    teachers: state.teachers,
+    subjects: state.subjects,
+    auditories: state.auditories
   }
 }
 

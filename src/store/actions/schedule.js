@@ -2,7 +2,7 @@ import { AsyncStorage } from "react-native"
 import axios from '../../plugins/axios'
 import { groupBy } from '../../utils'
 import moment from 'moment'
-import { FETCH_SCHEDULE, UPDATE_SCHEDULE } from "./actionTypes"
+import { FETCH_SCHEDULE, UPDATE_SCHEDULE, SET_SCHEDULE_FILTERS } from "./actionTypes"
 import { getScheduleMoment } from './helpers'
 
 const groupId = 49
@@ -87,5 +87,14 @@ export const fetchSchedule = (start, end, refresh) => {
 			console.log(err)
 			dispatch({ type: FETCH_SCHEDULE.ERROR })
 		}
+	}
+}
+
+export const setScheduleFilters = filters => {
+	return dispatch => {
+		dispatch({
+			type: SET_SCHEDULE_FILTERS,
+			payload: filters
+		})
 	}
 }
