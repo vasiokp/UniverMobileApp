@@ -1,4 +1,5 @@
 export { fetchSchedule, updateSchedule } from './schedule'
 export { fetchScheduleTypes } from './scheduleType'
-export { fetchScheduleDetails, updateScheduleDetails, addNote, updateNote } from './scheduleDetails'
+export { fetchScheduleDetails, updateScheduleDetails, clearScheduleDetails, addNote, updateNote } from './scheduleDetails'
 export { getNews } from './news'
+export { checkAuth, login, logout } from './profile'

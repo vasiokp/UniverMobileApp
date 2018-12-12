@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { Agenda, LocaleConfig } from 'react-native-calendars'
 import { connect } from 'react-redux'
-import { fetchSchedule, updateSchedule, fetchScheduleTypes } from '../../store/actions/index'
+import { fetchSchedule, updateSchedule, fetchScheduleTypes, clearScheduleDetails } from '../../store/actions'
 import moment from 'moment'
 import ScheduleDay from './components/ScheduleDay'
 import ScheduleItem from './components/ScheduleItem'
@@ -21,9 +21,10 @@ const dateFormat = 'YYYY-MM-DD'
 const refreshInterval = 30000 // 30 seconds
 
 const getWeekEdges = date => {
+  const day = moment().day() || 7
   return {
-    monday: moment(date).add(-moment().day() + 1, 'd'),
-    sunday: moment(date).add(7 - moment().day(), 'd')
+    monday: moment(date).add(-day + 1, 'd'),
+    sunday: moment(date).add(7 - day, 'd')
   }
 }
 
@@ -80,10 +81,12 @@ class ScheduleTab extends Component {
   }
 
   openDetails(item) {
-    this.props.navigator.push({
-      screen: 'ScheduleDetails',
-      title: 'Подробиці',
-      passProps: { passedItem: item }
+    this.props.clearScheduleDetails().then(() => {
+      this.props.navigator.push({
+        screen: 'ScheduleDetails',
+        title: 'Подробиці',
+        passProps: { passedItem: item }
+      })
     })
   }
 
@@ -183,7 +186,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchSchedule: (start, end, refresh = false) => dispatch(fetchSchedule(start, end, refresh)),
     updateSchedule: () => dispatch(updateSchedule()),
-    fetchScheduleTypes: (refresh = false) => dispatch(fetchScheduleTypes(refresh))
+    fetchScheduleTypes: (refresh = false) => dispatch(fetchScheduleTypes(refresh)),
+    clearScheduleDetails: () => dispatch(clearScheduleDetails())
   }
 }
 

@@ -1,4 +1,4 @@
-import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, POST_NOTE } from "../actions/actionTypes"
+import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, CLEAR_SCHEDULE_DETAILS, POST_NOTE } from "../actions/actionTypes"
 
 const applicationUserId = 1
 
@@ -51,6 +51,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         item: action.payload
+      }
+    case CLEAR_SCHEDULE_DETAILS:
+      return {
+        ...state,
+        item: {}
       }
     default:
       return state

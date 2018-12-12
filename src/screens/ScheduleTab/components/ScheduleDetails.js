@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ScrollView, SectionList, Text, TextInput, Image, ActivityIndicator, Keyboard, RefreshControl } from 'react-native'
+import { View, ScrollView, SectionList, Text, TextInput, Image, ActivityIndicator, Keyboard, RefreshControl, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { fetchScheduleDetails, updateScheduleDetails, addNote, updateNote } from  '../../../store/actions/index'
 import moment from 'moment'
@@ -51,12 +51,16 @@ class ScheduleDetails extends Component {
   }
 
   componentWillMount () {
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
+    if (Platform.OS === 'ios') {
+      this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
+      this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
+    }
   }
 
   componentDidMount() {
-    this.props.fetchScheduleDetails(this.props.passedItem.Id)
+    this.props.fetchScheduleDetails(this.props.passedItem.Id).then(() => {
+      this.setState({ noteText: this.props.scheduleDetails.item.Note ? this.props.scheduleDetails.item.Note.Text : '' })
+    })
     const intervalId = setInterval(() => {
       this.props.updateScheduleDetails()
     }, refreshInterval)
@@ -65,16 +69,22 @@ class ScheduleDetails extends Component {
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId)
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
+    if (Platform.OS === 'ios') {
+      this.keyboardDidShowListener.remove()
+      this.keyboardDidHideListener.remove()
+    }
   }
 
   _keyboardDidShow () {
-    this.scroller.scrollToEnd({ animated: true })
+    if (Platform.OS === 'ios') {
+      this.scroller.scrollToEnd({ animated: true })
+    }
   }
 
   _keyboardDidHide () {
-    this.scroller.scrollTo({ y: 0, animated: true })
+    if (Platform.OS === 'ios') {
+      this.scroller.scrollTo({ y: 0, animated: true })
+    }
   }
 
   refresh() {
@@ -115,7 +125,6 @@ class ScheduleDetails extends Component {
       TeacherDescription: this.props.scheduleDetails.item.Teacher ? this.props.scheduleDetails.item.Teacher.Description : '',
       BuildingAddress: this.props.scheduleDetails.item.Auditory && this.props.scheduleDetails.item.Auditory.Building ? this.props.scheduleDetails.item.Auditory.Building.Description : '',
       GroupName: this.props.scheduleDetails.item.Group ? this.props.scheduleDetails.item.Group.Name : '',
-      NoteText: this.props.scheduleDetails.item.Note ? this.props.scheduleDetails.item.Note.Text : '',
       Messages: this.props.scheduleDetails.item.Messages || []
     }
     const icon = details.moment === -1 ? completedIcon : details.moment === 0 ? currentIcon : details.moment === 1 ? pendingIcon : null
@@ -206,7 +215,7 @@ class ScheduleDetails extends Component {
           template: () => (
             <TextInput placeholder="Ваш текст..."
               ref={noteInput => this.noteInput = noteInput}
-              value={details.NoteText}
+              value={this.state.noteText}
               height={120}
               underlineColorAndroid="#fff"
               style={{ color:'#333' }}

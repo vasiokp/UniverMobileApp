@@ -4,12 +4,14 @@ import scheduleReducer from './reducers/schedule'
 import scheduleTypeReducer from './reducers/scheduleType'
 import scheduleDetailsReducer from './reducers/scheduleDetails'
 import newsReducer from './reducers/news'
+import profileReducer from './reducers/profile'
 
 const rootReducer = combineReducers({
 	schedule: scheduleReducer,
 	scheduleTypes: scheduleTypeReducer,
 	scheduleDetails: scheduleDetailsReducer,
-	news: newsReducer
+	news: newsReducer,
+	profile: profileReducer
 })
 
 let composeEnhancers = compose
