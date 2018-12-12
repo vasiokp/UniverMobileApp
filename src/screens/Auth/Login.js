@@ -81,7 +81,8 @@ class Login extends Component {
 						<Image source={logoImage} style={styles.logoImageStyle} resizeMode='contain' />
 						<View style={styles.form}>
 							<TextInput placeholder="Логін"
-								underlineColorAndroid='#333'
+								underlineColorAndroid='transparent'
+								autoCorrect={false} 
 								value={this.state.login}
 								onChangeText={text => this.setState({ login: text })}
 								onSubmitEditing={() => this.passwordInput.focus()}
@@ -95,7 +96,7 @@ class Login extends Component {
 								onSubmitEditing={() => this.passwordInput.blur()}
 								enablesReturnKeyAutomatically={true}
 								secureTextEntry={true}
-								underlineColorAndroid='#333'
+								underlineColorAndroid='transparent'
 								style={styles.input} />
 							{this.props.profile.error ? <Text style={styles.errorText}>Невірний логін або пароль</Text> : null}
 							<TouchableOpacity onPress={() => this.login()}
