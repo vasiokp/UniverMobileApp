@@ -8,6 +8,7 @@ import {
 	Text,
 	ActivityIndicator,
 	Keyboard,
+	Platform,
 	Animated
 } from 'react-native'
 import logoImage from '../../assets/logo.png'

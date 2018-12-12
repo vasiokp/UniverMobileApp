@@ -82,7 +82,10 @@ const startTabs = () => {
 const startLogin = () => {
   Navigation.startSingleScreenApp({
     screen: {
-      screen: 'Login'
+      screen: 'Login',
+      navigatorStyle: {
+        navBarHidden: true
+      }
     },
     appStyle: {
       navBarHidden: true,
