@@ -122,7 +122,6 @@ class ScheduleDetails extends Component {
       ...this.props.passedItem,
       ScheduleType,
       moment: this.props.scheduleDetails.item.moment,
-      TeacherDescription: this.props.scheduleDetails.item.Teacher ? this.props.scheduleDetails.item.Teacher.Description : '',
       BuildingAddress: this.props.scheduleDetails.item.Auditory && this.props.scheduleDetails.item.Auditory.Building ? this.props.scheduleDetails.item.Auditory.Building.Description : '',
       GroupName: this.props.scheduleDetails.item.Group ? this.props.scheduleDetails.item.Group.Name : '',
       Messages: this.props.scheduleDetails.item.Messages || []
@@ -174,7 +173,7 @@ class ScheduleDetails extends Component {
                     {`група ${details.GroupName}`}
                   </Text> : null}
                   <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
-                    {details.TeacherDescription}
+                    {details.Teacher}
                   </Text>
                   <Text style={{ fontWeight: '300', color: '#666', marginTop: 10 }}>
                     {details.BuildingName ? `${details.BuildingName} корпус` : ''}, {details.AuditoryName ? `${details.AuditoryName} аудиторія` : ''}

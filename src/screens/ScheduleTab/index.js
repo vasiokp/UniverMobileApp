@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {
   fetchSchedule,
+  fetchAllSchedule,
   updateSchedule,
   fetchScheduleTypes,
   clearScheduleDetails,
@@ -139,6 +140,7 @@ class ScheduleTab extends Component {
     if (!this.props.schedule.items[date.dateString]) {
       const weekEdges = getWeekEdges(date.timestamp)
       this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
+      this.props.fetchAllSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
     }
   }
 
@@ -150,12 +152,14 @@ class ScheduleTab extends Component {
     if (!this.props.schedule.items[futureDate.format(dateFormat)]) {
       const weekEdges = getWeekEdges(futureDate)
       this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
+      this.props.fetchAllSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
     }
   }
 
   refreshItems() {
     const weekEdges = getWeekEdges(this.state.selectedDate)
     this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat), true)
+    this.props.fetchAllSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat), true)
     this.props.updateSchedule()
     this.props.fetchGroups(true)
     this.props.fetchSpecialties(true)
@@ -164,12 +168,30 @@ class ScheduleTab extends Component {
     this.props.fetchAuditories(true)
   }
 
+  mergedItems() {
+    const filters = this.props.schedule.filters
+    if (filters.showOnlyMySchedule) {
+      return this.props.schedule.items
+    } else {
+      let filteredItems = {}
+      Object.keys(this.props.schedule.all).forEach(key => {
+        filteredItems[key] = this.props.schedule.all[key].filter(item => (
+          (filters.groupId == null || item.GroupId === filters.groupId) &&
+          (filters.teacherId == null || item.TeacherId === filters.teacherId) &&
+          (filters.subjectId == null || item.SubjectId === filters.subjectId) &&
+          (filters.auditoryId == null || item.AuditoryId === filters.auditoryId)
+        ))
+      })
+      return filteredItems
+    }
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
         <Agenda
           ref={agenda => this.agenda = agenda}
-          items={this.props.schedule.items}
+          items={this.mergedItems()}
           displayLoadingIndicator={false}
           firstDay={1}
           // callback that gets called when items for a certain month should be loaded (month became visible)
@@ -246,6 +268,7 @@ class ScheduleTab extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     fetchSchedule: (start, end, refresh = false) => dispatch(fetchSchedule(start, end, refresh)),
+    fetchAllSchedule: (start, end, refresh = false) => dispatch(fetchAllSchedule(start, end, refresh)),
     updateSchedule: () => dispatch(updateSchedule()),
     fetchScheduleTypes: (refresh = false) => dispatch(fetchScheduleTypes(refresh)),
     clearScheduleDetails: () => dispatch(clearScheduleDetails()),

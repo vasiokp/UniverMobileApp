@@ -2,10 +2,8 @@ import { AsyncStorage } from "react-native"
 import axios from '../../plugins/axios'
 import { groupBy } from '../../utils'
 import moment from 'moment'
-import { FETCH_SCHEDULE, UPDATE_SCHEDULE, SET_SCHEDULE_FILTERS } from "./actionTypes"
+import { FETCH_SCHEDULE, FETCH_ALL_SCHEDULE, UPDATE_SCHEDULE, UPDATE_ALL_SCHEDULE, SET_SCHEDULE_FILTERS } from "./actionTypes"
 import { getScheduleMoment } from './helpers'
-
-const groupId = 49
 
 const dateFormat = 'YYYY-MM-DD'
 
@@ -47,6 +45,21 @@ export const updateSchedule = () => {
 			type: UPDATE_SCHEDULE,
 			payload: items
 		})
+		let all = getState().schedule.all
+		Object.keys(all).forEach(key => {
+			if (all[key]) {
+				all[key].forEach((item, index) => {
+					all[key][index] = {
+						...all[key][index],
+						moment: getScheduleMoment(item, all[key], moment())
+					}
+				})
+			}
+		})
+		dispatch({
+			type: UPDATE_ALL_SCHEDULE,
+			payload: all
+		})
 	}
 }
 
@@ -59,7 +72,9 @@ export const fetchSchedule = (start, end, refresh) => {
 				for (let date = moment(start, dateFormat); date.isSameOrBefore(moment(end, dateFormat), 'date'); date.add(1, 'd')) {
 					const strDate = date.format(dateFormat)
 					const item = await AsyncStorage.getItem(`schedule_${strDate}`)
-					cachedData[strDate] = item ? JSON.parse(item) : []
+					if (item) {
+						cachedData[strDate] = JSON.parse(item)
+					}
 				}
 				dispatch({
 					type: FETCH_SCHEDULE.SUCCESS,
@@ -70,7 +85,7 @@ export const fetchSchedule = (start, end, refresh) => {
 			}
 		}
 		try {
-			const result = await axios.get(`/api/schedule/getall?groupId=${groupId}&start=${start}&end=${end}`)
+			const result = await axios.get(`/api/schedule/getall?start=${start}&end=${end}`)
 			const schedule = projectSchedule(start, end, result.data)
 			dispatch({
 				type: FETCH_SCHEDULE.SUCCESS,
@@ -86,6 +101,49 @@ export const fetchSchedule = (start, end, refresh) => {
 		} catch (err) {
 			console.log(err)
 			dispatch({ type: FETCH_SCHEDULE.ERROR })
+		}
+	}
+}
+
+export const fetchAllSchedule = (start, end, refresh) => {
+	return async dispatch => {
+		dispatch({ type: refresh ? FETCH_ALL_SCHEDULE.REFRESHING : FETCH_ALL_SCHEDULE.PENDING })
+		if (!refresh) {
+			try {
+				let cachedData = {}
+				for (let date = moment(start, dateFormat); date.isSameOrBefore(moment(end, dateFormat), 'date'); date.add(1, 'd')) {
+					const strDate = date.format(dateFormat)
+					const item = await AsyncStorage.getItem(`all_schedule_${strDate}`)
+					if (item) {
+						cachedData[strDate] = JSON.parse(item)
+					}
+				}
+				dispatch({
+					type: FETCH_ALL_SCHEDULE.SUCCESS,
+					payload: cachedData
+				})
+			} catch (err) {
+				console.log(err)
+			}
+		}
+		try {
+			const body = { Start: start, End: end }
+			const result = await axios.post('/api/schedule/getall', body)
+			const schedule = projectSchedule(start, end, result.data)
+			dispatch({
+				type: FETCH_ALL_SCHEDULE.SUCCESS,
+				payload: schedule
+			})
+			try {
+				Object.keys(schedule).forEach(async key => {
+					await AsyncStorage.setItem(`all_schedule_${key}`, JSON.stringify(schedule[key]))
+				})
+			} catch (err) {
+				console.log(err)
+			}
+		} catch (err) {
+			console.log(err)
+			dispatch({ type: FETCH_ALL_SCHEDULE.ERROR })
 		}
 	}
 }

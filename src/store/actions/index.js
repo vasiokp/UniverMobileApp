@@ -1,4 +1,4 @@
-export { fetchSchedule, updateSchedule, setScheduleFilters } from './schedule'
+export { fetchSchedule, fetchAllSchedule, updateSchedule, setScheduleFilters } from './schedule'
 export { fetchScheduleTypes } from './scheduleType'
 export { fetchScheduleDetails, updateScheduleDetails, clearScheduleDetails, addNote, updateNote } from './scheduleDetails'
 export { getNews } from './news'

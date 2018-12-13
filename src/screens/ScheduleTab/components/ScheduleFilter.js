@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 
 const ANIMATION_DURATION = 300
 
-const LAYOUT_HEIGHT = 262
+const LAYOUT_HEIGHT = 220
 
 const pickerStyle = StyleSheet.create({
 	viewContainer: {
@@ -150,7 +150,9 @@ class SheduleFilter extends Component {
 					{ top: this.layoutTop }
 				]}>
 					<View style={styles.row}>
-						<Text style={styles.label}>Показувати тільки мій розклад</Text>
+						<Text style={styles.label} numberOfLines={1} adjustsFontSizeToFit={true}>
+							Показувати тільки мій розклад
+						</Text>
 						<Switch value={this.props.filters.showOnlyMySchedule}
 							onValueChange={value => this.props.onChange({
 								showOnlyMySchedule: value,
@@ -158,15 +160,6 @@ class SheduleFilter extends Component {
 									showOnlyFilteredSchedule: false
 								} : {})
 							})}
-						/>
-					</View>
-					<View style={styles.row}>
-						<Text style={[styles.label, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}>
-							Тільки фільтрований розклад
-						</Text>
-						<Switch value={this.props.filters.showOnlyFilteredSchedule}
-							disabled={this.props.filters.showOnlyMySchedule}
-							onValueChange={value => this.props.onChange({ showOnlyFilteredSchedule: value })}
 						/>
 					</View>
 					<View style={styles.row}>

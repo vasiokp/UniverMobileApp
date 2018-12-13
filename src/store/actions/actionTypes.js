@@ -8,7 +8,9 @@ const buildType = type => {
 }
 
 export const FETCH_SCHEDULE = buildType('FETCH_SCHEDULE')
+export const FETCH_ALL_SCHEDULE = buildType('FETCH_ALL_SCHEDULE')
 export const UPDATE_SCHEDULE = 'UPDATE_SCHEDULE'
+export const UPDATE_ALL_SCHEDULE = 'UPDATE_ALL_SCHEDULE'
 export const SET_SCHEDULE_FILTERS = 'SET_SCHEDULE_FILTERS'
 export const FETCH_SCHEDULE_TYPES = buildType('FETCH_SCHEDULE_TYPES')
 export const FETCH_SCHEDULE_DETAILS = buildType('FETCH_SCHEDULE_DETAILS')
