@@ -21,13 +21,10 @@ export const POST_NOTE = buildType('POST_NOTE')
 export const CHECK_AUTH = { SUCCESS: 'CHECK_AUTH_SUCCESS', ERROR: 'CHECK_AUTH_ERROR' }
 export const LOGIN = buildType('LOGIN')
 export const LOGOUT = buildType('LOGOUT')
-<<<<<<< HEAD
 export const FETCH_GROUPS = buildType('FETCH_GROUPS')
 export const FETCH_SPECIALTIES = buildType('FETCH_SPECIALTIES')
 export const FETCH_TEACHERS = buildType('FETCH_TEACHERS')
 export const FETCH_SUBJECTS = buildType('FETCH_SUBJECTS')
 export const FETCH_AUDITORIES = buildType('FETCH_AUDITORIES')
-=======
 export const GET_ATTENDANCE = buildType('GET_ATTENDANCE')
 export const SAVE_ATTENDANCE = buildType('SAVE_ATTENDANCE')
->>>>>>> Added layout for AttendanceTab
