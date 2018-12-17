@@ -5,11 +5,50 @@ import { logout } from '../../store/actions/index'
 import StudentInfo from './components/studentInfo'
 
 class AttendanceTab extends Component {
+  static navigatorButtons = {
+    rightButtons: [{
+      title: 'Зберегти',
+      id: 'save',
+      disabled: true
+    }]
+  }
+
   constructor(props) {
     super(props)
   }
 
-  keyExtractor = (item, index) => item.id ? item.id.ToString() : ''
+  onNavigatorEvent(event) {
+    if (event.type == 'NavBarButtonPress') {
+      if (event.id == 'save') {
+        this.noteInput.blur()
+        this.enableSaveButton(false)
+        if (this.props.scheduleDetails.item.Note) {
+          this.props.updateNote({
+            ...this.props.scheduleDetails.item.Note,
+            ScheduleId: this.props.passedItem.Id,
+            Text: this.state.noteText
+          })
+        } else {
+          this.props.addNote({
+            ScheduleId: this.props.passedItem.Id,
+            Text: this.state.noteText
+          })
+        }
+      }
+    }
+  }
+
+  FlatListItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 10,
+          width: "100%",
+          backgroundColor: "#eee",
+        }}
+      />
+    );
+  }
 
   render() {
     return (
@@ -17,8 +56,9 @@ class AttendanceTab extends Component {
         <Text style={{ fontSize: 16, fontWeight: '300' }}>Група</Text>
         <FlatList
           data = {items}
-          keyExtractor ={this.keyExtractor}
-          renderItem={({item}) =><StudentInfo style={styles.item} item={item}/>}
+          keyExtractor ={(item) => item.Id}
+          ItemSeparatorComponent = {this.FlatListItemSeparator}
+          renderItem={({item,index}) =><StudentInfo item={item} index={index}/>}
           >
         </FlatList>
       </View>
@@ -32,13 +72,7 @@ const styles = StyleSheet.create({
   container: {
    flex: 1,
    paddingTop: 22
-  },
-  item: {
-    padding: 10,
-    height: 50,
-    flex: 1,
-    flexDirection: 'row'
-  },
+  }
 })
 
 const items = [
@@ -68,7 +102,7 @@ const items = [
   },
   {
     "Id": 98,
-    "CheckIn": false,
+    "CheckIn": true,
     "Date": "2018-12-12T00:00:00",
     "ScheduleId": 370,
     "StudentId": 54,
@@ -84,7 +118,7 @@ const items = [
   },
   {
     "Id": 100,
-    "CheckIn": false,
+    "CheckIn": true,
     "Date": "2018-12-12T00:00:00",
     "ScheduleId": 370,
     "StudentId": 52,
