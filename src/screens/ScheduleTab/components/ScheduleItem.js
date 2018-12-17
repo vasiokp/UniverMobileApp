@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
 import classTypes from '../../../plugins/classTypes'
 import * as userRoles from '../../../plugins/userRoles'
@@ -7,31 +7,37 @@ const pendingIcon = require('../../../assets/pending.png')
 const completedIcon = require('../../../assets/completed.png')
 const currentIcon = require('../../../assets/current.png')
 
-const scheduleItem = (props) => {
-  const icon = props.moment === -1 ? completedIcon : props.moment === 0 ? currentIcon : props.moment === 1 ? pendingIcon : null
-  return (
-    <View style={[styles.listItem, !props.isMyLesson ? styles.notMyLesson : {}]}>
-      <View style={[ styles.timeBlock, { borderColor: classTypes.getColor(props.ScheduleTypeName) }]}>
-        <View style={{ justifyContent: 'center', flex: 1 }}>
-          <Text style={[ styles.timeText, styles.startTimeText ]}>{props.Start.substr(0, 5)}</Text>
-          <View style={{ height: 3 }}></View>
-          <Text style={[ styles.timeText, styles.endTimeText ]}>{props.End.substr(0, 5)}</Text>
+class ScheduleItem extends PureComponent{
+  constructor(props) {
+    super(props)
+  }
+  render () {
+    const props = this.props
+    const icon = props.moment === -1 ? completedIcon : props.moment === 0 ? currentIcon : props.moment === 1 ? pendingIcon : null
+    return (
+      <View style={[styles.listItem, !props.isMyLesson ? styles.notMyLesson : {}]}>
+        <View style={[ styles.timeBlock, { borderColor: classTypes.getColor(props.ScheduleTypeName) }]}>
+          <View style={{ justifyContent: 'center', flex: 1 }}>
+            <Text style={[ styles.timeText, styles.startTimeText ]}>{props.Start.substr(0, 5)}</Text>
+            <View style={{ height: 3 }}></View>
+            <Text style={[ styles.timeText, styles.endTimeText ]}>{props.End.substr(0, 5)}</Text>
+          </View>
+        </View>
+        <View style={styles.mainBlock}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+            <Text style={[styles.title, { flex: 1 }]} numberOfLines={1}>{props.SubjectName}</Text>
+            {icon ? <Image style={{ width: 18, height: 18, marginLeft: 3 }} source={icon}/> : null}
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <Text style={styles.teacher}>
+              {props.userRole === userRoles.STUDENT ? props.TeacherName : `група ${props.GroupName}`}
+            </Text>
+            <Text style={styles.building}>{props.BuildingName ? `корп. ${props.BuildingName}` : ''} {props.AuditoryName ? `ауд. ${props.AuditoryName}` : ''}</Text>
+          </View>
         </View>
       </View>
-      <View style={styles.mainBlock}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-          <Text style={[styles.title, { flex: 1 }]} numberOfLines={1}>{props.SubjectName}</Text>
-          {icon ? <Image style={{ width: 18, height: 18, marginLeft: 3 }} source={icon}/> : null}
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <Text style={styles.teacher}>
-            {props.userRole === userRoles.STUDENT ? props.TeacherName : `група ${props.GroupName}`}
-          </Text>
-          <Text style={styles.building}>{props.BuildingName ? `корп. ${props.BuildingName}` : ''} {props.AuditoryName ? `ауд. ${props.AuditoryName}` : ''}</Text>
-        </View>
-      </View>
-    </View>
-  )
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -101,4 +107,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default scheduleItem
+export default ScheduleItem
