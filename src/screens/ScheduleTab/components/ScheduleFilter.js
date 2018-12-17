@@ -20,6 +20,11 @@ const chevronIcon = (
 	<Icon name="ios-arrow-down" size={16} style={{ marginLeft: 5 }} />
 )
 
+const defaultPickerItem = {
+	value: -1,
+	label: ''
+}
+
 class SheduleFilter extends Component {
 	constructor(props) {
 		super(props)
@@ -27,48 +32,52 @@ class SheduleFilter extends Component {
 		this.layoutTop = new Animated.Value(-LAYOUT_HEIGHT)
 		this.state = {
 			isShown: false,
-			groupId: this.props.filters.groupId,
-			teacherId: this.props.filters.teacherId,
-			subjectId: this.props.filters.subjectId,
-			auditoryId: this.props.filters.auditoryId
+			groupId: null,
+			teacherId: null,
+			subjectId: null,
+			auditoryId: null
 		}
 	}
 
 	groupKeyValues() {
-		return this.props.groups.sort((a, b) => a.Name - b.Name).map(g => {
+		const items = this.props.groups.sort((a, b) => a.Name - b.Name).map(g => {
 			const specialty = this.props.specialties.find(s => s.Id === g.SpecialtyId)
 			return {
 				label: `${g.Name}${specialty ? ' (' + specialty.Name + ')' : ''}`,
 				value: g.Id
 			}
 		})
+		return items && items.length > 0 ? items : [defaultPickerItem]
 	}
 
 	teacherKeyValues() {
-		return this.props.teachers.sort((a, b) => a.Name - b.Name).map(t => {
+		const items = this.props.teachers.sort((a, b) => a.Name - b.Name).map(t => {
 			return {
 				label: t.Name,
 				value: t.Id
 			}
 		})
+		return items && items.length > 0 ? items : [defaultPickerItem]
 	}
 
 	subjectKeyValues() {
-		return this.props.subjects.sort((a, b) => a.Name - b.Name).map(s => {
+		const items = this.props.subjects.sort((a, b) => a.Name - b.Name).map(s => {
 			return {
 				label: s.Name,
 				value: s.Id
 			}
 		})
+		return items && items.length > 0 ? items : [defaultPickerItem]
 	}
 
 	auditoryKeyValues() {
-		return this.props.auditories.sort((a, b) => a.Name - b.Name).map(a => {
+		const items = this.props.auditories.sort((a, b) => a.Name - b.Name).map(a => {
 			return {
 				label: a.Name,
 				value: a.Id
 			}
 		})
+		return items && items.length > 0 ? items : [defaultPickerItem]
 	}
 
 	selectedGroup() {
@@ -76,8 +85,11 @@ class SheduleFilter extends Component {
 			return 'Всі'
 		}
 		const group = this.props.groups.find(g => g.Id === this.props.filters.groupId)
-		const specialty = this.props.specialties.find(s => s.Id === group.SpecialtyId)
-		return `${group.Name}${specialty ? ' (' + specialty.Name + ')' : ''}`
+		if (group) {
+			const specialty = this.props.specialties.find(s => s.Id === group.SpecialtyId)
+			return `${group.Name}${specialty ? ' (' + specialty.Name + ')' : ''}`
+		}
+		return ''
 	}
 
 	selectedTeacher() {
@@ -85,7 +97,10 @@ class SheduleFilter extends Component {
 			return 'Всі'
 		}
 		const teacher = this.props.teachers.find(t => t.Id === this.props.filters.teacherId)
-		return teacher.Name
+		if (teacher) {
+			return teacher.Name
+		}
+		return ''
 	}
 
 	selectedSubject() {
@@ -93,7 +108,10 @@ class SheduleFilter extends Component {
 			return 'Всі'
 		}
 		const subject = this.props.subjects.find(s => s.Id === this.props.filters.subjectId)
-		return subject.Name
+		if (subject) {
+			return subject.Name
+		}
+		return ''
 	}
 
 	selectedAuditory() {
@@ -101,11 +119,20 @@ class SheduleFilter extends Component {
 			return 'Всі'
 		}
 		const auditory = this.props.auditories.find(a => a.Id === this.props.filters.auditoryId)
-		return auditory.Name
+		if (auditory) {
+			return auditory.Name
+		}
+		return ''
 	}
 
 	show() {
-		this.setState({ isShown: true })
+		this.setState({
+			isShown: true,
+			groupId: this.props.filters.groupId,
+			teacherId: this.props.filters.teacherId,
+			subjectId: this.props.filters.subjectId,
+			auditoryId: this.props.filters.auditoryId
+		})
 		Animated.parallel([
 			Animated.timing(this.backgroundOpacity, {
 				duration: ANIMATION_DURATION,
@@ -187,7 +214,7 @@ class SheduleFilter extends Component {
 							onDonePress={() => this.props.onChange({ groupId: this.state.groupId })}
 							style={{ ...pickerStyle }}
 							children={null}
-							value={this.state.groupId}
+							value={this.state.groupId || -1}
 						/>
 					</View>
 					<View style={styles.row}>
@@ -215,7 +242,7 @@ class SheduleFilter extends Component {
 							onDonePress={() => this.props.onChange({ teacherId: this.state.teacherId })}
 							style={{ ...pickerStyle }}
 							children={null}
-							value={this.state.teacherId}
+							value={this.state.teacherId || -1}
 						/>
 					</View>
 					<View style={styles.row}>

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { View, Text, SectionList, TextInput, Button, Alert } from 'react-native'
+import { View, Text, SectionList, TextInput, Button, Alert, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { logout } from '../../store/actions/index'
 import { startLogin } from '../../../App'
+import * as userRoles from '../../plugins/userRoles'
 
 class ProfileTab extends Component {
   constructor(props) {
@@ -26,6 +27,15 @@ class ProfileTab extends Component {
     )
   }
 
+  getPictureLetters(str) {
+    if (!str) return ''
+    const pattern = /[A-ZА-Я]+/g
+    const alpha = str.match(pattern)
+    if (!alpha || alpha.length <= 0) return ''
+    if (alpha.length === 1) return alpha[0]
+    return [alpha[0], alpha[1]].join('')
+  }
+
   render() {
     const sections = [
       {
@@ -35,7 +45,8 @@ class ProfileTab extends Component {
             key: 'email',
             template: () => (
               <TextInput editable={false}
-                value="example@gmail.com"
+                value={this.props.profile.userInfo.Email}
+                placeholder="Не вказано"
                 underlineColorAndroid="#fff"
                 fontWeight="300"
                 fontSize={16}
@@ -51,7 +62,8 @@ class ProfileTab extends Component {
             key: 'phone',
             template: () => (
               <TextInput editable={false}
-                value="+38 (012) 3456789"
+                value={this.props.profile.userInfo.Phone}
+                placeholder="Не вказано"
                 underlineColorAndroid="#fff"
                 fontWeight="300"
                 fontSize={16}
@@ -59,8 +71,33 @@ class ProfileTab extends Component {
             )
           }
         ]
+      },
+      {
+        data: [
+          {
+            key: 'phone',
+            template: () => (
+              <TouchableOpacity style={{ flexDirection: 'row', flex: 1 }} onPress={() => {}}>
+                <Text style={{ width: '100%', fontSize: 16, textAlign: 'center', color: 'rgb(0, 122, 255)' }}>Змінити пароль</Text>
+              </TouchableOpacity>
+            )
+          }
+        ]
+      },
+      {
+        data: [
+          {
+            key: 'phone',
+            template: () => (
+              <TouchableOpacity style={{ flexDirection: 'row', flex: 1 }} onPress={() => this.logout()}>
+                <Text style={{ width: '100%', fontSize: 16, textAlign: 'center', color: 'red' }}>Вийти</Text>
+              </TouchableOpacity>
+            )
+          }
+        ]
       }
     ]
+    const group = this.props.groups.items.find(g => g.Id === this.props.profile.userInfo.GroupId)
     return (
       <SectionList stickySectionHeadersEnabled={false}
         style={{ backgroundColor: '#f4f4f4', flex: 1 }}
@@ -103,24 +140,26 @@ class ProfileTab extends Component {
                   fontSize: 56,
                   fontWeight: '300',
                   color: '#333'
-                }}>ВМ</Text>
-              </View>
+                }}>{this.getPictureLetters(this.props.profile.userInfo.Name)}</Text>
+                  </View>
             </View>
             <View style={{ alignItems: 'center', marginTop: 15 }}>
-                <Text style={{ fontSize: 22 }}>
-                  Віталій Мосорюк
+                <Text style={{ paddingHorizontal: 40, fontSize: 22, textAlign: 'center' }}>
+                  {this.props.profile.userInfo.Name}
                 </Text>
-                <Text style={{ fontWeight: '300', marginTop: 5 }}>група 602</Text>
+                {this.props.profile.userRole === userRoles.STUDENT ?
+                  <Text style={{ fontWeight: '300', marginTop: 5 }}>
+                    {group ? `група ${group.Name}`: null}
+                  </Text> :
+                null}
             </View>
           </View>
         )}
         ListFooterComponent={() => (
-          <View style={{ height: 200, paddingTop: 25, paddingHorizontal: '15%' }}>
-            <Button title="Вийти" color='red' onPress={() => this.logout()} />
-          </View>
+          <View style={{ height: 100, paddingTop: 25, paddingHorizontal: '15%' }} />
         )}>>
         </SectionList>
-    )
+      )
   }
 }
 
@@ -132,7 +171,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
   return {
-    profile: state.profile
+    profile: state.profile,
+    groups: state.groups
   }
 }
 

@@ -24,8 +24,8 @@ class Login extends Component {
 		super(props)
 		this.keyboardHeight = new Animated.Value(0)
 		this.state = {
-			login: '',
-			password: ''
+			login: 'student@university.com',
+			password: 'UniversityStudent!@34'
 		}
 	}
 
@@ -133,7 +133,8 @@ const styles = StyleSheet.create({
 		width: '100%',
 		marginTop: 10,
 		backgroundColor: 'rgba(255, 255, 255, 0.7)',
-		padding: 20
+		padding: 20,
+		borderRadius: 2
 	},
   input: {
 		borderWidth: 1,

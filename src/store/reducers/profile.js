@@ -4,7 +4,9 @@ const initialState = {
   loading: false,
 	error: false,
 	loggedIn: false,
-  accessToken: null
+	accessToken: null,
+	userInfo: {},
+	userRole: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -13,13 +15,17 @@ const reducer = (state = initialState, action) => {
 		return {
 			...state,
 			loggedIn: true,
-			accessToken: action.payload
+			accessToken: action.payload.accessToken,
+			userInfo: action.payload.userInfo,
+			userRole: action.payload.userRole
 		}
 	case CHECK_AUTH.ERROR:
 		return {
 			...state,
 			loggedIn: false,
-			accessToken: null
+			accessToken: null,
+			userInfo: {},
+			userRole: null
 		}
 	case LOGIN.PENDING:
 		return {
@@ -32,7 +38,9 @@ const reducer = (state = initialState, action) => {
 			loading: false,
 			error: false,
 			loggedIn: true,
-			accessToken: action.payload
+			accessToken: action.payload.accessToken,
+			userInfo: action.payload.userInfo,
+			userRole: action.payload.userRole
 		}
 	case LOGIN.ERROR:
 		return {
@@ -52,7 +60,9 @@ const reducer = (state = initialState, action) => {
 			loading: false,
 			error: false,
 			loggedIn: false,
-			accessToken: null
+			accessToken: null,
+			userInfo: {},
+			userRole: null
 		}
 	case LOGOUT.ERROR:
 		return {

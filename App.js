@@ -89,7 +89,7 @@ const startLogin = () => {
     },
     appStyle: {
       navBarHidden: true,
-      statusBarColor:DARK_PRIMARY_COLOR
+      statusBarColor: DARK_PRIMARY_COLOR
     }
   })
 }
@@ -105,5 +105,6 @@ store.dispatch(checkAuth()).then(() => {
 
 export {
   startTabs,
-  startLogin
+  startLogin,
+  store
 }

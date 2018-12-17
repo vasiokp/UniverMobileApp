@@ -12,17 +12,21 @@ const pendingIcon = require('../../../assets/pending.png')
 const completedIcon = require('../../../assets/completed.png')
 const currentIcon = require('../../../assets/current.png')
 
+const saveButton = {
+  title: 'Зберегти',
+  id: 'save',
+  disabled: true
+}
+
 class ScheduleDetails extends Component {
-  static navigatorButtons = {
-    rightButtons: [{
-      title: 'Зберегти',
-      id: 'save',
-      disabled: true
-    }]
-  }
 
   constructor(props) {
     super(props)
+    if (props.passedItem.isMyLesson) {
+      this.props.navigator.setButtons({
+        rightButtons: [saveButton]
+      })
+    }
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
     this.state = {
       noteText: ''
@@ -110,7 +114,7 @@ class ScheduleDetails extends Component {
   enableSaveButton(enabled) {
     this.props.navigator.setButtons({
       rightButtons: [{
-        ...ScheduleDetails.navigatorButtons.rightButtons[0],
+        ...saveButton,
         disabled: !enabled
       }]
     })
@@ -123,7 +127,6 @@ class ScheduleDetails extends Component {
       ScheduleType,
       moment: this.props.scheduleDetails.item.moment,
       BuildingAddress: this.props.scheduleDetails.item.Auditory && this.props.scheduleDetails.item.Auditory.Building ? this.props.scheduleDetails.item.Auditory.Building.Description : '',
-      GroupName: this.props.scheduleDetails.item.Group ? this.props.scheduleDetails.item.Group.Name : '',
       Messages: this.props.scheduleDetails.item.Messages || []
     }
     const icon = details.moment === -1 ? completedIcon : details.moment === 0 ? currentIcon : details.moment === 1 ? pendingIcon : null
@@ -173,7 +176,7 @@ class ScheduleDetails extends Component {
                     {`група ${details.GroupName}`}
                   </Text> : null}
                   <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
-                    {details.Teacher}
+                    {details.TeacherName}
                   </Text>
                   <Text style={{ fontWeight: '300', color: '#666', marginTop: 10 }}>
                     {details.BuildingName ? `${details.BuildingName} корпус` : ''}, {details.AuditoryName ? `${details.AuditoryName} аудиторія` : ''}
@@ -188,7 +191,7 @@ class ScheduleDetails extends Component {
         ]
       }
     ]
-    if (details.Messages.length > 0) {
+    if (this.props.passedItem.isMyLesson && details.Messages.length > 0) {
       sections.push({
         title: 'Повідомлення',
         data: [
@@ -206,26 +209,28 @@ class ScheduleDetails extends Component {
         ]
       })
     }
-    sections.push({
-      title: 'Нотатки',
-      data: [
-        {
-          key: 'note',
-          template: () => (
-            <TextInput placeholder="Ваш текст..."
-              ref={noteInput => this.noteInput = noteInput}
-              value={this.state.noteText}
-              height={120}
-              underlineColorAndroid="#fff"
-              style={{ color:'#333' }}
-              fontWeight="300"
-              fontSize={16}
-              multiline={true}
-              onChangeText={text => this.onNoteTextChange(text)} />
-          )
-        }
-      ]
-    })
+    if (this.props.passedItem.isMyLesson) {
+      sections.push({
+        title: 'Нотатки',
+        data: [
+          {
+            key: 'note',
+            template: () => (
+              <TextInput placeholder="Ваш текст..."
+                ref={noteInput => this.noteInput = noteInput}
+                value={this.state.noteText}
+                height={120}
+                underlineColorAndroid="#fff"
+                style={{ color:'#333' }}
+                fontWeight="300"
+                fontSize={16}
+                multiline={true}
+                onChangeText={text => this.onNoteTextChange(text)} />
+            )
+          }
+        ]
+      })
+    }
     return (
       <ScrollView ref={scroller => this.scroller = scroller}
         style={{backgroundColor: '#f4f4f4', flex: 1 }}

@@ -1,7 +1,5 @@
 import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, CLEAR_SCHEDULE_DETAILS, POST_NOTE } from "../actions/actionTypes"
 
-const applicationUserId = 1
-
 const initialState = {
   loading: false,
   refreshing: false,

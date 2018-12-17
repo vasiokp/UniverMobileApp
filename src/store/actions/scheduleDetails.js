@@ -4,8 +4,6 @@ import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, CLEAR_SCHEDULE_DETAILS
 import moment from 'moment'
 import { getScheduleMoment } from './helpers'
 
-const applicationUserId = 1
-
 export const clearScheduleDetails = () => {
 	return async dispatch => {
 		dispatch({ type: CLEAR_SCHEDULE_DETAILS })
@@ -65,9 +63,10 @@ export const fetchScheduleDetails = (id, refresh) => {
 }
 
 export const addNote = (note) => {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		dispatch({ type: POST_NOTE.PENDING })
 		try {
+			const applicationUserId = getState().profile.userInfo.ApplicationUserId
 			const result = await axios.post('/api/note/add', {
 				...note,
 				ApplicationUserId: applicationUserId
@@ -89,9 +88,14 @@ export const addNote = (note) => {
 }
 
 export const updateNote = (note) => {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		dispatch({ type: POST_NOTE.PENDING })
 		try {
+			const applicationUserId = getState().profile.userInfo.ApplicationUserId
+			console.log({
+				...note,
+				ApplicationUserId: applicationUserId
+			})
 			const result = await axios.post('/api/note/update', {
 				...note,
 				ApplicationUserId: applicationUserId
