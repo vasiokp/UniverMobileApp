@@ -21,7 +21,7 @@ import {
   addMessage,
   updateMessage,
   removeMessage
-} from  '../../../store/actions/index'
+} from  '../../../store/actions'
 import moment from 'moment'
 import classTypes from '../../../plugins/classTypes'
 import { capitalize } from '../../../utils'
@@ -87,7 +87,9 @@ class ScheduleDetails extends Component {
         if (this.state.messages) {
           this.state.messages.forEach(message => {
             const msg = this.props.scheduleDetails.item.Messages.find(m => m.Id === message.Id)
-            if (msg && msg.Text !== message.Text) {
+            console.log(this.props.scheduleDetails.item.Messages)
+            console.log(msg)
+            if (msg) {
               // update
               this.props.updateMessage({
                 ...msg,
@@ -96,10 +98,19 @@ class ScheduleDetails extends Component {
               })
             } else if (!msg && message.Text !== '') {
               // add
-              this.props.addMessage({
-                ScheduleId: this.props.passedItem.Id,
-                Text: message.Text
-              })
+              if (this.props.passedItem.subSchedules && this.props.passedItem.subSchedules.length > 1) {
+                this.props.passedItem.subSchedules.forEach(s => {
+                  this.props.addMessage({
+                    ScheduleId: s.Id,
+                    Text: message.Text
+                  })
+                })
+              } else {
+                this.props.addMessage({
+                  ScheduleId: this.props.passedItem.Id,
+                  Text: message.Text
+                })
+              }
             }
           })
         }
@@ -183,7 +194,11 @@ class ScheduleDetails extends Component {
         { text: 'Ні', onPress: () => {}, style: 'cancel'},
         { text: 'Так', onPress: () => {
           if (message.Id) {
-            this.props.removeMessage(message.Id)
+            this.props.removeMessage(message.Id).then(() => {
+              this.setState({
+                massages: this.state.messages.splice(this.state.messages.findIndex(m => m.Id === message.Id), 1)
+              })
+            })
           } else {
             this.setState({
               massages: this.state.messages.splice(this.state.messages.indexOf(message), 1)
@@ -195,7 +210,8 @@ class ScheduleDetails extends Component {
   }
 
   isAddButtonEnabled() {
-    return this.state.messages.length === 0 || this.state.messages.findIndex(m => !m.Id) >= 0
+    // return this.state.messages.length === 0 || this.state.messages.findIndex(m => !m.Id) >= 0
+    return true
   }
 
   render() {
@@ -253,7 +269,7 @@ console.log(details)
                     {capitalize(moment(details.Date, 'YYYY-MM-DD').format('dddd, D MMMM YYYY'))}
                   </Text>
                   {details.GroupName ? <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
-                    {`група ${details.GroupName}`}
+                    {(details.subSchedules && details.subSchedules.length > 1) ? `групи ${details.subSchedules.map(s => s.GroupName).join(', ')}` : `група ${details.GroupName}`}
                   </Text> : null}
                   <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
                     {details.TeacherName}
@@ -292,11 +308,18 @@ console.log(details)
           data: [
             {
               key: 'messages',
-              template: () => details.Messages.map(message => (
-                <View key={message.Id} style={{ marginVertical: 8 }}>
+              template: () => details.Messages.map((message, index) => (
+                <View key={message.Id} style={[
+                  { marginVertical: 5, minHeight: 50 },
+                  index < this.state.messages.length - 1 ?
+                  { borderBottomWidth: 0.5, borderColor: '#ddd', paddingBottom: 5 }
+                  : null
+                ]}>
                   <Text style={{ fontSize: 16, fontWeight: '300' }}>{message.Text}</Text>
                   <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 3 }}>
-                    <Text style={{ fontSize: 13, fontWeight: '300', fontStyle: 'italic', color: '#666' }}>Невідомий автор</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '300', fontStyle: 'italic', color: '#666', paddingLeft: 5 }}>
+                      {details.TeacherName}
+                    </Text>
                   </View>
                 </View>
               ))
@@ -328,7 +351,7 @@ console.log(details)
                 ]}>
                 <TextInput
                   placeholder="Ваш текст..."
-                  autoFocus
+                  autoFocus={!message.Id}
                   ref={input => this.messageInputs[index] = input}
                   value={message.Text}
                   height={120}
@@ -338,13 +361,13 @@ console.log(details)
                   fontSize={16}
                   multiline={true}
                   onChangeText={text => this.onMessageTextChange(message, index, text)}
-                  onFocus={() => {
-                    this.messageInputs[index].measure((fx, fy, w, h, px, py) => {
-                      if (Platform.OS === 'ios' && py > 0) {
-                        this.scroller.scrollTo({ y: py - 200, animated: true })
-                      }
-                    })
-                  }}
+                  // onFocus={() => {
+                  //   this.messageInputs[index].measure((fx, fy, w, h, px, py) => {
+                  //     if (Platform.OS === 'ios' && py > 0) {
+                  //       this.scroller.scrollTo({ y: py - 200, animated: true })
+                  //     }
+                  //   })
+                  // }}
                 />
                 <View style={{ marginRight: -5, marginTop: 4, paddingLeft: 10 }}>
                   <TouchableOpacity onPress={() => this.removeMessage(message)}>
