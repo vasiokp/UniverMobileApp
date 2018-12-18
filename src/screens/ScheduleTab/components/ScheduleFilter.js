@@ -163,9 +163,14 @@ class SheduleFilter extends Component {
 		})
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return this.state.isShown !== nextState.isShown
+	}
+
 	render() {
+		const mode = this.state.isShown ? 'flex' : 'none'
 		return (
-			<View style={[styles.overlay, { display: this.state.isShown ? 'flex' : 'none' }]}>
+			<View style={[styles.overlay, { display: mode }]}>
 				<Animated.View style={[
 					styles.background,
 					{ opacity: this.backgroundOpacity }

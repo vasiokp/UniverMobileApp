@@ -56,7 +56,7 @@ class AttendanceTab extends Component {
         <Text style={{ fontSize: 16, fontWeight: '300' }}>Група</Text>
         <FlatList
           data = {items}
-          keyExtractor ={(item) => item.Id}
+          keyExtractor ={(item) => item.Id+''}
           ItemSeparatorComponent = {this.FlatListItemSeparator}
           renderItem={({item,index}) =><StudentInfo item={item} index={index}/>}
           >
