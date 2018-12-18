@@ -51,6 +51,15 @@ const removeIcon = (
 )
 
 class ScheduleDetails extends Component {
+  openAttendanceScreen = item => {
+    this.props.navigator.push({
+      screen: 'Attendance',
+      title: 'Відвідування',
+      passProps: {
+        schedule: item
+    }
+  })
+  }
   constructor(props) {
     super(props)
     if (props.passedItem.isMyLesson) {
@@ -198,6 +207,8 @@ class ScheduleDetails extends Component {
       BuildingAddress: this.props.scheduleDetails.item.Auditory && this.props.scheduleDetails.item.Auditory.Building ? this.props.scheduleDetails.item.Auditory.Building.Description : '',
       Messages: this.props.scheduleDetails.item.Messages || []
     }
+    
+console.log(details)
     const icon = details.moment === -1 ? completedIcon : details.moment === 0 ? currentIcon : details.moment === 1 ? pendingIcon : null
     let sections = [
       {
@@ -260,6 +271,20 @@ class ScheduleDetails extends Component {
         ]
       }
     ]
+    if (this.props.passedItem.isMyLesson && this.props.profile.userRole === userRoles.TEACHER) {
+      sections.push({
+        title: 'Відмітити присутніх',
+        button: () => (
+          <TouchableOpacity onPress={
+            this.openAttendanceScreen.bind(this, this.props.passedItem)
+          }>
+            {addIcon}
+          </TouchableOpacity>
+        ),
+        data: []
+      })
+    }
+
     if (this.props.profile.userRole === userRoles.STUDENT) {
       if (this.props.passedItem.isMyLesson && details.Messages.length > 0) {
         sections.push({

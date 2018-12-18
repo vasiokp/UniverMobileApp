@@ -6,7 +6,7 @@ import Login from './src/screens/Auth/Login'
 import ScheduleTab from './src/screens/ScheduleTab'
 import ScheduleDetails from './src/screens/ScheduleTab/components/ScheduleDetails'
 import ProfileTab from './src/screens/ProfileTab'
-import AttendanceTab from './src/screens/AttendanceTab'
+import Attendance from './src/screens/AttendanceTab'
 import ChangePassword from './src/screens/ProfileTab/components/ChangePassword'
 import NewsTabScreen from './src/screens/NewsTab/NewsTab'
 import NewsDetailsScreen from './src/screens/NewsTab/NewsDetails'
@@ -26,7 +26,7 @@ Navigation.registerComponent("Login", () => Login, store, Provider)
 Navigation.registerComponent("ScheduleTab", () => ScheduleTab, store, Provider)
 Navigation.registerComponent("ScheduleDetails", () => ScheduleDetails, store, Provider)
 Navigation.registerComponent("ProfileTab", () => ProfileTab, store, Provider)
-Navigation.registerComponent("AttendanceTab", () => AttendanceTab, store, Provider)
+Navigation.registerComponent("Attendance", () => Attendance, store, Provider)
 Navigation.registerComponent("ChangePassword", () => ChangePassword, store, Provider)
 Navigation.registerComponent("UniverMobileApp.NewsTabScreen", () => NewsTabScreen, store, Provider)
 Navigation.registerComponent("UniverMobileApp.NewsDetailsScreen", () => NewsDetailsScreen)
@@ -37,7 +37,6 @@ const startTabs = () => {
   Promise.all([
     Icon.getImageSource(iconPrefix + '-today', 28),
     Icon.getImageSource(iconPrefix + '-school', 30),
-    Icon.getImageSource(iconPrefix + '-done-all', 30),
     Icon.getImageSource(iconPrefix + '-contact', 32)
   ]).then(sources => {
     Navigation.startTabBasedApp({
@@ -55,16 +54,10 @@ const startTabs = () => {
           icon: sources[1]
         },
         {
-          screen: "AttendanceTab",
-          title: "Відвідування",
-          label: 'Відвідування',
-          icon: sources[2]
-        },
-        {
           screen: "ProfileTab",
           title: "Профіль",
           label: 'Профіль',
-          icon: sources[3]
+          icon: sources[2]
         }
       ],
       appStyle: {

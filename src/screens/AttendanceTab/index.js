@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, FlatList, TextInput, Button, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
-import { logout } from '../../store/actions/index'
+import { fetchAttendance } from '../../store/actions/index'
 import StudentInfo from './components/studentInfo'
 
 class AttendanceTab extends Component {
@@ -50,10 +50,17 @@ class AttendanceTab extends Component {
     );
   }
 
+  componentDidMount () {
+    this.props.getAttendance('677')
+  }
+
   render() {
+    console.log(this.props)
     return (
       <View style={styles.container}>
-        <Text style={{ fontSize: 16, fontWeight: '300' }}>Група</Text>
+        <Text style={{ fontSize: 16, fontWeight: '300' }}>Група {this.props.schedule.GroupName}</Text>
+        <Text style={{ fontSize: 16, fontWeight: '300' }}>{this.props.schedule.SubjectName}</Text>
+
         <FlatList
           data = {items}
           keyExtractor ={(item) => item.Id+''}
@@ -264,13 +271,13 @@ const items = [
  ]
 const mapDispatchToProps = dispatch => {
   return {
-    logout: () => dispatch(logout())
+    getAttendance: (id) => dispatch(fetchAttendance(id))
   }
 }
 
 const mapStateToProps = state => {
   return {
-    profile: state.profile
+    attendance: state.attendance
   }
 }
 
