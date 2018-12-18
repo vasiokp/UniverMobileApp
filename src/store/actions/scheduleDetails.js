@@ -67,6 +67,10 @@ export const addNote = (note) => {
 		dispatch({ type: POST_NOTE.PENDING })
 		try {
 			const applicationUserId = getState().profile.userInfo.ApplicationUserId
+			console.log({
+				...note,
+				ApplicationUserId: applicationUserId
+			})
 			const result = await axios.post('/api/note/add', {
 				...note,
 				ApplicationUserId: applicationUserId
@@ -92,10 +96,6 @@ export const updateNote = (note) => {
 		dispatch({ type: POST_NOTE.PENDING })
 		try {
 			const applicationUserId = getState().profile.userInfo.ApplicationUserId
-			console.log({
-				...note,
-				ApplicationUserId: applicationUserId
-			})
 			const result = await axios.post('/api/note/update', {
 				...note,
 				ApplicationUserId: applicationUserId

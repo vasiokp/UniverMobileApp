@@ -194,10 +194,8 @@ class ScheduleTab extends Component {
     } else {
       if (this.allFiltersAreNull()) return {}
       let filteredItems = {}
-      const allFiltersAreNull = this.allFiltersAreNull()
       Object.keys(this.props.schedule.all).forEach(key => {
         filteredItems[key] = this.props.schedule.all[key].filter(item => (
-          // !allFiltersAreNull &&
           (filters.groupId == null || item.GroupId === filters.groupId) &&
           (filters.teacherId == null || item.TeacherId === filters.teacherId) &&
           (filters.subjectId == null || item.SubjectId === filters.subjectId) &&
@@ -242,7 +240,7 @@ class ScheduleTab extends Component {
               userRole: this.props.profile.userRole,
               isMyLesson: this.props.profile.userRole === userRoles.STUDENT ?
                 item.GroupId === this.props.profile.userInfo.GroupId :
-                this.props.profile.userRole === userRoles.STUDENT ?
+                this.props.profile.userRole === userRoles.TEACHER ?
                 item.TeacherId === this.props.profile.userInfo.Id :
                 false
             }
