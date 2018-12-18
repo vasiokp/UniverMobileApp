@@ -163,6 +163,14 @@ class SheduleFilter extends Component {
 			}),
 		]).start(() => {
 			this.setState({ isShown: false })
+			if (Platform.OS !== 'ios'){
+				this.props.onChange({ 
+					groupId: this.state.groupId,
+					teacherId: this.state.teacherId === -1 ? null : this.state.teacherId,
+					subjectId: this.state.subjectId === -1 ? null : this.state.subjectId,
+					auditoryId: this.state.auditoryId === -1 ? null : this.state.auditoryId,
+				 })
+			}
 			if (this.props.onClose) {
 				this.props.onClose()
 			}
