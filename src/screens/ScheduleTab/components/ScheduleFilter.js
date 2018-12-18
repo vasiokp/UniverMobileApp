@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Animated, Switch, TouchableOpacity, Platform } from 'react-native'
+import { View, Text, StyleSheet, Animated, Switch, TouchableOpacity, Picker, Platform } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/Ionicons'
 
@@ -51,32 +51,38 @@ class SheduleFilter extends Component {
 	}
 
 	teacherKeyValues() {
-		const items = this.props.teachers.sort((a, b) => a.Name - b.Name).map(t => {
+		let items = this.props.teachers.sort((a, b) => a.Name - b.Name).map(t => {
 			return {
 				label: t.Name,
 				value: t.Id
 			}
 		})
+		items.unshift({ label: 'Всі', value: -1 })
+
 		return items && items.length > 0 ? items : [defaultPickerItem]
 	}
 
 	subjectKeyValues() {
-		const items = this.props.subjects.sort((a, b) => a.Name - b.Name).map(s => {
+		let items = this.props.subjects.sort((a, b) => a.Name - b.Name).map(s => {
 			return {
 				label: s.Name,
 				value: s.Id
 			}
 		})
+		items.unshift({ label: 'Всі', value: -1 })
+
 		return items && items.length > 0 ? items : [defaultPickerItem]
 	}
 
 	auditoryKeyValues() {
-		const items = this.props.auditories.sort((a, b) => a.Name - b.Name).map(a => {
+		let items = this.props.auditories.sort((a, b) => a.Name - b.Name).map(a => {
 			return {
 				label: a.Name,
 				value: a.Id
 			}
 		})
+		items.unshift({ label: 'Всі', value: -1 })
+
 		return items && items.length > 0 ? items : [defaultPickerItem]
 	}
 
@@ -163,33 +169,54 @@ class SheduleFilter extends Component {
 		})
 	}
 
-	render() {
-		return (this.state.isShown || Platform.OS === 'ios') ? (
-			<View style={[styles.overlay, { display: this.state.isShown ? 'flex' : 'none' }]}>
-				<Animated.View style={[
-					styles.background,
-					{ opacity: this.backgroundOpacity }
-				]}
-					onStartShouldSetResponder={() => this.hide()}>
-				</Animated.View>
-				<Animated.View style={[
-					styles.layout,
-					{ top: this.layoutTop }
-				]}>
-					<View style={styles.row}>
-						<Text style={styles.label} numberOfLines={1} adjustsFontSizeToFit={true}>
-							Показувати тільки мій розклад
-						</Text>
-						<Switch value={this.props.filters.showOnlyMySchedule}
-							onValueChange={value => this.props.onChange({
-								showOnlyMySchedule: value,
-								...(value ? {
-									showOnlyFilteredSchedule: false
-								} : {})
-							})}
-						/>
-					</View>
-					<View style={styles.row}>
+	getPickerItemsForAndroid (items) {
+		return items.map((s, i) => {
+            return <Picker.Item key={i} value={s.value} label = {s.label} />
+		})
+	}
+
+	getRowWrapperForAndroid (title, children) {
+		return (
+			<View style={styles.row}>
+				<Text style={[styles.label, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}>
+					{title}
+				</Text>
+				{children}
+			</View>
+		)
+	}
+
+	buildTeacherRowAndroid () {
+		let items = this.getPickerItemsForAndroid(this.teacherKeyValues())
+		let pickerEl = (
+            <Picker
+				style={{ flex:2 }}
+				enabled={!this.props.filters.showOnlyMySchedule}
+				selectedValue={this.state.teacherId || -1}
+				onValueChange={value => this.setState({ teacherId: value })}>
+					{items}
+            </Picker>
+		)
+		return this.getRowWrapperForAndroid("Викладач", pickerEl)
+	}
+
+	buildGroupRowAndroid () {
+		let items = this.getPickerItemsForAndroid(this.groupKeyValues())
+		let pickerEl = (
+            <Picker
+				style={{ flex:2 }}
+				enabled={!this.props.filters.showOnlyMySchedule}
+				selectedValue={this.state.groupId || -1}
+				onValueChange={value => this.setState({ groupId: value })}>
+					{items}
+            </Picker>
+		)
+		return this.getRowWrapperForAndroid("Група", pickerEl)
+	}
+
+	buildGroupRowiOS () {
+		return (
+			<View style={styles.row}>
 						<Text style={[styles.label, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}>
 							Група
 						</Text>
@@ -217,7 +244,11 @@ class SheduleFilter extends Component {
 							value={this.state.groupId || -1}
 						/>
 					</View>
-					<View style={styles.row}>
+		)
+	}
+
+	buildTeacherRowiOS () {
+	return	(<View style={styles.row}>
 						<Text style={[styles.label, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}>
 							Викладач
 						</Text>
@@ -244,8 +275,26 @@ class SheduleFilter extends Component {
 							children={null}
 							value={this.state.teacherId || -1}
 						/>
-					</View>
-					<View style={styles.row}>
+					</View>)
+	}
+
+	buildSubjectRowAndroid () {
+		let items = this.getPickerItemsForAndroid(this.subjectKeyValues())
+		let pickerEl = (
+            <Picker
+				style={{ flex:2 }}
+				enabled={!this.props.filters.showOnlyMySchedule}
+				selectedValue={this.state.subjectId || -1}
+				onValueChange={value => this.setState({ subjectId: value })}>
+					{items}
+            </Picker>
+		)
+		return this.getRowWrapperForAndroid("Предмет", pickerEl)
+	}
+
+	buildSubjectRowiOS () {
+		return (
+			<View style={styles.row}>
 						<Text style={[styles.label, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}>
 							Предмет
 						</Text>
@@ -273,34 +322,103 @@ class SheduleFilter extends Component {
 							value={this.state.subjectId}
 						/>
 					</View>
-					<View style={[styles.row, styles.lastRow]}>
-						<Text style={[styles.label, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}>
-							Аудиторія
+		)
+	}
+
+	buildAuditoryRowAndroid () {
+		let items = this.getPickerItemsForAndroid(this.auditoryKeyValues())
+		let pickerEl = (
+            <Picker
+				style={{ flex:2 }}
+				enabled={!this.props.filters.showOnlyMySchedule}
+				selectedValue={this.state.auditoryId || -1}
+				onValueChange={value => this.setState({ auditoryId: value })}>
+					{items}
+            </Picker>
+		)
+		return this.getRowWrapperForAndroid("Аудиторія", pickerEl)
+	}
+
+	buildAuditoryRowiOS () {
+		return (
+			<View style={[styles.row, styles.lastRow]}>
+								<Text style={[styles.label, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}>
+									Аудиторія
+								</Text>
+								<TouchableOpacity
+									style={[styles.picker, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}
+									activeOpacity={0.4}
+									onPress={() => this.auditoryPicker.togglePicker(true)}
+									disabled={this.props.filters.showOnlyMySchedule}>
+									<Text style={styles.pickerLabel}
+										numberOfLines={1}
+										ellipsizeMode="middle">
+										{this.selectedAuditory()}
+									</Text>
+									{chevronIcon}
+								</TouchableOpacity>
+								<RNPickerSelect
+									ref={auditoryPicker => this.auditoryPicker = auditoryPicker}
+									placeholder={{ label: 'Всі', value: null }}
+									hideIcon={true}
+									items={this.auditoryKeyValues()}
+									onValueChange={value => this.setState({ auditoryId: value })}
+									onDonePress={() => this.props.onChange({ auditoryId: this.state.auditoryId })}
+									style={{ ...pickerStyle }}
+									children={null}
+									value={this.state.auditoryId}
+								/>
+							</View>
+		)
+	}
+
+	render() {
+		let groupRow = null
+		let teacherRow = null
+		let subjectRow = null
+		let auditoryRow = null
+		if (Platform.OS !== 'ios'){
+			groupRow = this.buildGroupRowAndroid()
+			teacherRow = this.buildTeacherRowAndroid()
+			subjectRow = this.buildSubjectRowAndroid()
+			auditoryRow = this.buildAuditoryRowAndroid()
+		} else {
+			groupRow = this.buildGroupRowiOS()
+			teacherRow = this.buildTeacherRowiOS()
+			subjectRow = this.buildSubjectRowiOS()
+			auditoryRow = this.buildAuditoryRowiOS()
+		}
+
+
+		return (this.state.isShown || Platform.OS === 'ios') ? (
+			<View style={[styles.overlay, { display: this.state.isShown ? 'flex' : 'none' }]}>
+				<Animated.View style={[
+					styles.background,
+					{ opacity: this.backgroundOpacity }
+				]}
+					onStartShouldSetResponder={() => this.hide()}>
+				</Animated.View>
+				<Animated.View style={[
+					styles.layout,
+					{ top: this.layoutTop }
+				]}>
+					<View style={styles.row}>
+						<Text style={styles.label} numberOfLines={1} adjustsFontSizeToFit={true}>
+							Показувати тільки мій розклад
 						</Text>
-						<TouchableOpacity
-							style={[styles.picker, this.props.filters.showOnlyMySchedule ? styles.disabled : {}]}
-							activeOpacity={0.4}
-							onPress={() => this.auditoryPicker.togglePicker(true)}
-							disabled={this.props.filters.showOnlyMySchedule}>
-							<Text style={styles.pickerLabel}
-								numberOfLines={1}
-								ellipsizeMode="middle">
-								{this.selectedAuditory()}
-							</Text>
-							{chevronIcon}
-						</TouchableOpacity>
-						<RNPickerSelect
-							ref={auditoryPicker => this.auditoryPicker = auditoryPicker}
-							placeholder={{ label: 'Всі', value: null }}
-							hideIcon={true}
-							items={this.auditoryKeyValues()}
-							onValueChange={value => this.setState({ auditoryId: value })}
-							onDonePress={() => this.props.onChange({ auditoryId: this.state.auditoryId })}
-							style={{ ...pickerStyle }}
-							children={null}
-							value={this.state.auditoryId}
+						<Switch value={this.props.filters.showOnlyMySchedule}
+							onValueChange={value => this.props.onChange({
+								showOnlyMySchedule: value,
+								...(value ? {
+									showOnlyFilteredSchedule: false
+								} : {})
+							})}
 						/>
 					</View>
+					{groupRow}
+					{teacherRow}
+					{subjectRow}
+					{auditoryRow}
 				</Animated.View>
 			</View>
 		) : null
