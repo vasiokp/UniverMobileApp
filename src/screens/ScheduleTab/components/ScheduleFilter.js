@@ -163,9 +163,13 @@ class SheduleFilter extends Component {
 		})
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
-		return this.state.isShown !== nextState.isShown
-	}
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	return this.state.isShown !== nextState.isShown ||
+	// 	this.state.groupId !== nextState.groupId ||
+	// 	this.state.teacherId !== nextState.teacherId ||
+	// 	this.state.subjectId !== nextState.subjectId ||
+	// 	this.state.auditoryId !== nextState.auditoryId
+	// }
 
 	render() {
 		const mode = this.state.isShown ? 'flex' : 'none'
