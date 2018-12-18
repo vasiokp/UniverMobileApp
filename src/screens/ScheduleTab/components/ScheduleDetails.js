@@ -114,7 +114,7 @@ class ScheduleDetails extends Component {
     this.props.fetchScheduleDetails(this.props.passedItem.Id).then(() => {
       this.setState({
         noteText: this.props.scheduleDetails.item.Note ? this.props.scheduleDetails.item.Note.Text : '',
-        messages: this.props.scheduleDetails.item.Messages
+        messages: this.props.scheduleDetails.item.Messages || []
       })
     })
     const intervalId = setInterval(() => {

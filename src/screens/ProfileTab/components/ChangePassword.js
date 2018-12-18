@@ -15,6 +15,8 @@ import { changePassword, clearErrors } from '../../../store/actions'
 
 const KEYBOARD_HEIGHT = 200
 
+const PASSWORD_PATTERN = /(?=.*\d)(?=.*[a-zа-я])(?=.*[A-ZА-Я]).{6,}/
+
 class ChangePassword extends Component {
 	static navigatorButtons = {
     rightButtons: [{
@@ -31,7 +33,8 @@ class ChangePassword extends Component {
 			oldPassword: '',
 			newPassword: '',
 			newPasswordConfirm: '',
-			passwordsEqual: true
+			passwordsEqual: true,
+			passwordValid: true
 		}
 	}
 
@@ -84,21 +87,29 @@ class ChangePassword extends Component {
 		return this.state.oldPassword === '' || this.state.newPassword === '' || this.state.newPasswordConfirm === ''
 	}
 
+	validatePassword (password) {
+		return PASSWORD_PATTERN.test(password)
+	}
+
 	submit() {
+		this.setState({ passwordsEqual: true, passwordValid: true })
 		if (this.state.newPassword !== this.state.newPasswordConfirm) {
 			this.setState({ passwordsEqual: false })
 			return
-		} else {
-			this.setState({ passwordsEqual: true })
-			this.props.changePassword({
-				newPassword: this.state.newPassword,
-				oldPassword: this.state.oldPassword
-			}).then(() => {
-				if (this.props.profile.error === false) {
-					this.props.navigator.dismissModal()
-				}
-			})
 		}
+		if (!this.validatePassword(this.state.newPassword)) {
+			this.setState({ passwordValid: false })
+			return
+		}
+		this.setState({ passwordsEqual: true, passwordValid: true })
+		this.props.changePassword({
+			newPassword: this.state.newPassword,
+			oldPassword: this.state.oldPassword
+		}).then(() => {
+			if (this.props.profile.error === false) {
+				this.props.navigator.dismissModal()
+			}
+		})
   }
 
 	render() {
@@ -106,6 +117,9 @@ class ChangePassword extends Component {
 			<View style={styles.page}>
 				<View style={styles.wrapper}>
 					<Text style={styles.title}>Зміна паролю</Text>
+					<Text style={styles.info}>
+						Пароль повинен містити принаймні 6 символів, хоча б одну цифру, одну літеру в нижньому регістрі і одну літеру у верхньому регістрі
+					</Text>
 					<View style={styles.form}>
 						<TextInput placeholder="Старий пароль"
 							textContentType="password"
@@ -140,8 +154,9 @@ class ChangePassword extends Component {
 							underlineColorAndroid='transparent'
 							style={styles.input}
 						/>
-						{this.props.profile.error ? <Text style={styles.errorText}>Невірний пароль</Text> : null}
-						{!this.props.profile.error && !this.state.passwordsEqual ? <Text style={styles.errorText}>Паролі не співпадають</Text> : null}
+						{(this.state.passwordsEqual && this.props.profile.error) ? <Text style={styles.errorText}>Невірний пароль</Text> : null}
+						{(!this.state.passwordsEqual && this.state.passwordValid) ? <Text style={styles.errorText}>Паролі не співпадають</Text> : null}
+						{!this.state.passwordValid ? <Text style={styles.errorText}>Пароль не відповідає вимогам</Text> : null}
 						<TouchableOpacity onPress={() => this.submit()}
 							style={[styles.button, this.submitDisabled() ? styles.disabledButton : {}]}
 							disabled={this.submitDisabled() || this.props.profile.loading}
@@ -178,6 +193,12 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontWeight: '300',
 		color: '#555'
+	},
+	info: {
+		textAlign: 'center',
+		marginTop: 10,
+		color: '#888',
+		fontWeight: '300'
 	},
   input: {
 		borderWidth: 1,
