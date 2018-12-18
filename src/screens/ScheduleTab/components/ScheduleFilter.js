@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Animated, Switch, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Animated, Switch, TouchableOpacity, Platform } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/Ionicons'
 
@@ -163,18 +163,9 @@ class SheduleFilter extends Component {
 		})
 	}
 
-	// shouldComponentUpdate(nextProps, nextState) {
-	// 	return this.state.isShown !== nextState.isShown ||
-	// 	this.state.groupId !== nextState.groupId ||
-	// 	this.state.teacherId !== nextState.teacherId ||
-	// 	this.state.subjectId !== nextState.subjectId ||
-	// 	this.state.auditoryId !== nextState.auditoryId
-	// }
-
 	render() {
-		const mode = this.state.isShown ? 'flex' : 'none'
-		return (
-			<View style={[styles.overlay, { display: mode }]}>
+		return (this.state.isShown || Platform.OS === 'ios') ? (
+			<View style={[styles.overlay, { display: this.state.isShown ? 'flex' : 'none' }]}>
 				<Animated.View style={[
 					styles.background,
 					{ opacity: this.backgroundOpacity }
@@ -312,7 +303,7 @@ class SheduleFilter extends Component {
 					</View>
 				</Animated.View>
 			</View>
-		)
+		) : null
 	}
 }
 
