@@ -7,6 +7,7 @@ import ScheduleTab from './src/screens/ScheduleTab'
 import ScheduleDetails from './src/screens/ScheduleTab/components/ScheduleDetails'
 import ProfileTab from './src/screens/ProfileTab'
 import AttendanceTab from './src/screens/AttendanceTab'
+import ChangePassword from './src/screens/ProfileTab/components/ChangePassword'
 import NewsTabScreen from './src/screens/NewsTab/NewsTab'
 import NewsDetailsScreen from './src/screens/NewsTab/NewsDetails'
 import { PRIMARY_COLOR, TEXT_COLOR, DARK_PRIMARY_COLOR, SELECTED_TAB_COLOR } from './src/plugins/AppColors'
@@ -26,6 +27,7 @@ Navigation.registerComponent("ScheduleTab", () => ScheduleTab, store, Provider)
 Navigation.registerComponent("ScheduleDetails", () => ScheduleDetails, store, Provider)
 Navigation.registerComponent("ProfileTab", () => ProfileTab, store, Provider)
 Navigation.registerComponent("AttendanceTab", () => AttendanceTab, store, Provider)
+Navigation.registerComponent("ChangePassword", () => ChangePassword, store, Provider)
 Navigation.registerComponent("UniverMobileApp.NewsTabScreen", () => NewsTabScreen, store, Provider)
 Navigation.registerComponent("UniverMobileApp.NewsDetailsScreen", () => NewsDetailsScreen)
 
