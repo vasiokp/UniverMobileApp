@@ -1,6 +1,14 @@
 import { AsyncStorage } from "react-native"
 import axios from '../../plugins/axios'
-import { FETCH_SCHEDULE_DETAILS, UPDATE_SCHEDULE_DETAILS, CLEAR_SCHEDULE_DETAILS, POST_NOTE } from "./actionTypes"
+import {
+	FETCH_SCHEDULE_DETAILS,
+	UPDATE_SCHEDULE_DETAILS,
+	CLEAR_SCHEDULE_DETAILS,
+	POST_NOTE,
+	POST_MESSAGE,
+	DELETE_MESSAGE_SUCCESS,
+	UPDATE_MESSAGE_SUCCESS
+} from "./actionTypes"
 import moment from 'moment'
 import { getScheduleMoment } from './helpers'
 
@@ -67,10 +75,6 @@ export const addNote = (note) => {
 		dispatch({ type: POST_NOTE.PENDING })
 		try {
 			const applicationUserId = getState().profile.userInfo.ApplicationUserId
-			console.log({
-				...note,
-				ApplicationUserId: applicationUserId
-			})
 			const result = await axios.post('/api/note/add', {
 				...note,
 				ApplicationUserId: applicationUserId
@@ -112,6 +116,80 @@ export const updateNote = (note) => {
 		} catch(err) {
 			console.log(err)
 			dispatch({ type: POST_NOTE.ERROR })
+		}
+	}
+}
+
+export const addMessage = (message) => {
+	return async (dispatch, getState) => {
+		dispatch({ type: POST_MESSAGE.PENDING })
+		try {
+			const applicationUserId = getState().profile.userInfo.ApplicationUserId
+			const result = await axios.post('/api/note/add', {
+				...message,
+				ApplicationUserId: applicationUserId
+			})
+			if (result.status === 200) {
+				dispatch({
+					type: POST_MESSAGE.SUCCESS,
+					payload: result.data
+				})
+			} else {
+				console.log(result)
+				dispatch({ type: POST_MESSAGE.ERROR })
+			}
+		} catch(err) {
+			console.log(err)
+			dispatch({ type: POST_MESSAGE.ERROR })
+		}
+	}
+}
+
+export const updateMessage = (message) => {
+	return async (dispatch, getState) => {
+		dispatch({ type: POST_MESSAGE.PENDING })
+		try {
+			const applicationUserId = getState().profile.userInfo.ApplicationUserId
+			const result = await axios.post('/api/note/update', {
+				...message,
+				ApplicationUserId: applicationUserId
+			})
+			if (result.status === 200) {
+				dispatch({
+					type: UPDATE_MESSAGE_SUCCESS,
+					payload: result.data
+				})
+			} else {
+				console.log(result)
+				dispatch({ type: POST_MESSAGE.ERROR })
+			}
+		} catch(err) {
+			console.log(err)
+			dispatch({ type: POST_MESSAGE.ERROR })
+		}
+	}
+}
+
+export default removeMessage = (id) => {
+	return async dispatch => {
+		dispatch({ type: POST_MESSAGE.PENDING })
+		try {
+			const result = await axios.post('/api/note/delete', {
+				Id: id,
+				ApplicationUserId: applicationUserId
+			})
+			if (result.status === 200) {
+				dispatch({
+					type: DELETE_MESSAGE_SUCCESS,
+					payload: id
+				})
+			} else {
+				console.log(result)
+				dispatch({ type: POST_MESSAGE.ERROR })
+			}
+		} catch(err) {
+			console.log(err)
+			dispatch({ type: POST_MESSAGE.ERROR })
 		}
 	}
 }

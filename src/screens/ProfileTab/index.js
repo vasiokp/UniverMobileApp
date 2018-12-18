@@ -27,6 +27,12 @@ class ProfileTab extends Component {
     )
   }
 
+  changePassword() {
+    this.props.navigator.showModal({
+      screen: 'ChangePassword'
+    })
+  }
+
   getPictureLetters(str) {
     if (!str) return ''
     const pattern = /[A-ZА-Я]+/g
@@ -77,7 +83,7 @@ class ProfileTab extends Component {
           {
             key: 'phone',
             template: () => (
-              <TouchableOpacity style={{ flexDirection: 'row', flex: 1 }} onPress={() => {}}>
+              <TouchableOpacity style={{ flexDirection: 'row', flex: 1 }} onPress={() => this.changePassword()}>
                 <Text style={{ width: '100%', fontSize: 16, textAlign: 'center', color: 'rgb(0, 122, 255)' }}>Змінити пароль</Text>
               </TouchableOpacity>
             )

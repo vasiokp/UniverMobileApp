@@ -13,7 +13,15 @@ import {
   Alert
 } from 'react-native'
 import { connect } from 'react-redux'
-import { fetchScheduleDetails, updateScheduleDetails, addNote, updateNote } from  '../../../store/actions/index'
+import {
+  fetchScheduleDetails,
+  updateScheduleDetails,
+  addNote,
+  updateNote,
+  addMessage,
+  updateMessage,
+  removeMessage
+} from  '../../../store/actions/index'
 import moment from 'moment'
 import classTypes from '../../../plugins/classTypes'
 import { capitalize } from '../../../utils'
@@ -67,24 +75,25 @@ class ScheduleDetails extends Component {
           if (input && input.blur) input.blur()
         })
         this.enableSaveButton(false)
-        console.log(this.state.messages)
-        this.state.messages.forEach(message => {
-          const msg = this.props.scheduleDetails.item.Messages.find(m => m.Id === message.Id)
-          if (msg && msg.Text !== message.Text) {
-            // update
-            this.props.updateNote({
-              ...msg,
-              ScheduleId: this.props.passedItem.Id,
-              Text: message.Text
-            })
-          } else if (!msg && message.Text !== '') {
-            // add
-            this.props.addNote({
-              ScheduleId: this.props.passedItem.Id,
-              Text: message.Text
-            })
-          }
-        })
+        if (this.state.messages) {
+          this.state.messages.forEach(message => {
+            const msg = this.props.scheduleDetails.item.Messages.find(m => m.Id === message.Id)
+            if (msg && msg.Text !== message.Text) {
+              // update
+              this.props.updateMessage({
+                ...msg,
+                ScheduleId: this.props.passedItem.Id,
+                Text: message.Text
+              })
+            } else if (!msg && message.Text !== '') {
+              // add
+              this.props.addMessage({
+                ScheduleId: this.props.passedItem.Id,
+                Text: message.Text
+              })
+            }
+          })
+        }
         if (this.props.scheduleDetails.item.Note && this.props.scheduleDetails.item.Note.Text !== this.state.noteText) {
           this.props.updateNote({
             ...this.props.scheduleDetails.item.Note,
@@ -164,9 +173,13 @@ class ScheduleDetails extends Component {
       [
         { text: 'Ні', onPress: () => {}, style: 'cancel'},
         { text: 'Так', onPress: () => {
-          this.setState({
-            massages: this.state.messages.splice(this.state.messages.indexOf(message), 1)
-          })
+          if (message.Id) {
+            this.props.removeMessage(message.Id)
+          } else {
+            this.setState({
+              massages: this.state.messages.splice(this.state.messages.indexOf(message), 1)
+            })
+          }
         }}
       ]
     )
@@ -349,7 +362,7 @@ class ScheduleDetails extends Component {
     }
     return (
       <ScrollView ref={scroller => this.scroller = scroller}
-        style={{backgroundColor: '#f4f4f4', flex: 1 }}
+        style={{ backgroundColor: '#f4f4f4', flex: 1 }}
         refreshControl={
           <RefreshControl
             refreshing={this.props.scheduleDetails.refreshing}
@@ -401,7 +414,10 @@ const mapDispatchToProps = dispatch => {
     fetchScheduleDetails: (id, refresh = false) => dispatch(fetchScheduleDetails(id, refresh)),
     updateScheduleDetails: () => dispatch(updateScheduleDetails()),
     addNote: note => dispatch(addNote(note)),
-    updateNote: note => dispatch(updateNote(note))
+    updateNote: note => dispatch(updateNote(note)),
+    addMessage: message => dispatch(addMessage(message)),
+    updateMessage: message => dispatch(updateMessage(message)),
+    removeMessage: id => dispatch(removeMessage(id))
   }
 }
 

@@ -1,6 +1,6 @@
 import { AsyncStorage } from "react-native"
 import axios from '../../plugins/axios'
-import { CHECK_AUTH, LOGIN, LOGOUT } from "./actionTypes"
+import { CHECK_AUTH, LOGIN, LOGOUT, CHANGE_PASSWORD, CLEAR_PROFILE_ERROR } from "./actionTypes"
 import * as userRoles from '../../plugins/userRoles'
 import md5 from 'js-md5'
 import moment from 'moment'
@@ -148,5 +148,38 @@ export const logout = () => {
 			console.log(err)
 			dispatch({ type: LOGOUT.ERROR })
 		}
+	}
+}
+
+export const changePassword = (payload) => {
+	return async (dispatch, getState) => {
+		dispatch({ type: CHANGE_PASSWORD.PENDING })
+		try {
+			const login = await AsyncStorage.getItem('login')
+			const applicationUserId = getState().profile.userInfo.ApplicationUserId
+			const body = {
+				Id: applicationUserId,
+				Email: login,
+				NewPassword: md5(payload.newPassword),
+				OldPassword: md5(payload.oldPassword)
+			}
+			const result = await axios.post('/api/user/changepassword', body)
+			if (result.status === 200) {
+				await AsyncStorage.getItem.setItem('passwordHash', md5(payload.newPassword))
+				dispatch({ type: CHANGE_PASSWORD.SUCCESS })
+			} else {
+				console.log(result)
+				dispatch({ type: CHANGE_PASSWORD.ERROR })
+			}
+		} catch(err) {
+			console.log(err)
+			dispatch({ type: CHANGE_PASSWORD.ERROR })
+		}
+	}
+}
+
+export const clearErrors = () => {
+	return dispatch => {
+		dispatch({ type: CLEAR_PROFILE_ERROR })
 	}
 }
