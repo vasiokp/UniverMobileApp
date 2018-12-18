@@ -21,6 +21,7 @@ import moment from 'moment'
 import ScheduleDay from './components/ScheduleDay'
 import ScheduleItem from './components/ScheduleItem'
 import ScheduleFilter from './components/ScheduleFilter'
+import { groupBy } from '../../utils'
 
 LocaleConfig.locales['uk'] = {
   monthNames: ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'],
@@ -190,7 +191,20 @@ class ScheduleTab extends Component {
   mergedItems() {
     const filters = this.props.schedule.filters
     if (filters.showOnlyMySchedule) {
-      return this.props.schedule.items
+      if (this.props.profile.userRole === userRoles.STUDENT) {
+        return this.props.schedule.items
+      }
+      let items = {}
+      Object.keys(this.props.schedule.items).forEach(key => {
+        const groups = groupBy(this.props.schedule.items[key], 'LessonNumber')
+        items[key] = Object.keys(groups).map(g => {
+          return {
+            ...(groups[g][0] || []),
+            subSchedules: groups[g]
+          }
+        })
+      })
+      return items
     } else {
       if (this.allFiltersAreNull()) return {}
       let filteredItems = {}

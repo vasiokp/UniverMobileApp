@@ -24,8 +24,10 @@ const scheduleItem = (props) => {
           {icon ? <Image style={{ width: 18, height: 18, marginLeft: 3 }} source={icon}/> : null}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <Text style={styles.teacher}>
-            {props.userRole === userRoles.STUDENT ? props.TeacherName : `група ${props.GroupName}`}
+          <Text style={[styles.teacher, { flex: 1, marginRight: 8 }]} numberOfLines={1}>
+            {props.userRole === userRoles.STUDENT ? props.TeacherName : (
+              (props.subSchedules && props.subSchedules.length > 1) ? `групи ${props.subSchedules.map(s => s.GroupName).join(', ')}` : `група ${props.GroupName}`
+            )}
           </Text>
           <Text style={styles.building}>{props.BuildingName ? `корп. ${props.BuildingName}` : ''} {props.AuditoryName ? `ауд. ${props.AuditoryName}` : ''}</Text>
         </View>

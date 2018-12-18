@@ -77,7 +77,8 @@ export const addNote = (note) => {
 			const applicationUserId = getState().profile.userInfo.ApplicationUserId
 			const result = await axios.post('/api/note/add', {
 				...note,
-				ApplicationUserId: applicationUserId
+				ApplicationUserId: applicationUserId,
+				IsMessage: false
 			})
 			if (result.status === 200) {
 				dispatch({
@@ -102,7 +103,8 @@ export const updateNote = (note) => {
 			const applicationUserId = getState().profile.userInfo.ApplicationUserId
 			const result = await axios.post('/api/note/update', {
 				...note,
-				ApplicationUserId: applicationUserId
+				ApplicationUserId: applicationUserId,
+				IsMessage: false
 			})
 			if (result.status === 200) {
 				dispatch({
@@ -127,7 +129,8 @@ export const addMessage = (message) => {
 			const applicationUserId = getState().profile.userInfo.ApplicationUserId
 			const result = await axios.post('/api/note/add', {
 				...message,
-				ApplicationUserId: applicationUserId
+				ApplicationUserId: applicationUserId,
+				IsMessage: true
 			})
 			if (result.status === 200) {
 				dispatch({
@@ -152,7 +155,8 @@ export const updateMessage = (message) => {
 			const applicationUserId = getState().profile.userInfo.ApplicationUserId
 			const result = await axios.post('/api/note/update', {
 				...message,
-				ApplicationUserId: applicationUserId
+				ApplicationUserId: applicationUserId,
+				IsMessage: true
 			})
 			if (result.status === 200) {
 				dispatch({
@@ -170,13 +174,15 @@ export const updateMessage = (message) => {
 	}
 }
 
-export default removeMessage = (id) => {
-	return async dispatch => {
+export const removeMessage = (id) => {
+	return async (dispatch, getState) => {
 		dispatch({ type: POST_MESSAGE.PENDING })
 		try {
+			const applicationUserId = getState().profile.userInfo.ApplicationUserId
 			const result = await axios.post('/api/note/delete', {
 				Id: id,
-				ApplicationUserId: applicationUserId
+				ApplicationUserId: applicationUserId,
+				IsMessage: true
 			})
 			if (result.status === 200) {
 				dispatch({
