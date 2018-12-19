@@ -3,7 +3,6 @@ import axios from '../../plugins/axios'
 import { FETCH_ATTENDANCE } from "./actionTypes"
 
 export const fetchAttendance = (id, refresh) => {
-    console.log(id,refresh)
 	return async dispatch => {
 		dispatch({ type: refresh ? FETCH_ATTENDANCE.REFRESHING : FETCH_ATTENDANCE.PENDING })
 		if (!refresh) {

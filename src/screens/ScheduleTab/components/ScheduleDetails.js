@@ -87,8 +87,6 @@ class ScheduleDetails extends Component {
         if (this.state.messages) {
           this.state.messages.forEach(message => {
             const msg = this.props.scheduleDetails.item.Messages.find(m => m.Id === message.Id)
-            console.log(this.props.scheduleDetails.item.Messages)
-            console.log(msg)
             if (msg) {
               // update
               this.props.updateMessage({
@@ -224,7 +222,6 @@ class ScheduleDetails extends Component {
       Messages: this.props.scheduleDetails.item.Messages || []
     }
     
-console.log(details)
     const icon = details.moment === -1 ? completedIcon : details.moment === 0 ? currentIcon : details.moment === 1 ? pendingIcon : null
     let sections = [
       {
