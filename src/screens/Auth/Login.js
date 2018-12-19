@@ -24,8 +24,8 @@ class Login extends Component {
 		super(props)
 		this.keyboardHeight = new Animated.Value(0)
 		this.state = {
-			login: 'student@university.com',
-			password: 'UniversityStudent!@34'
+			login: '',
+			password: ''
 		}
 	}
 
