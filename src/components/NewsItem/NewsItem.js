@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, StyleSheet, ImageBackground } from 'react-native'
 import { BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors';
 import MainText from '../UI/MainText/MainText'
+import moment from 'moment'
+
 const newsItem = (props) => (
   <View style={styles.listItem}>
     <ImageBackground source={props.imgSource} style={styles.background}>
@@ -10,7 +12,7 @@ const newsItem = (props) => (
           <MainText><Text style={styles.titleText}>{props.title}</Text></MainText>
         </View>
         <View style={styles.dateBlock}>
-          <MainText>{props.date}</MainText>
+          <MainText>{moment(props.date, "YYYY-MM-DD").format('YYYY-MM-DD')}</MainText>
         </View>
       </View>
     </ImageBackground>

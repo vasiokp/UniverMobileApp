@@ -13,9 +13,7 @@ class NewsTabScreen extends Component {
       screen: 'UniverMobileApp.NewsDetailsScreen',
       title: 'Новина',
       passProps: {
-          news: this.props.news.items.find(e => {
-              return e.Id === id
-          })
+          news: this.props.news.items[id]
     }
   })
   }
@@ -34,17 +32,16 @@ class NewsTabScreen extends Component {
   componentDidMount () {
     this.props.getNews()
   }
-
-  keyExtractor = (item) => item.Id ? item.Id.toString() : new Date().getTime().toString();
+  keyExtractor = (item, index) => 'news-'+index
 
   render() {
     return (
       <PageLayout>
         <FlatList data={this.props.news.items}
           keyExtractor={this.keyExtractor}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={this.ShowDetails.bind(this, item.Id)} activeOpacity={0.7}>
-              <NewsItem title={item.Text} date={'2018-12-04'} imgSource={image} />
+          renderItem={({ item, index }) => (
+            <TouchableOpacity onPress={this.ShowDetails.bind(this, index)} activeOpacity={0.7}>
+              <NewsItem title={item.Title} date={item.Date} imgSource={image} />
             </TouchableOpacity>
           )}
           ItemSeparatorComponent = {this.FlatListItemSeparator}

@@ -15,7 +15,7 @@ const NewsDetails = (props) => {
   return (
     <PageLayout>
       <CustomBlock>
-        <RowView Title="Новина" Value={props.news.Text} />
+        <RowView Title="Новина" Value={props.news.Title} />
         <RowView Title="Опис" Value={props.news.Text} />
       </CustomBlock>
     </PageLayout>
@@ -38,10 +38,10 @@ const styles = StyleSheet.create({
     color: TEXT_COLOR
   },
   valueBlock: {
-    width: '65%'
+    width: '100%'
   },
   rowView: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     margin: 5
   }
 })
