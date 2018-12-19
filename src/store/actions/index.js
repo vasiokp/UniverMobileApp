@@ -1,7 +1,7 @@
 export { fetchSchedule, fetchAllSchedule, updateSchedule, setScheduleFilters } from './schedule'
 export { fetchScheduleTypes } from './scheduleType'
 export { fetchScheduleDetails, updateScheduleDetails, clearScheduleDetails, addNote, updateNote, addMessage, updateMessage, removeMessage } from './scheduleDetails'
-export { getNews } from './news'
+export { getNews, getImage } from './news'
 export { checkAuth, login, logout, relogin, changePassword, clearErrors } from './profile'
 export { fetchGroups } from './group'
 export { fetchSpecialties } from './specialty'

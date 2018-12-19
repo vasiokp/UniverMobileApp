@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "browserify": "^16.2.3",
     "eslint": "^3.17.0",
     "eslint-plugin-react-native": "^3.2.1",
     "js-md5": "^0.7.3",

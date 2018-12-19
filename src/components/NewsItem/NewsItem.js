@@ -1,16 +1,22 @@
 import React from 'react'
-import { View, Text, StyleSheet, ImageBackground } from 'react-native'
-import { BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors';
-import MainText from '../UI/MainText/MainText'
+import { View, Text, StyleSheet, ImageBackground, ActivityIndicator } from 'react-native'
+import { BACK_COLOR, BLOCK_BORDER_COLOR } from '../../plugins/AppColors'
+import moment from 'moment'
+import image from '../../assets/t1.png'
+
 const newsItem = (props) => (
   <View style={styles.listItem}>
-    <ImageBackground source={props.imgSource} style={styles.background}>
+    <ImageBackground source={ props.imageLoading ? null : (props.image && props.imageError === false) ? { uri: 'data:image/jpeg;base64, ' + props.image } : image} style={styles.background}>
+      {props.imageLoading ? <View>
+        <ActivityIndicator style={{ marginBottom: 25 }} />
+      </View> : null}
       <View style={styles.title}>
         <View style={styles.titleBlock}>
-          <MainText><Text style={styles.titleText}>{props.title}</Text></MainText>
+          <Text numberOfLines={2} style={styles.titleText}>{props.Title || 'без назви'}</Text>
         </View>
         <View style={styles.dateBlock}>
-          <MainText>{props.date}</MainText>
+          <Text style={styles.text}>{props.Author || 'Невідомий автор'}</Text>
+          <Text style={styles.text}>{moment(props.Date).format('DD-MM-YYYY')}</Text>
         </View>
       </View>
     </ImageBackground>
@@ -21,8 +27,8 @@ const styles = StyleSheet.create({
   listItem: {
     width: '100%',
     height: 230,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
+    borderBottomWidth: 0.5,
+    borderTopWidth: 0.5,
     borderColor: BLOCK_BORDER_COLOR
   },
   background: {
@@ -31,17 +37,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   title: {
-    backgroundColor: BACK_COLOR,
+    backgroundColor: 'rgba(135, 135, 135, 0.7)',
     height: '40%',
     padding: 7
   },
   titleText: {
     fontSize: 20,
-    fontWeight: 'bold'
+    color: '#fff',
+    fontWeight: 'bold',
+    backgroundColor: 'transparent'
   },
   dateBlock: {
     height: 30,
-    alignItems: 'flex-end'
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  text: {
+    color: '#fff'
   },
   titleBlock: {
     height: '80%'
