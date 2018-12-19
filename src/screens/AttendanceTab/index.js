@@ -51,18 +51,18 @@ class AttendanceTab extends Component {
   }
 
   componentDidMount () {
-    this.props.getAttendance('677')
+    this.props.getAttendance(this.props.schedule.Id)
   }
 
   render() {
-    console.log(this.props)
+    const groupsName = (this.props.schedule.subSchedules && this.props.schedule.subSchedules.length > 1) ? `Групи ${this.props.schedule.subSchedules.map(s => s.GroupName).join(', ')}` : `Група ${this.props.schedule.GroupName}`
+    const data = this.props.attendance.length > 0 ? this.props.attendance : items
     return (
       <View style={styles.container}>
-        <Text style={{ fontSize: 16, fontWeight: '300' }}>Група {this.props.schedule.GroupName}</Text>
-        <Text style={{ fontSize: 16, fontWeight: '300' }}>{this.props.schedule.SubjectName}</Text>
-
+        <Text style={styles.title}>{groupsName}</Text>
+        <Text style={styles.title}>{this.props.schedule.SubjectName}</Text>
         <FlatList
-          data = {items}
+          data = {data}
           keyExtractor ={(item) => item.Id+''}
           ItemSeparatorComponent = {this.FlatListItemSeparator}
           renderItem={({item,index}) =><StudentInfo item={item} index={index}/>}
@@ -79,7 +79,13 @@ const styles = StyleSheet.create({
   container: {
    flex: 1,
    paddingTop: 22
+  },
+  title: {
+    padding:5,
+    fontSize: 16,
+    fontWeight: '300'
   }
+
 })
 
 const items = [
@@ -277,7 +283,7 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
   return {
-    attendance: state.attendance
+    attendance: state.attendance.items
   }
 }
 
