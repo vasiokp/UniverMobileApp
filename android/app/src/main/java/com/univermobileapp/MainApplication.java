@@ -1,4 +1,4 @@
-package com.univermobileapp;
+package com.chnumobileapp;
 
 import android.app.Application;
 

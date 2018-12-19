@@ -92,6 +92,7 @@ const startLogin = () => {
         navBarHidden: true
       }
     },
+    portraitOnlyMode: true,
     appStyle: {
       navBarHidden: true,
       statusBarColor: DARK_PRIMARY_COLOR

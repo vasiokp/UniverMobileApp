@@ -1,4 +1,4 @@
-package com.univermobileapp;
+package com.chnumobileapp;
 
 import com.reactnativenavigation.controllers.SplashActivity;
 
