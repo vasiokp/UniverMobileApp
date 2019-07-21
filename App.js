@@ -5,6 +5,9 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import Login from './src/screens/Auth/Login'
 import ScheduleTab from './src/screens/ScheduleTab'
 import ScheduleDetails from './src/screens/ScheduleTab/components/ScheduleDetails'
+import SessionTab from './src/screens/SessionTab'
+import CreditDetails from './src/screens/SessionTab/components/CreditDetails'
+import ExamDetails from './src/screens/SessionTab/components/ExamDetails'
 import ProfileTab from './src/screens/ProfileTab'
 import Attendance from './src/screens/AttendanceTab'
 import ChangePassword from './src/screens/ProfileTab/components/ChangePassword'
@@ -30,12 +33,16 @@ Navigation.registerComponent("Attendance", () => Attendance, store, Provider)
 Navigation.registerComponent("ChangePassword", () => ChangePassword, store, Provider)
 Navigation.registerComponent("UniverMobileApp.NewsTabScreen", () => NewsTabScreen, store, Provider)
 Navigation.registerComponent("UniverMobileApp.NewsDetailsScreen", () => NewsDetailsScreen)
+Navigation.registerComponent("SessionTab", () => SessionTab, store, Provider)
+Navigation.registerComponent("CreditDetails", () => CreditDetails, store, Provider)
+Navigation.registerComponent("ExamDetails", () => ExamDetails, store, Provider)
 
 const iconPrefix = Platform.OS === 'ios' ? 'ios' : 'md'
 
 const startTabs = () => {
   Promise.all([
     Icon.getImageSource(iconPrefix + '-today', 28),
+    Icon.getImageSource(iconPrefix + '-clipboard', 28),
     Icon.getImageSource(iconPrefix + '-school', 30),
     Icon.getImageSource(iconPrefix + '-contact', 32)
   ]).then(sources => {
@@ -48,16 +55,22 @@ const startTabs = () => {
           icon: sources[0]
         },
         {
+          screen: "SessionTab",
+          title: "Сесія",
+          label: 'Сесія',
+          icon: sources[1]
+        },
+        {
           screen: "UniverMobileApp.NewsTabScreen",
           title: "Новини",
           label: 'Новини',
-          icon: sources[1]
+          icon: sources[2]
         },
         {
           screen: "ProfileTab",
           title: "Профіль",
           label: 'Профіль',
-          icon: sources[2]
+          icon: sources[3]
         }
       ],
       appStyle: {
