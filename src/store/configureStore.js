@@ -11,6 +11,8 @@ import teacherReducer from './reducers/teacher'
 import subjectReducer from './reducers/subject'
 import auditoryReducer from './reducers/auditory'
 import attendanceReducer from './reducers/attendance'
+import creditReducer from './reducers/credit'
+import examReducer from './reducers/exam'
 
 const rootReducer = combineReducers({
 	schedule: scheduleReducer,
@@ -23,7 +25,9 @@ const rootReducer = combineReducers({
 	teachers: teacherReducer,
 	subjects: subjectReducer,
 	auditories: auditoryReducer,
-	attendance: attendanceReducer
+	attendance: attendanceReducer,
+	credits: creditReducer,
+	exams: examReducer
 })
 
 let composeEnhancers = compose

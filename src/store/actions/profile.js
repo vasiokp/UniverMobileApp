@@ -54,10 +54,10 @@ export const relogin = () => {
 			const passwordHash = stored[1][1]
 			if (login && passwordHash) {
 				const body = { Email: login, Password: passwordHash }
-				const result = await axios.post('/account/login', body)
+				const result = await axios.post('/api/account/login', body)
 				if (result.status === 200) {
 					await AsyncStorage.setItem('access_token', result.data.Access_token)
-					const userInfo = await axios.post('/account/getuserinfo', null, {
+					const userInfo = await axios.post('/api/account/getuserinfo', null, {
 						headers: {
 							'Authorization': `Bearer ${result.data.Access_token}`
 						}
@@ -95,7 +95,7 @@ export const login = (login, password) => {
 		try {
 			const passwordHash = md5(password)
 			const body = { Email: login, Password: passwordHash }
-			const result = await axios.post('/account/login', body)
+			const result = await axios.post('/api/account/login', body)
 			if (result.status === 200) {
 				await AsyncStorage.multiSet([
 					['access_token', result.data.Access_token],
@@ -103,12 +103,12 @@ export const login = (login, password) => {
 					['login', login],
 					['passwordHash', passwordHash]
 				])
-				const userInfo = await axios.post('/account/getuserinfo', null, {
+				const userInfo = await axios.post('/api/account/getuserinfo', null, {
 					headers: {
 						'Authorization': `Bearer ${result.data.Access_token}`
 					}
 				})
-				if (userInfo.status === 200) {
+				if (userInfo.status === 200 || userInfo.status === 204) {
 					await AsyncStorage.setItem('user_info', JSON.stringify(userInfo.data))
 					const userRole = userInfo.data.GroupId ? userRoles.STUDENT : userRoles.TEACHER
 					dispatch({

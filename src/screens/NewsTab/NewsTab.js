@@ -43,7 +43,7 @@ class NewsTabScreen extends Component {
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.5)'
           }}
-          keyExtractor={item => item.Id.toString()}
+          keyExtractor={item => item.Id ? item.Id.toString() : ""}
           onRefresh={() => this.props.getNews(true).then(() => {
             this.props.news.items.forEach(item => {
               this.props.getImage(item.Id)

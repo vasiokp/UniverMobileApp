@@ -157,10 +157,12 @@ class ScheduleTab extends Component {
   }
 
   loadItems(date) {
-    if (!this.props.schedule.items[date.dateString]) {
-      const weekEdges = getWeekEdges(date.timestamp)
-      this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
-      this.props.fetchAllSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
+    if (date != undefined) {
+      if (!this.props.schedule.items[date.dateString]) {
+        const weekEdges = getWeekEdges(date.timestamp)
+        this.props.fetchSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
+        this.props.fetchAllSchedule(weekEdges.monday.format(dateFormat), weekEdges.sunday.format(dateFormat))
+      }
     }
   }
 
