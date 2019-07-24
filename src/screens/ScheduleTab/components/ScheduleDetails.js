@@ -60,6 +60,7 @@ class ScheduleDetails extends Component {
     }
   })
   }
+
   constructor(props) {
     super(props)
     if (props.passedItem.isMyLesson) {
@@ -87,6 +88,8 @@ class ScheduleDetails extends Component {
         if (this.state.messages) {
           this.state.messages.forEach(message => {
             const msg = this.props.scheduleDetails.item.Messages.find(m => m.Id === message.Id)
+            console.log(this.props.scheduleDetails.item.Messages)
+            console.log(msg)
             if (msg) {
               // update
               this.props.updateMessage({

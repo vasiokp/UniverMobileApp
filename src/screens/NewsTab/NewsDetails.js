@@ -44,4 +44,24 @@ const NewsDetails = (props) => {
   )
 }
 
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  titleBlock: {
+    width: '35%'
+  },
+  value: {
+    fontSize: 14
+  },
+  valueBlock: {
+    width: '65%'
+  },
+  rowView: {
+    flexDirection: 'row',
+    margin: 5
+  }
+})
+
 export default NewsDetails

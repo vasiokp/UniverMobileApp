@@ -27,8 +27,7 @@ class Login extends Component {
 		this.keyboardHeight = new Animated.Value(0)
 		this.state = {
 			login: '',
-			password: '',
-			secureTextEntry: true
+			password: ''
 		}
 	}
 
