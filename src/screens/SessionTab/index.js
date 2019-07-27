@@ -20,6 +20,13 @@ class SessionTab extends Component {
     })
   }
 
+  ShowRetakeDetails() {
+    this.props.navigator.push({
+      screen: 'RetakeDetails',
+      title: 'Перездачі'
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -41,6 +48,19 @@ class SessionTab extends Component {
           onPress={this.ShowExamDetails.bind(this)}
           color={PRIMARY_COLOR}
           style={styles.examButton}
+        />
+        <View
+          style={{
+            height: 15,
+            width: "100%",
+            backgroundColor: "transparent",
+          }}
+        />
+        <Button
+          title="Перездачі"
+          onPress={this.ShowRetakeDetails.bind(this)}
+          color={PRIMARY_COLOR}
+          style={styles.retakeButton}
         />
       </View>
     );

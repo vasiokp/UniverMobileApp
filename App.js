@@ -8,6 +8,7 @@ import ScheduleDetails from './src/screens/ScheduleTab/components/ScheduleDetail
 import SessionTab from './src/screens/SessionTab'
 import CreditDetails from './src/screens/SessionTab/components/CreditDetails'
 import ExamDetails from './src/screens/SessionTab/components/ExamDetails'
+import RetakeDetails from './src/screens/SessionTab/components/RetakeDetails'
 import ProfileTab from './src/screens/ProfileTab'
 import Attendance from './src/screens/AttendanceTab'
 import ChangePassword from './src/screens/ProfileTab/components/ChangePassword'
@@ -36,6 +37,7 @@ Navigation.registerComponent("UniverMobileApp.NewsDetailsScreen", () => NewsDeta
 Navigation.registerComponent("SessionTab", () => SessionTab, store, Provider)
 Navigation.registerComponent("CreditDetails", () => CreditDetails, store, Provider)
 Navigation.registerComponent("ExamDetails", () => ExamDetails, store, Provider)
+Navigation.registerComponent("RetakeDetails", () => RetakeDetails, store, Provider)
 
 const iconPrefix = Platform.OS === 'ios' ? 'ios' : 'md'
 
