@@ -27,6 +27,13 @@ class SessionTab extends Component {
     })
   }
 
+  ShowStateExamDetails() {
+    this.props.navigator.push({
+      screen: 'StateExamDetails',
+      title: 'Державні іспити'
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -61,6 +68,19 @@ class SessionTab extends Component {
           onPress={this.ShowRetakeDetails.bind(this)}
           color={PRIMARY_COLOR}
           style={styles.retakeButton}
+        />
+        <View
+          style={{
+            height: 15,
+            width: "100%",
+            backgroundColor: "transparent",
+          }}
+        />
+        <Button
+          title="Державні іспити"
+          onPress={this.ShowStateExamDetails.bind(this)}
+          color={PRIMARY_COLOR}
+          style={styles.stateExamButton}
         />
       </View>
     );
