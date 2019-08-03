@@ -15,6 +15,7 @@ import creditReducer from './reducers/credit'
 import examReducer from './reducers/exam'
 import retakeReducer from './reducers/retake'
 import stateExamReducer from './reducers/stateExam'
+import infoMessageReducer from './reducers/infoMessage'
 
 const rootReducer = combineReducers({
 	schedule: scheduleReducer,
@@ -31,7 +32,8 @@ const rootReducer = combineReducers({
 	credits: creditReducer,
 	exams: examReducer,
 	retakes: retakeReducer,
-	stateExams: stateExamReducer
+	stateExams: stateExamReducer,
+	infoMessages: infoMessageReducer
 })
 
 let composeEnhancers = compose

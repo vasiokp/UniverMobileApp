@@ -10,6 +10,7 @@ import CreditDetails from './src/screens/SessionTab/components/CreditDetails'
 import ExamDetails from './src/screens/SessionTab/components/ExamDetails'
 import RetakeDetails from './src/screens/SessionTab/components/RetakeDetails'
 import StateExamDetails from './src/screens/SessionTab/components/StateExamDetails'
+import InfoTab from './src/screens/InfoTab/InfoTab'
 import ProfileTab from './src/screens/ProfileTab'
 import Attendance from './src/screens/AttendanceTab'
 import ChangePassword from './src/screens/ProfileTab/components/ChangePassword'
@@ -40,6 +41,7 @@ Navigation.registerComponent("CreditDetails", () => CreditDetails, store, Provid
 Navigation.registerComponent("ExamDetails", () => ExamDetails, store, Provider)
 Navigation.registerComponent("RetakeDetails", () => RetakeDetails, store, Provider)
 Navigation.registerComponent("StateExamDetails", () => StateExamDetails, store, Provider)
+Navigation.registerComponent("InfoTab", () => InfoTab, store, Provider)
 
 const iconPrefix = Platform.OS === 'ios' ? 'ios' : 'md'
 
@@ -48,6 +50,7 @@ const startTabs = () => {
     Icon.getImageSource(iconPrefix + '-today', 28),
     Icon.getImageSource(iconPrefix + '-clipboard', 28),
     Icon.getImageSource(iconPrefix + '-school', 30),
+    Icon.getImageSource(iconPrefix + '-information', 30),
     Icon.getImageSource(iconPrefix + '-contact', 32)
   ]).then(sources => {
     Navigation.startTabBasedApp({
@@ -71,10 +74,16 @@ const startTabs = () => {
           icon: sources[2]
         },
         {
+          screen: "InfoTab",
+          title: "Довідка",
+          label: 'Довідка',
+          icon: sources[3]
+        },
+        {
           screen: "ProfileTab",
           title: "Профіль",
           label: 'Профіль',
-          icon: sources[3]
+          icon: sources[4]
         }
       ],
       appStyle: {
