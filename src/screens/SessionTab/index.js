@@ -37,51 +37,47 @@ class SessionTab extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button
-          title="Заліки"
-          onPress={this.ShowCreditDetails.bind(this)}
-          color={PRIMARY_COLOR}
-          style={styles.creditButton}
-        />
+        <View style={styles.button}>
+          <Button
+            title="Заліки"
+            onPress={this.ShowCreditDetails.bind(this)}
+            color={PRIMARY_COLOR}
+            style={styles.creditButton}
+          />
+        </View>
         <View
-          style={{
-            height: 15,
-            width: "100%",
-            backgroundColor: "transparent",
-          }}
+          style={styles.split}
         />
-        <Button
-          title="Іспити"
-          onPress={this.ShowExamDetails.bind(this)}
-          color={PRIMARY_COLOR}
-          style={styles.examButton}
-        />
+        <View style={styles.button}>
+          <Button
+            title="Іспити"
+            onPress={this.ShowExamDetails.bind(this)}
+            color={PRIMARY_COLOR}
+            style={styles.examButton}
+          />
+        </View>
         <View
-          style={{
-            height: 15,
-            width: "100%",
-            backgroundColor: "transparent",
-          }}
+          style={styles.split}
         />
-        <Button
-          title="Перездачі"
-          onPress={this.ShowRetakeDetails.bind(this)}
-          color={PRIMARY_COLOR}
-          style={styles.retakeButton}
-        />
+        <View style={styles.button}>
+          <Button
+            title="Перездачі"
+            onPress={this.ShowRetakeDetails.bind(this)}
+            color={PRIMARY_COLOR}
+            style={styles.retakeButton}
+          />
+        </View>
         <View
-          style={{
-            height: 15,
-            width: "100%",
-            backgroundColor: "transparent",
-          }}
+          style={styles.split}
         />
-        <Button
-          title="Державні іспити"
-          onPress={this.ShowStateExamDetails.bind(this)}
-          color={PRIMARY_COLOR}
-          style={styles.stateExamButton}
-        />
+        <View style={styles.button}>
+          <Button
+            title="Державні іспити"
+            onPress={this.ShowStateExamDetails.bind(this)}
+            color={PRIMARY_COLOR}
+            style={styles.stateExamButton}
+          />
+        </View>
       </View>
     );
   }
@@ -112,6 +108,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+  },
+  split:{
+    height: 15,
+    width: "100%",
+    backgroundColor: "transparent",
+  },
+  button:{
+    marginLeft: 10,
+    marginRight: 10
   }
 });
 
