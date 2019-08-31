@@ -96,6 +96,8 @@ class ScheduleTab extends Component {
           icon: icon
         }]
       })
+      //fix for android: incorrect recalculation of width, when set left buttons
+      this.props.navigator.setStyle({ navBarTitleTextCentered: true });
     })
   }
 
