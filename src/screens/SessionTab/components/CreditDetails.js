@@ -29,6 +29,20 @@ class CreditDetails extends Component {
     this.props.getCredits()
   }
 
+  renderEmptyContainer = () => (
+    <View style={{
+      alignItems: 'center',
+      marginTop: 30,
+    }}>
+      <Text style={{
+        fontWeight: '400',
+        fontSize: 17,
+      }}>
+        Дані про заліки відсутні
+      </Text>
+    </View>
+  )
+
 
   render() {
     return (
@@ -60,6 +74,7 @@ class CreditDetails extends Component {
               </View>
             </TouchableOpacity>
           )}
+          ListEmptyComponent={this.renderEmptyContainer()}
           ItemSeparatorComponent = {this.FlatListItemSeparator}
         />
       </PageLayout>

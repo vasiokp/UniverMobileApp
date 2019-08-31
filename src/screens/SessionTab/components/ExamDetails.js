@@ -29,6 +29,20 @@ class ExamDetails extends Component {
     this.props.getExams()
   }
 
+  renderEmptyContainer = () => (
+    <View style={{
+      alignItems: 'center',
+      marginTop: 30,
+    }}>
+      <Text style={{
+        fontWeight: '400',
+        fontSize: 17,
+      }}>
+        Дані про іспити відсутні
+      </Text>
+    </View>
+  )
+
 
   render() {
     return (
@@ -60,6 +74,7 @@ class ExamDetails extends Component {
               </View>
             </TouchableOpacity>
           )}
+          ListEmptyComponent={this.renderEmptyContainer()}
           ItemSeparatorComponent = {this.FlatListItemSeparator}
         />
       </PageLayout>

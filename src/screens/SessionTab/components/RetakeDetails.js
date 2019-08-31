@@ -29,6 +29,19 @@ class RetakeDetails extends Component {
     this.props.getRetakes()
   }
 
+  renderEmptyContainer = () => (
+    <View style={{
+      alignItems: 'center',
+      marginTop: 30,
+    }}>
+      <Text style={{
+        fontWeight: '400',
+        fontSize: 17,
+      }}>
+        Дані про перездачі відсутні
+      </Text>
+    </View>
+  )
 
   render() {
     return (
@@ -60,6 +73,7 @@ class RetakeDetails extends Component {
               </View>
             </TouchableOpacity>
           )}
+          ListEmptyComponent={this.renderEmptyContainer()}
           ItemSeparatorComponent = {this.FlatListItemSeparator}
         />
       </PageLayout>
