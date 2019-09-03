@@ -29,6 +29,20 @@ class CreditDetails extends Component {
     this.props.getCredits()
   }
 
+  renderEmptyContainer = () => (
+    <View style={{
+      alignItems: 'center',
+      marginTop: 30,
+    }}>
+      <Text style={{
+        fontWeight: '400',
+        fontSize: 17,
+      }}>
+        Дані про заліки відсутні
+      </Text>
+    </View>
+  )
+
 
   render() {
     return (
@@ -48,18 +62,19 @@ class CreditDetails extends Component {
                   backgroundColor: 'rgba(255, 255, 255, 0.9)'
                 }}
               >
-                <Text style={{fontSize: 16, textAlign: 'center', fontWeight: 'bold', color:'rgba(255, 255, 255, 0.9)', backgroundColor: 'rgba(255, 165, 97, 1)'}}>{item.SubjectName}</Text>
-                <Text style={{marginLeft: 10}}>Група: {item.GroupName}</Text>
+                <Text style={styles.title}>{item.SubjectName}</Text>
+                <Text style={styles.text}>Група: {item.GroupName}</Text>
 
-                <Text style={{marginLeft: 10}}>
+                <Text style={styles.text}>
                 Дата проведення: {capitalize(moment(item.PlannedDate, 'MM-DD-YYYY').format('dddd, D MMMM YYYY'))}
                 </Text>
 
-                <Text style={{marginLeft: 10}}>Екзаменатор: {item.TeacherName}</Text>
-                <Text style={{marginLeft: 10}}>Аудиторія: {item.AuditoryName}</Text>
+                <Text style={styles.text}>Екзаменатор: {item.TeacherName}</Text>
+                <Text style={styles.text}>Аудиторія: {item.AuditoryName}</Text>
               </View>
             </TouchableOpacity>
           )}
+          ListEmptyComponent={this.renderEmptyContainer()}
           ItemSeparatorComponent = {this.FlatListItemSeparator}
         />
       </PageLayout>
@@ -68,14 +83,16 @@ class CreditDetails extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-   flex: 1,
-   paddingTop: 22
+  title: {
+    fontSize: 17,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color:'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 165, 97, 1)'
   },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+  text: {
+    fontSize: 15,
+    marginLeft: 10
   },
 })
 

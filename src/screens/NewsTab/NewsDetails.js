@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking, FlatList } from 'react-native'
 import image from '../../assets/t1.png'
 import PageLayout from '../../components/UI/PageLayout/PageLayout'
 import moment from 'moment'
@@ -25,6 +25,21 @@ const NewsDetails = (props) => {
             }}>
               {props.Text}
             </Text>
+          </View>
+          <View>
+            <Text style={{
+                fontSize: 20,
+                fontWeight: '500',
+                textAlign: 'left'
+              }}>
+                {props.Urls == undefined || props.Urls.length == 0 ? '' : 'Посилання'}
+            </Text>
+            <View>
+              <FlatList data = {props.Urls} renderItem = {({item}) => <TouchableOpacity onPress={() => Linking.openURL(item.Path)}><Text style={{fontSize: 18, textDecorationLine: 'underline'}}>{item.Title || ''}</Text></TouchableOpacity>} keyExtractor={(item, index) => index.toString()}
+              />
+            </View>
+              
+            
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
             <Text style={{

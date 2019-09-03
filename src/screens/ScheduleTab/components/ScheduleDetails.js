@@ -80,7 +80,7 @@ class ScheduleDetails extends Component {
   onNavigatorEvent(event) {
     if (event.type == 'NavBarButtonPress') {
       if (event.id == 'save') {
-        this.noteInput.blur()
+        //this.noteInput.blur()
         this.messageInputs.forEach(input => {
           if (input && input.blur) input.blur()
         })
