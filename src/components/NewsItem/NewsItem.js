@@ -5,11 +5,15 @@ import moment from 'moment'
 import image from '../../assets/t1.png'
 
 const newsItem = (props) => (
-  <View style={styles.listItem}>
+  <View style={[styles.listItem, moment(props.Date).add(3, 'days')>moment.now() ? styles.newItemBorder : null]}>
+    
     <ImageBackground source={ props.imageLoading ? null : (props.image && props.imageError === false) ? { uri: 'data:image/jpeg;base64, ' + props.image } : image} style={styles.background}>
       {props.imageLoading ? <View>
         <ActivityIndicator style={{ marginBottom: 25 }} />
       </View> : null}
+      <View>
+        {moment(props.Date).add(3, 'days')>moment.now() ? <View style={styles.newItemTitle}><Text style={styles.newItemText}>  Нова  </Text></View> : <View></View>}
+      </View>
       <View style={styles.title}>
         <View style={styles.titleBlock}>
           <Text numberOfLines={2} style={styles.titleText}>{props.Title || 'без назви'}</Text>
@@ -57,6 +61,21 @@ const styles = StyleSheet.create({
   },
   titleBlock: {
     height: '80%'
+  },
+  newItemBorder: {
+    borderWidth: 2,
+    borderTopWidth: 3,
+    borderBottomWidth: 3,
+    borderColor: '#fff'
+  },
+  newItemTitle: {
+    flexDirection: "row-reverse",
+  },
+  newItemText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'rgba(255, 165, 97, 1)',
+    backgroundColor: '#fff'
   }
 })
 
