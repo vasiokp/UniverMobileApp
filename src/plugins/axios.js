@@ -3,7 +3,8 @@ import { store, startLogin } from '../../App'
 import { relogin } from '../store/actions'
 
 const instance = axios.create({
-  baseURL: 'https://universityapi.azurewebsites.net'
+  //baseURL: 'https://universityapi.azurewebsites.net'
+  baseURL: 'http://mykolag-001-site10.etempurl.com'
 })
 
 instance.interceptors.request.use(config => {
