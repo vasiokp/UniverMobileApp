@@ -31,9 +31,9 @@ export const getScheduleMoment = (item, lessons, now) => {
 			return 0
 		}
 	})
-	const nextLesson = futureLessons[0]
-	if (item.Id === nextLesson.Id) {
-		return 1 // current
+	const nextLessons = futureLessons.filter(l => moment(`${l.Date}T${l.Start}`).isSame(moment(`${futureLessons[0].Date}T${futureLessons[0].Start}`)))
+	if (nextLessons.findIndex(l => l.Id === item.Id) >= 0) {
+		return 1 // next
 	} else {
 		return 2 // future
 	}

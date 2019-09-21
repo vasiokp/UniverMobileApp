@@ -12,6 +12,8 @@ import {
 	Animated
 } from 'react-native'
 import logoImage from '../../assets/logo.png'
+import hideImage from '../../assets/hide.png'
+import viewImage from '../../assets/view.png'
 import PageLayout from '../../components/UI/PageLayout/PageLayout'
 import { login } from '../../store/actions'
 import { connect } from 'react-redux'
@@ -71,7 +73,13 @@ class Login extends Component {
 				startTabs()
 			}
 		})
-  }
+	}
+
+	showPassword(e){
+    this.setState(prevState => ({
+			secureTextEntry: !prevState.secureTextEntry
+		}))
+	}
 
   render() {
     return (
@@ -95,9 +103,12 @@ class Login extends Component {
 								onChangeText={text => this.setState({ password: text })}
 								onSubmitEditing={() => this.passwordInput.blur()}
 								enablesReturnKeyAutomatically={true}
-								secureTextEntry={true}
+								secureTextEntry={this.state.secureTextEntry}
 								underlineColorAndroid='transparent'
 								style={styles.input} />
+							<TouchableOpacity activeOpacity = { 0.8 } style = { styles.visibilityBtn } onPress={() => this.showPassword()} >
+            		<Image source = { ( !this.state.secureTextEntry ) ? viewImage : hideImage } style = { styles.btnImage } />
+          		</TouchableOpacity>
 							{this.props.profile.error ? <Text style={styles.errorText}>Невірний логін або пароль</Text> : null}
 							<TouchableOpacity onPress={() => this.login()}
 								style={[styles.button, this.loginDisabled() ? styles.disabledButton : {}]}
@@ -133,7 +144,8 @@ const styles = StyleSheet.create({
 		width: '100%',
 		marginTop: 10,
 		backgroundColor: 'rgba(255, 255, 255, 0.7)',
-		padding: 20
+		padding: 20,
+		borderRadius: 2
 	},
   input: {
 		borderWidth: 1,
@@ -163,7 +175,22 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		color: '#fff',
 		fontSize: 18
-	}
+	},
+	visibilityBtn:
+  {
+    position: 'absolute',
+    right: 20,
+    height: 225,
+    width: 40,
+		padding: 5,
+		opacity: 0.6
+  },
+  btnImage:
+  {
+    resizeMode: 'contain',
+    height: '100%',
+    width: '100%'
+  }
 })
 
 const mapDispatchToProps = dispatch => {

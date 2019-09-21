@@ -1,10 +1,32 @@
 import React, { Component } from 'react'
-import { View, ScrollView, SectionList, Text, TextInput, Image, ActivityIndicator, Keyboard, RefreshControl, Platform } from 'react-native'
+import { 
+  View,
+  ScrollView,
+  SectionList,
+  Text,
+  TextInput,
+  Image,
+  ActivityIndicator,
+  RefreshControl,
+  Platform,
+  TouchableOpacity,
+  Alert
+} from 'react-native'
 import { connect } from 'react-redux'
-import { fetchScheduleDetails, updateScheduleDetails, addNote, updateNote } from  '../../../store/actions/index'
+import {
+  fetchScheduleDetails,
+  updateScheduleDetails,
+  addNote,
+  updateNote,
+  addMessage,
+  updateMessage,
+  removeMessage
+} from  '../../../store/actions'
 import moment from 'moment'
 import classTypes from '../../../plugins/classTypes'
 import { capitalize } from '../../../utils'
+import Icon from 'react-native-vector-icons/Ionicons'
+import * as userRoles from '../../../plugins/userRoles'
 
 const refreshInterval = 30000 // 30 seconds
 
@@ -12,35 +34,94 @@ const pendingIcon = require('../../../assets/pending.png')
 const completedIcon = require('../../../assets/completed.png')
 const currentIcon = require('../../../assets/current.png')
 
+const saveButton = {
+  title: 'Зберегти',
+  id: 'save',
+  disabled: true
+}
+
+const iconPrefix = Platform.OS === 'ios' ? 'ios' : 'md'
+
+const addIcon = (
+	<Icon name={`${iconPrefix}-add-circle-outline`} size={22} color="rgb(0, 122, 255)" />
+)
+
+const removeIcon = (
+	<Icon name={`${iconPrefix}-remove-circle-outline`} size={22} color="red" />
+)
+
 class ScheduleDetails extends Component {
-  static navigatorButtons = {
-    rightButtons: [{
-      title: 'Зберегти',
-      id: 'save',
-      disabled: true
-    }]
+  openAttendanceScreen = item => {
+    this.props.navigator.push({
+      screen: 'Attendance',
+      title: 'Відвідування',
+      passProps: {
+        schedule: item
+    }
+  })
   }
 
   constructor(props) {
     super(props)
+    if (props.passedItem.isMyLesson) {
+      this.props.navigator.setButtons({
+        rightButtons: [saveButton]
+      })
+    }
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
     this.state = {
-      noteText: ''
+      noteText: '',
+      messages: []
     }
   }
+
+  messageInputs = []
 
   onNavigatorEvent(event) {
     if (event.type == 'NavBarButtonPress') {
       if (event.id == 'save') {
-        this.noteInput.blur()
+        //this.noteInput.blur()
+        this.messageInputs.forEach(input => {
+          if (input && input.blur) input.blur()
+        })
         this.enableSaveButton(false)
-        if (this.props.scheduleDetails.item.Note) {
+        if (this.state.messages) {
+          this.state.messages.forEach(message => {
+            const msg = this.props.scheduleDetails.item.Messages.find(m => m.Id === message.Id)
+            console.log(this.props.scheduleDetails.item.Messages)
+            console.log(msg)
+            if (msg) {
+              // update
+              this.props.updateMessage({
+                ...msg,
+                ScheduleId: this.props.passedItem.Id,
+                Text: message.Text
+              })
+            } else if (!msg && message.Text !== '') {
+              // add
+              if (this.props.passedItem.subSchedules && this.props.passedItem.subSchedules.length > 1) {
+                this.props.passedItem.subSchedules.forEach(s => {
+                  this.props.addMessage({
+                    ScheduleId: s.Id,
+                    Text: message.Text
+                  })
+                })
+              } else {
+                this.props.addMessage({
+                  ScheduleId: this.props.passedItem.Id,
+                  Text: message.Text
+                })
+              }
+            }
+          })
+        }
+        if (this.props.scheduleDetails.item.Note && this.props.scheduleDetails.item.Note.Text !== this.state.noteText) {
           this.props.updateNote({
             ...this.props.scheduleDetails.item.Note,
             ScheduleId: this.props.passedItem.Id,
             Text: this.state.noteText
           })
-        } else {
+        } else if (!this.props.scheduleDetails.item.Note && this.state.noteText !== '') {
           this.props.addNote({
             ScheduleId: this.props.passedItem.Id,
             Text: this.state.noteText
@@ -50,16 +131,12 @@ class ScheduleDetails extends Component {
     }
   }
 
-  componentWillMount () {
-    if (Platform.OS === 'ios') {
-      this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
-      this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
-    }
-  }
-
   componentDidMount() {
     this.props.fetchScheduleDetails(this.props.passedItem.Id).then(() => {
-      this.setState({ noteText: this.props.scheduleDetails.item.Note ? this.props.scheduleDetails.item.Note.Text : '' })
+      this.setState({
+        noteText: this.props.scheduleDetails.item.Note ? this.props.scheduleDetails.item.Note.Text : '',
+        messages: this.props.scheduleDetails.item.Messages || []
+      })
     })
     const intervalId = setInterval(() => {
       this.props.updateScheduleDetails()
@@ -69,22 +146,6 @@ class ScheduleDetails extends Component {
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId)
-    if (Platform.OS === 'ios') {
-      this.keyboardDidShowListener.remove()
-      this.keyboardDidHideListener.remove()
-    }
-  }
-
-  _keyboardDidShow () {
-    if (Platform.OS === 'ios') {
-      this.scroller.scrollToEnd({ animated: true })
-    }
-  }
-
-  _keyboardDidHide () {
-    if (Platform.OS === 'ios') {
-      this.scroller.scrollTo({ y: 0, animated: true })
-    }
   }
 
   refresh() {
@@ -107,13 +168,51 @@ class ScheduleDetails extends Component {
     }
   }
 
+  onMessageTextChange(message, index, text) {
+    message.Text = text
+    const messages = this.state.messages
+    messages[index] = message
+    this.setState({
+      messages: messages
+    })
+    this.enableSaveButton(true)
+  }
+
   enableSaveButton(enabled) {
     this.props.navigator.setButtons({
       rightButtons: [{
-        ...ScheduleDetails.navigatorButtons.rightButtons[0],
+        ...saveButton,
         disabled: !enabled
       }]
     })
+  }
+
+  removeMessage(message) {
+    Alert.alert(
+      'Ви дійсно хочете видалити повідомлення?',
+      '',
+      [
+        { text: 'Ні', onPress: () => {}, style: 'cancel'},
+        { text: 'Так', onPress: () => {
+          if (message.Id) {
+            this.props.removeMessage(message.Id).then(() => {
+              this.setState({
+                massages: this.state.messages.splice(this.state.messages.findIndex(m => m.Id === message.Id), 1)
+              })
+            })
+          } else {
+            this.setState({
+              massages: this.state.messages.splice(this.state.messages.indexOf(message), 1)
+            })
+          }
+        }}
+      ]
+    )
+  }
+
+  isAddButtonEnabled() {
+    // return this.state.messages.length === 0 || this.state.messages.findIndex(m => !m.Id) >= 0
+    return true
   }
 
   render() {
@@ -122,11 +221,10 @@ class ScheduleDetails extends Component {
       ...this.props.passedItem,
       ScheduleType,
       moment: this.props.scheduleDetails.item.moment,
-      TeacherDescription: this.props.scheduleDetails.item.Teacher ? this.props.scheduleDetails.item.Teacher.Description : '',
       BuildingAddress: this.props.scheduleDetails.item.Auditory && this.props.scheduleDetails.item.Auditory.Building ? this.props.scheduleDetails.item.Auditory.Building.Description : '',
-      GroupName: this.props.scheduleDetails.item.Group ? this.props.scheduleDetails.item.Group.Name : '',
       Messages: this.props.scheduleDetails.item.Messages || []
     }
+    
     const icon = details.moment === -1 ? completedIcon : details.moment === 0 ? currentIcon : details.moment === 1 ? pendingIcon : null
     let sections = [
       {
@@ -171,10 +269,10 @@ class ScheduleDetails extends Component {
                     {capitalize(moment(details.Date, 'YYYY-MM-DD').format('dddd, D MMMM YYYY'))}
                   </Text>
                   {details.GroupName ? <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
-                    {`група ${details.GroupName}`}
+                    {(details.subSchedules && details.subSchedules.length > 1) ? `групи ${details.subSchedules.map(s => s.GroupName).join(', ')}` : `група ${details.GroupName}`}
                   </Text> : null}
                   <Text style={{ fontWeight: '300', marginTop: 14, fontSize: 15 }}>
-                    {details.TeacherDescription}
+                    {details.TeacherName}
                   </Text>
                   <Text style={{ fontWeight: '300', color: '#666', marginTop: 10 }}>
                     {details.BuildingName ? `${details.BuildingName} корпус` : ''}, {details.AuditoryName ? `${details.AuditoryName} аудиторія` : ''}
@@ -189,47 +287,130 @@ class ScheduleDetails extends Component {
         ]
       }
     ]
-    if (details.Messages.length > 0) {
+    if (this.props.passedItem.isMyLesson && this.props.profile.userRole === userRoles.TEACHER) {
+      sections.push({
+        title: 'Відмітити присутніх',
+        button: () => (
+          <TouchableOpacity onPress={
+            this.openAttendanceScreen.bind(this, this.props.passedItem)
+          }>
+            {addIcon}
+          </TouchableOpacity>
+        ),
+        data: []
+      })
+    }
+
+    if (this.props.profile.userRole === userRoles.STUDENT) {
+      if (this.props.passedItem.isMyLesson && details.Messages.length > 0) {
+        sections.push({
+          title: 'Повідомлення',
+          data: [
+            {
+              key: 'messages',
+              template: () => details.Messages.map((message, index) => (
+                <View key={message.Id} style={[
+                  { marginVertical: 5, minHeight: 50 },
+                  index < this.state.messages.length - 1 ?
+                  { borderBottomWidth: 0.5, borderColor: '#ddd', paddingBottom: 5 }
+                  : null
+                ]}>
+                  <Text style={{ fontSize: 16, fontWeight: '300' }}>{message.Text}</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 3 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '300', fontStyle: 'italic', color: '#666', paddingLeft: 5 }}>
+                      {details.TeacherName}
+                    </Text>
+                  </View>
+                </View>
+              ))
+            }
+          ]
+        })
+      }
+    } else if (this.props.profile.userRole === userRoles.TEACHER) {
       sections.push({
         title: 'Повідомлення',
-        data: [
+        button: () => (
+          <TouchableOpacity disabled={!this.isAddButtonEnabled()} onPress={() => {
+            this.setState({ messages: this.state.messages.concat([{}]) })
+            this.enableSaveButton(true)
+          }}>
+            {addIcon}
+          </TouchableOpacity>
+        ),
+        data: this.state.messages.length > 0 ? [
           {
             key: 'messages',
-            template: () => details.Messages.map(message => (
-              <View key={message.Id} style={{ marginVertical: 8 }}>
-                <Text style={{ fontSize: 16, fontWeight: '300' }}>{message.Text}</Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 3 }}>
-                  <Text style={{ fontSize: 13, fontWeight: '300', fontStyle: 'italic', color: '#666' }}>Невідомий автор</Text>
+            template: () => this.state.messages.map((message, index) => (
+              <View key={index}
+                style={[
+                  { flexDirection: 'row' },
+                  index < this.state.messages.length - 1 ?
+                  { borderBottomWidth: 0.5, borderColor: '#ddd', marginBottom: 2 }
+                  : null
+                ]}>
+                <TextInput
+                  placeholder="Ваш текст..."
+                  autoFocus={!message.Id}
+                  ref={input => this.messageInputs[index] = input}
+                  value={message.Text}
+                  height={120}
+                  underlineColorAndroid="#fff"
+                  style={{ color:'#333', flex: 1 }}
+                  fontWeight="300"
+                  fontSize={16}
+                  multiline={true}
+                  onChangeText={text => this.onMessageTextChange(message, index, text)}
+                  // onFocus={() => {
+                  //   this.messageInputs[index].measure((fx, fy, w, h, px, py) => {
+                  //     if (Platform.OS === 'ios' && py > 0) {
+                  //       this.scroller.scrollTo({ y: py - 200, animated: true })
+                  //     }
+                  //   })
+                  // }}
+                />
+                <View style={{ marginRight: -5, marginTop: 4, paddingLeft: 10 }}>
+                  <TouchableOpacity onPress={() => this.removeMessage(message)}>
+                    {removeIcon}
+                  </TouchableOpacity>
                 </View>
               </View>
             ))
           }
+        ] : []
+      })
+    }
+    if (this.props.passedItem.isMyLesson) {
+      sections.push({
+        title: 'Нотатки',
+        data: [
+          {
+            key: 'note',
+            template: () => (
+              <TextInput placeholder="Ваш текст..."
+                ref={noteInput => this.noteInput = noteInput}
+                value={this.state.noteText}
+                height={120}
+                underlineColorAndroid="#fff"
+                style={{ color:'#333' }}
+                fontWeight="300"
+                fontSize={16}
+                multiline={true}
+                onChangeText={text => this.onNoteTextChange(text)}
+                onFocus={() => {
+                  if (Platform.OS === 'ios') {
+                    this.scroller.scrollToEnd({ animated: true })
+                  }
+                }}
+              />
+            )
+          }
         ]
       })
     }
-    sections.push({
-      title: 'Нотатки',
-      data: [
-        {
-          key: 'note',
-          template: () => (
-            <TextInput placeholder="Ваш текст..."
-              ref={noteInput => this.noteInput = noteInput}
-              value={this.state.noteText}
-              height={120}
-              underlineColorAndroid="#fff"
-              style={{ color:'#333' }}
-              fontWeight="300"
-              fontSize={16}
-              multiline={true}
-              onChangeText={text => this.onNoteTextChange(text)} />
-          )
-        }
-      ]
-    })
     return (
       <ScrollView ref={scroller => this.scroller = scroller}
-        style={{backgroundColor: '#f4f4f4', flex: 1 }}
+        style={{ backgroundColor: '#f4f4f4', flex: 1 }}
         refreshControl={
           <RefreshControl
             refreshing={this.props.scheduleDetails.refreshing}
@@ -238,7 +419,7 @@ class ScheduleDetails extends Component {
         }>
         <SectionList stickySectionHeadersEnabled={false}
           sections={sections}
-          renderItem={({ item }) => (
+          renderItem={({ item, index, section }) => section.data.length > 0 ?(
             <View style={{
               backgroundColor: '#fff',
               paddingHorizontal: 20,
@@ -246,16 +427,25 @@ class ScheduleDetails extends Component {
             }}>
               {item.template()}
             </View>
-          )}
+          ) : null}
           renderSectionHeader={({ section }) => (
             <View style={{
               paddingTop: 20,
               paddingHorizontal: 20,
-              paddingBottom: 3
+              paddingBottom: 3,
+              flexDirection: 'row',
+              justifyContent: 'space-between'
             }}>
               <Text style={{ color: '#7a92a5', fontWeight: '300' }}>
                 {section.title}
               </Text>
+              {section.button ?
+                <View style={{
+                  marginRight: -5
+                }}>
+                  {section.button()}
+                </View>
+              : null}
             </View>
           )}
           ListFooterComponent={() => (
@@ -272,14 +462,18 @@ const mapDispatchToProps = dispatch => {
     fetchScheduleDetails: (id, refresh = false) => dispatch(fetchScheduleDetails(id, refresh)),
     updateScheduleDetails: () => dispatch(updateScheduleDetails()),
     addNote: note => dispatch(addNote(note)),
-    updateNote: note => dispatch(updateNote(note))
+    updateNote: note => dispatch(updateNote(note)),
+    addMessage: message => dispatch(addMessage(message)),
+    updateMessage: message => dispatch(updateMessage(message)),
+    removeMessage: id => dispatch(removeMessage(id))
   }
 }
 
 const mapStateToProps = state => {
   return {
     scheduleTypes: state.scheduleTypes,
-    scheduleDetails: state.scheduleDetails
+    scheduleDetails: state.scheduleDetails,
+    profile: state.profile
   }
 }
 

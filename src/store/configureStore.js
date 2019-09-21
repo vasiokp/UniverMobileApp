@@ -5,13 +5,35 @@ import scheduleTypeReducer from './reducers/scheduleType'
 import scheduleDetailsReducer from './reducers/scheduleDetails'
 import newsReducer from './reducers/news'
 import profileReducer from './reducers/profile'
+import groupReducer from './reducers/group'
+import specialtyReducer from './reducers/specialty'
+import teacherReducer from './reducers/teacher'
+import subjectReducer from './reducers/subject'
+import auditoryReducer from './reducers/auditory'
+import attendanceReducer from './reducers/attendance'
+import creditReducer from './reducers/credit'
+import examReducer from './reducers/exam'
+import retakeReducer from './reducers/retake'
+import stateExamReducer from './reducers/stateExam'
+import infoMessageReducer from './reducers/infoMessage'
 
 const rootReducer = combineReducers({
 	schedule: scheduleReducer,
 	scheduleTypes: scheduleTypeReducer,
 	scheduleDetails: scheduleDetailsReducer,
 	news: newsReducer,
-	profile: profileReducer
+	profile: profileReducer,
+	groups: groupReducer,
+	specialties: specialtyReducer,
+	teachers: teacherReducer,
+	subjects: subjectReducer,
+	auditories: auditoryReducer,
+	attendance: attendanceReducer,
+	credits: creditReducer,
+	exams: examReducer,
+	retakes: retakeReducer,
+	stateExams: stateExamReducer,
+	infoMessages: infoMessageReducer
 })
 
 let composeEnhancers = compose

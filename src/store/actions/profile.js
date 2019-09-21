@@ -1,18 +1,41 @@
 import { AsyncStorage } from "react-native"
 import axios from '../../plugins/axios'
-import { CHECK_AUTH, LOGIN, LOGOUT } from "./actionTypes"
+import { CHECK_AUTH, LOGIN, LOGOUT, CHANGE_PASSWORD, CLEAR_PROFILE_ERROR } from "./actionTypes"
+import * as userRoles from '../../plugins/userRoles'
 import md5 from 'js-md5'
+import moment from 'moment'
 
 export const checkAuth = () => {
 	return async dispatch => {
 		try {
-			const result = await AsyncStorage.getItem('access_token')
-			console.log(result)
-			if (result) {
-				dispatch({
-					type: CHECK_AUTH.SUCCESS,
-					payload: result
-				})
+			const stored = await AsyncStorage.multiGet([
+				'access_token',
+				'expires',
+				'user_info'
+			])
+			const accessToken = stored[0][1]
+			const expires = stored[1][1]
+			const userInfo = stored[2][1]
+			if (accessToken && expires && userInfo) {
+				if (moment(expires).isBefore(moment())) {
+					const parsedUserInfo = JSON.parse(userInfo)
+					const userRole = parsedUserInfo.GroupId ? userRoles.STUDENT : userRoles.TEACHER
+					dispatch({
+						type: CHECK_AUTH.SUCCESS,
+						payload: {
+							accessToken: accessToken,
+							userInfo: parsedUserInfo,
+							userRole: userRole
+						}
+					})
+				} else {
+					try {
+						const token = await relogin()(dispatch)
+					} catch (err) {
+						console.log(err)
+						dispatch({ type: CHECK_AUTH.ERROR })
+					}
+				}
 			} else {
 				dispatch({ type: CHECK_AUTH.ERROR })
 			}
@@ -23,17 +46,85 @@ export const checkAuth = () => {
 	}
 }
 
+export const relogin = () => {
+	return async dispatch => {
+		try {
+			const stored = await AsyncStorage.multiGet(['login', 'passwordHash'])
+			const login = stored[0][1]
+			const passwordHash = stored[1][1]
+			if (login && passwordHash) {
+				const body = { Email: login, Password: passwordHash }
+				const result = await axios.post('/api/account/login', body)
+				if (result.status === 200) {
+					await AsyncStorage.setItem('access_token', result.data.Access_token)
+					const userInfo = await axios.post('/api/account/getuserinfo', null, {
+						headers: {
+							'Authorization': `Bearer ${result.data.Access_token}`
+						}
+					})
+					if (userInfo.status === 200) {
+						await AsyncStorage.setItem('user_info', JSON.stringify(userInfo.data))
+						const userRole = userInfo.data.GroupId ? userRoles.STUDENT : userRoles.TEACHER
+						dispatch({
+							type: LOGIN.SUCCESS,
+							payload: {
+								accessToken: result.data.Access_token,
+								userInfo: userInfo.data,
+								userRole: userRole
+							}
+						})
+						Promise.resolve(result.data.Access_token)
+					} else {
+						Promise.reject(new Error('couldn`t relogin'))
+					}
+				} else {
+						Promise.reject(new Error('couldn`t relogin'))
+				}
+			} else {
+				Promise.reject(new Error('couldn`t relogin'))
+			}
+		} catch (err) {
+			Promise.reject(new Error('couldn`t relogin'))
+		}
+	}
+}
+
 export const login = (login, password) => {
 	return async dispatch => {
 		dispatch({ type: LOGIN.PENDING })
 		try {
-			// const result = await axios.post('login')
-			const hashedPassword = md5(password)
-			await AsyncStorage.setItem('access_token', 'some-token')
-			dispatch({
-				type: LOGIN.SUCCESS,
-				payload: 'some-token'
-			})
+			const passwordHash = md5(password)
+			const body = { Email: login, Password: passwordHash }
+			const result = await axios.post('/api/account/login', body)
+			if (result.status === 200) {
+				await AsyncStorage.multiSet([
+					['access_token', result.data.Access_token],
+					['expires', result.data.Expires],
+					['login', login],
+					['passwordHash', passwordHash]
+				])
+				const userInfo = await axios.post('/api/account/getuserinfo', null, {
+					headers: {
+						'Authorization': `Bearer ${result.data.Access_token}`
+					}
+				})
+				if (userInfo.status === 200 || userInfo.status === 204) {
+					await AsyncStorage.setItem('user_info', JSON.stringify(userInfo.data))
+					const userRole = userInfo.data.GroupId ? userRoles.STUDENT : userRoles.TEACHER
+					dispatch({
+						type: LOGIN.SUCCESS,
+						payload: {
+							accessToken: result.data.Access_token,
+							userInfo: userInfo.data,
+							userRole: userRole
+						}
+					})
+				} else {
+					dispatch({ type: LOGIN.ERROR })
+				}
+			} else {
+				dispatch({ type: LOGIN.ERROR })
+			}
 		} catch (err) {
 			console.log(err)
 			dispatch({ type: LOGIN.ERROR })
@@ -45,12 +136,44 @@ export const logout = () => {
 	return async dispatch => {
 		dispatch({ type: LOGOUT.PENDING })
 		try {
-			// const result = await axios.post('logout')
-			await AsyncStorage.removeItem('access_token')
+			await AsyncStorage.multiRemove([
+				'access_token',
+				'expires',
+				'login',
+				'passwordHash',
+				'user_info'
+			])
 			dispatch({ type: LOGOUT.SUCCESS })
 		} catch (err) {
 			console.log(err)
 			dispatch({ type: LOGOUT.ERROR })
 		}
+	}
+}
+
+export const changePassword = (payload) => {
+	return async (dispatch, getState) => {
+		dispatch({ type: CHANGE_PASSWORD.PENDING })
+		try {
+			const login = await AsyncStorage.getItem('login')
+			const applicationUserId = getState().profile.userInfo.ApplicationUserId
+			const result = await axios.post(`/account/changepassword?Id=${applicationUserId}&Email=${login}&NewPassword=${md5(payload.newPassword)}&OldPassword=${md5(payload.oldPassword)}`)
+			if (result.status === 200) {
+				await AsyncStorage.setItem('passwordHash', md5(payload.newPassword))
+				dispatch({ type: CHANGE_PASSWORD.SUCCESS })
+			} else {
+				console.log(result)
+				dispatch({ type: CHANGE_PASSWORD.ERROR })
+			}
+		} catch(err) {
+			console.log(err)
+			dispatch({ type: CHANGE_PASSWORD.ERROR })
+		}
+	}
+}
+
+export const clearErrors = () => {
+	return dispatch => {
+		dispatch({ type: CLEAR_PROFILE_ERROR })
 	}
 }
