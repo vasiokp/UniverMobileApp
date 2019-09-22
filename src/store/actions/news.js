@@ -1,6 +1,6 @@
 import { AsyncStorage } from "react-native"
 import axios from '../../plugins/axios'
-import { GET_NEWS, GET_NEWS_IMAGE } from "./actionTypes"
+import { GET_NEWS, GET_NEWS_IMAGE, SET_NEWS_FILTERS } from "./actionTypes"
 import { Buffer } from 'buffer'
 
 export const getNews = (refresh = false) => {
@@ -73,5 +73,14 @@ export const getImage = (newsId, refresh) => {
 			console.log(err) 
 			dispatch({ type: GET_NEWS_IMAGE.ERROR, payload: newsId })
 		}
+	}
+}
+
+export const setNewsFilters = filters => {
+	return dispatch => {
+		dispatch({
+			type: SET_NEWS_FILTERS,
+			payload: filters
+		})
 	}
 }
