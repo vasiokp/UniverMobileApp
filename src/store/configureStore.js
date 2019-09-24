@@ -10,6 +10,7 @@ import specialtyReducer from './reducers/specialty'
 import teacherReducer from './reducers/teacher'
 import subjectReducer from './reducers/subject'
 import auditoryReducer from './reducers/auditory'
+import newsTypeReducer from './reducers/newsType'
 import attendanceReducer from './reducers/attendance'
 import creditReducer from './reducers/credit'
 import examReducer from './reducers/exam'
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
 	teachers: teacherReducer,
 	subjects: subjectReducer,
 	auditories: auditoryReducer,
+	newsTypes: newsTypeReducer,
 	attendance: attendanceReducer,
 	credits: creditReducer,
 	exams: examReducer,

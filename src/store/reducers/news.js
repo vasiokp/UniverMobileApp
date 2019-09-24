@@ -1,11 +1,14 @@
-import { GET_NEWS, GET_NEWS_IMAGE } from "../actions/actionTypes"
+import { GET_NEWS, GET_NEWS_IMAGE, SET_NEWS_FILTERS } from "../actions/actionTypes"
 
 const initialState = {
   loading: false,
   refreshing: false,
   loaded: false,
   error: false,
-  items: []
+  items: [],
+  filters: {
+    newsTypeId: null
+  }
 }
 
 const reducer = (state = initialState, action) => {
@@ -76,6 +79,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         items: state.items
+      }
+    case SET_NEWS_FILTERS:
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          ...action.payload
+        }
       }
     default:
       return state
