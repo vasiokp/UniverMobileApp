@@ -111,7 +111,7 @@ class NewsTabScreen extends Component {
     if (this.allFiltersAreNull()) return this.props.news.items
     let filteredItems = []
     Object.keys(this.props.news.items).forEach(key => {
-      if (filters.newsTypeId == null || this.props.news.items[key].NewsTypeId === filters.newsTypeId) {
+      if (filters.newsTypeId == null || this.props.news.items[key].TypeId === filters.newsTypeId) {
         filteredItems.push(this.props.news.items[key])
       }
     })
