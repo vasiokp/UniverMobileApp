@@ -79,7 +79,7 @@ class NewsTabScreen extends Component {
   }
   componentDidMount () {
     this.props.fetchNewsTypes()
-    this.props.getNews().then(() => {
+    this.props.getNews(this.props.news.filters).then(() => {
       this.props.news.items.forEach(item => {
         this.props.getImage(item.Id)
       })
@@ -98,7 +98,7 @@ class NewsTabScreen extends Component {
 
   refreshItems() {
     this.props.fetchNewsTypes(true)
-    this.props.getNews().then(() => {
+    this.props.getNews(this.props.news.filters).then(() => {
       this.props.news.items.forEach(item => {
         this.props.getImage(item.Id)
       })
@@ -136,7 +136,7 @@ class NewsTabScreen extends Component {
 
             keyExtractor={item => item.Id ? item.Id.toString() : ""}
 
-            onRefresh={() => this.props.getNews(true).then(() => {
+            onRefresh={() => this.props.getNews(this.props.news.filters, true).then(() => {
               let list = this.props.news.items
               list.forEach(item => {
                 this.props.getImage(item.Id)
@@ -168,7 +168,7 @@ class NewsTabScreen extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getNews: () => dispatch(getNews()),
+    getNews: (filters) => dispatch(getNews(filters)),
     getImage: (newId, refresh = false) => dispatch(getImage(newId, refresh)),
     setNewsFilters: filters => dispatch(setNewsFilters(filters)),
     fetchNewsTypes: (refresh = false) => dispatch(fetchNewsTypes(refresh)),

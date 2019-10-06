@@ -3,7 +3,7 @@ import axios from '../../plugins/axios'
 import { GET_NEWS, GET_NEWS_IMAGE, SET_NEWS_FILTERS } from "./actionTypes"
 import { Buffer } from 'buffer'
 
-export const getNews = (refresh = false) => {
+export const getNews = (filters, refresh = false) => {
 	return async dispatch => {
 		dispatch({ type: refresh ? GET_NEWS.REFRESHING : GET_NEWS.PENDING })
 		if (!refresh) {
@@ -18,7 +18,7 @@ export const getNews = (refresh = false) => {
 			} catch (err) {}
 		}
 		try {
-			const result = await axios.get(`/api/news/getall`)
+			const result = await axios.post(`/api/news/getall`, filters)
 			dispatch({
 				type: GET_NEWS.SUCCESS,
 				payload: result.data
