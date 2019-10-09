@@ -6,32 +6,58 @@ import { PRIMARY_COLOR } from '../../plugins/AppColors'
 
 class SessionTab extends Component {
 
+  disableClick = false
+
   ShowCreditDetails() {
-    this.props.navigator.push({
-      screen: 'CreditDetails',
-      title: 'Заліки'
-    })
+    if (!this.disableClick) {
+      this.disableClick = true
+      this.props.navigator.push({
+        screen: 'CreditDetails',
+        title: 'Заліки'
+      })
+      setTimeout(() => {
+        this.disableClick = false
+      }, 2000);
+    }
   }
 
   ShowExamDetails() {
-    this.props.navigator.push({
-      screen: 'ExamDetails',
-      title: 'Іспити'
-    })
+    if (!this.disableClick) {
+      this.disableClick = true
+      this.props.navigator.push({
+        screen: 'ExamDetails',
+        title: 'Іспити'
+      })
+      setTimeout(() => {
+        this.disableClick = false
+      }, 2000);
+    }
   }
 
   ShowRetakeDetails() {
-    this.props.navigator.push({
-      screen: 'RetakeDetails',
-      title: 'Перездачі'
-    })
+    if (!this.disableClick) {
+      this.disableClick = true
+      this.props.navigator.push({
+        screen: 'RetakeDetails',
+        title: 'Перездачі'
+      })
+      setTimeout(() => {
+        this.disableClick = false
+      }, 2000);
+    }
   }
 
   ShowStateExamDetails() {
-    this.props.navigator.push({
-      screen: 'StateExamDetails',
-      title: 'Державні іспити'
-    })
+    if (!this.disableClick) {
+      this.disableClick = true
+      this.props.navigator.push({
+        screen: 'StateExamDetails',
+        title: 'Державні іспити'
+      })
+      setTimeout(() => {
+        this.disableClick = false
+      }, 2000);
+    }
   }
 
   render() {
