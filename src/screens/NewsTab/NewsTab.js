@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { View, FlatList, TouchableOpacity, Platform, Text } from 'react-native';
 import { connect } from 'react-redux'
 import { getNews, getImage } from '../../store/actions/index'
 import NewsItem from '../../components/NewsItem/NewsItem'
@@ -17,10 +17,11 @@ const noFilterMessage = () => (
     marginTop: 30
   }}>
     <Text style={{
-      fontWeight: '300',
+      fontWeight: '400',
+      fontSize: 17,
       color: '#555'
     }}>
-      Застосуйте хоча б один фільтр
+      Новини цієї категорії відсутні
     </Text>
   </View>
 )
@@ -150,6 +151,7 @@ class NewsTabScreen extends Component {
                 <NewsItem {...item} />
               </TouchableOpacity>
             )}
+            ListEmptyComponent = { noFilterMessage }
             ItemSeparatorComponent = {this.FlatListItemSeparator}
           />
           
